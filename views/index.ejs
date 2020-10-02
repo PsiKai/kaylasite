@@ -1,0 +1,83 @@
+<%- include("partials/header") -%>
+
+<section id="home" class="colored">
+  <img class="logoEdge" src="images/kaylalogotest.png" alt="">
+  <img class="logoEdgeRight" src="images/kaylalogotest.png" alt="">
+  <div class="container-fluid">
+    <img id="main" src="images/KaylaKossajdaLogocolor2.png"/>
+      <h1>Welcome to my gallery!</h1>
+      <div class="bio">
+        <p>This is my site filled with all my favorite pieces of art.  I'm an artist of many disciplines, so I've seperated each medium onto a different page.  On each page you'll find the different categories organized by their subject matter, and you can click on any thumbnail to see the full-size image of the artwork.  Drop me a line if you have an idea for a commisioned work, or if you just want to talk about art.  Be sure to follow me on social media to keep up to date with all my latest work.</p>
+        <P>Thanks for visiting!</P>
+      </div>
+      <div class="call-action">
+        <h4>Contact Me</h4>
+        <a target="_blank" href="https://www.facebook.com/kayla.kossajda">
+        <i class="media fab fa-facebook-f fa-2x"></i>
+        </a>
+        <a target="_blank" href="https://www.instagram.com/kaylakossart/">
+        <i class="media fab fa-instagram fa-2x"></i>
+        </a>
+        <a href="mailto:kkossajda@gmail.com">
+        <i class="media fas fa-envelope fa-2x"></i>
+        </a>
+      </div>
+    </div>
+</section>
+
+<section id="frontpage-carousel">
+  <div id="carousel" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active container-fluid">
+        <a href="<%= imgCategory %>#<%=randomImg%>"><img class="img-fluid" src="<%= randomImg %>" class="d-block w-100"/></a>
+      </div>
+    <%  artWorks.forEach(function(artWork) { %>
+        <div class="carousel-item container-fluid">
+          <a href=<%= artWork.imgCategory %>#<%=artWork.alt%> ><img loading="lazy" class="img-fluid" src="<%= artWork.thumbnail %>" class="d-block w-100"/></a>
+        </div>
+      <% }); %>
+      </div>
+    <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+     <span class="sr-only">Previous</span>
+   </a>
+   <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+     <span class="carousel-control-next-icon" aria-hidden="true"></span>
+     <span class="sr-only">Next</span>
+   </a>
+  </div>
+</section>
+
+<section id="biography" class="colored">
+  <img class="logoEdge" src="images/kaylalogotest.png" alt="">
+  <img class="logoEdgeRight" src="images/kaylalogotest.png" alt="">
+    <div class="row left">
+      <div class="col-sm-4">
+          <img class="bio-icon" src="images/notebook.png" alt="">
+      </div>
+      <div class="col-sm-8">
+        <h3>How I got started</h3>
+        <p>Growing up I always admired my mother for her tasteful style.  She was always decorating and redesigning her home in the most creative and artistic ways.  She was my inspiration to become an artist.  I began sketching wild ideas, and anything that came into my mind.  Some of which I still cherish today. I developed a deep love for drawing in colored pencils and ink.  I lived with my sketchbook.</p>
+      </div>
+    </div>
+    <div class="row right">
+      <div class="col-sm-4">
+          <img class="bio-icon left-icon" src="images/palette.png" alt="">
+      </div>
+      <div class="col-sm-8">
+        <h3>Branching out to new media</h3>
+        <p>My love of art did not stop with my sketches.  Soon I began painting.  Although I love using acrylic paint on canvas, my favorite method is with water color on paper.  I love to make the paint splatter and soak in for cool effects!  In high school I finally managed to save up for a nice camera and I took that thing everywhere, photographing all my friends and all the beautiful places I could find.</p>
+      </div>
+    </div>
+    <div class="row left">
+      <div class="col-sm-4">
+          <img class="bio-icon" src="images/computer.png" alt="">
+      </div>
+      <div class="col-sm-8">
+        <h3>College and career</h3>
+        <p>My choice of higher education was a no-brainer.  After a brief stint at an art school near my home town, I made a big move all the way the Nasvhille, Tennessee where I studied Commercial Illustration at the Nossi College of Art.  There I propelled my art to the next level learning software for digital art and design.  I have since had a few jobs designing in print media, but always maintained the passion for my practice.</p>
+      </div>
+    </div>
+</section>
+
+<%- include("partials/footer") -%>
