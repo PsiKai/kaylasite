@@ -1,8 +1,8 @@
 <%- include("partials/header") -%>
 
 <section id="home" class="colored">
-  <img class="logoEdge" src="images/kaylalogotest.png" alt="">
-  <img class="logoEdgeRight" src="images/kaylalogotest.png" alt="">
+  <img class="logoEdge" src="images/kaylalogogreen.png" alt="">
+  <img class="logoEdgeRight" src="images/kaylalogogreen.png" alt="">
   <div class="container-fluid">
     <img id="main" src="images/KaylaKossajdaLogocolor2.png"/>
       <h1>Welcome to my gallery!</h1>
@@ -29,11 +29,12 @@
   <div id="carousel" class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
       <div class="carousel-item active container-fluid">
-        <a href="<%= imgCategory %>#<%=randomImg%>"><img class="img-fluid" src="<%= randomImg %>" class="d-block w-100"/></a>
+        <a href="<%= artWorks[randomArt].imgCategory %>#<%=artWorks[randomArt].alt%>"><img class="img-fluid" src="<%= artWorks[randomArt].thumbnail %>" class="d-block w-100"/></a>
       </div>
     <%  artWorks.forEach(function(artWork) { %>
+      <% var randomArt = Math.floor(Math.random()*artWorks.length) %>
         <div class="carousel-item container-fluid">
-          <a href=<%= artWork.imgCategory %>#<%=artWork.alt%> ><img loading="lazy" class="img-fluid" src="<%= artWork.thumbnail %>" class="d-block w-100"/></a>
+          <a href=<%= artWorks[randomArt].imgCategory %>#<%=artWorks[randomArt].alt%> ><img loading="lazy" class="img-fluid" src="<%= artWorks[randomArt].thumbnail %>" class="d-block w-100"/></a>
         </div>
       <% }); %>
       </div>
@@ -49,8 +50,8 @@
 </section>
 
 <section id="biography" class="colored">
-  <img class="logoEdge" src="images/kaylalogotest.png" alt="">
-  <img class="logoEdgeRight" src="images/kaylalogotest.png" alt="">
+  <img class="logoEdge" src="images/kaylalogogreen.png" alt="">
+  <img class="logoEdgeRight" src="images/kaylalogogreen.png" alt="">
     <div class="row left">
       <div class="col-sm-4">
           <img class="bio-icon" src="images/notebook.png" alt="">

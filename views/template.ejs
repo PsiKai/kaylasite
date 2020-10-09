@@ -1,8 +1,8 @@
 <%- include("partials/header") -%>
 
  <section class="colored">
-   <img class="logoEdge" src="images/kaylalogotest.png" alt="">
-   <img class="logoEdgeRight" src="images/kaylalogotest.png" alt="">
+   <img class="logoEdge" src="images/kaylalogogreen.png" alt="">
+   <img class="logoEdgeRight" src="images/kaylalogogreen.png" alt="">
    <div class="category container-fluid">
          <h1> <%= pageType.title %> </h1>
       <div class="bio">
@@ -30,7 +30,7 @@
         <ul class="thumbnail-list">
     <%  subCated[art].forEach(function(obj) { %>
           <a target="_top" href=<%=obj.imgSrc%>>
-            <img id=<%=obj.alt%> class="thumbnail-image" loading="lazy" src="<%= obj.thumbnail %>" alt="<%= obj.alt %>"/>
+            <img id=<%=obj.alt%> class="thumbnail-image" src="<%= obj.thumbnail %>" alt="<%= obj.alt %>"/>
           </a>
     <% }); %>
       </ul>

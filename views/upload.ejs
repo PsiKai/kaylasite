@@ -1,8 +1,8 @@
 <%- include("partials/header") -%>
 
 <section class="upload-section" id="upload">
-  <img class="logoEdge" src="images/kaylalogotest.png" alt="">
-  <img class="logoEdgeRight" src="images/kaylalogotest.png" alt="">
+  <img class="up logoEdge" src="images/kaylalogogreen.png" alt="">
+  <img class="up logoEdgeRight" src="images/kaylalogogreen.png" alt="">
   <div class="upload-form">
     <h2>New Artwork</h2>
     <div class="form-data">
@@ -113,10 +113,51 @@
           <%  }) %>
         </ul>
       </div>
-      <label class="alert alert-danger hidden"><i class="fa fa-exclamation-circle"></i><strong> Please select an artwork to delete!</strong></label>
+      <label class="alert alert-danger hidden"><i class="fa fa-exclamation-circle"></i><strong> Please select an artwork to update or delete!</strong></label>
       <input type="text" id="imgDel" name="image" class="delete-img" value="" />
-      <button name="button" type=submit class="btn btn-lg btn-danger"><i class="fa fa-trash"></i> Remove Artwork</button>
       <label for="imgDel" class="btn btn-lg hidden del-label" value=""></label>
+      <button name="button" type=submit class="btn btn-lg btn-danger" onclick="verify()"><i class="fa fa-trash"></i> Remove Artwork</button>
+      <label name="updateButton" class="btn btn-lg btn-success" onclick="edit()"><i class="far fa-edit"></i> Edit Artwork <i class='fas fa-angle-double-down hidden'></i></label>
+
+    </form>
+
+    <form id="updateForm" action="/update" method="POST" onsubmit="return verify()">
+      <ul class="upload-data update-data hidden">
+        <li>
+          <label for="categories"><p><strong>Art Medium</strong></p></label>
+        </li>
+        <li>
+          <div class="wrapper">
+            <input id="photoUp" type="radio" name="upCat" value="Photography" class="radio" required>
+            <label for="photoUp" class="update radio btn" onclick="update(event)">Photography</label>
+          </div>
+          <div class="wrapper">
+            <input id="paintUp" type="radio" name="upCat" value="Painting" class="radio">
+            <label for="paintUp" class="update radio btn" onclick="update(event)">Painting</label>
+          </div>
+          <div class="wrapper">
+            <input id="drawUp" type="radio" name="upCat" value="Drawing" class="radio">
+            <label for="drawUp" class="update radio btn" onclick="update(event)">Drawing</label>
+          </div>
+          <div class="wrapper">
+            <input id="digitalUp" type="radio" name="upCat" value="Digital" class="radio">
+            <label for="digitalUp" class="update radio btn" onclick="update(event)">Digital</label>
+          </div>
+        </li>
+        <li>
+          <label><p><strong>Subject Matter</strong></p></label>
+        </li>
+        <li>
+          <input id="subcatUp" type="text" name="subcatUp" class="subcat update" autocomplete="off" placeholder="Enter Subject" required spellcheck="false"/>
+        </li>
+        <li>
+          <label><p><strong>Artwork Title</strong></p></label>
+        </li>
+        <li>
+          <input id="artnameUp" type="text" name="nameUp" value="" class="subcat update" placeholder="Name Your Piece" required autocomplete="off" spellcheck="false">
+        </li>
+          <button type="submit" class="btn btn-lg btn-primary" onclick="verify()"><i class="fas fa-upload"></i> Submit Changes</button>
+      </ul>
     </form>
   </div>
 </section>

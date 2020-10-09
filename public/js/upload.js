@@ -1,4 +1,5 @@
 function select(e) {
+  document.querySelector("label.alert-danger").classList.add("hidden")
   var catSelect = e.target;
   var radios = document.querySelectorAll("label.radio")
   for (i=0; i < radios.length; i++) {
@@ -22,6 +23,9 @@ function onSelect() {
 };
 
 function onChange(e) {
+  document.querySelector("label.del-label").classList.add("hidden")
+  document.querySelector(".update-data").classList.add("hidden");
+  document.querySelector(".fa-angle-double-down").classList.add("hidden");
   var select = e.target.value;
   var subs = document.querySelectorAll(".sub");
   var hiddenSubs = document.querySelectorAll(".sub:not(.hidden)");
@@ -40,6 +44,9 @@ function onChange(e) {
 
 
 function showImg(e) {
+  document.querySelector(".update-data").classList.add("hidden");
+  document.querySelector(".fa-angle-double-down").classList.add("hidden")
+  document.querySelector(".alert").classList.add("hidden")
   var refresh = document.querySelectorAll(".img")
   for (i=0; i < refresh.length; i++) {
     var src = refresh[i].getAttribute("src")
@@ -68,11 +75,12 @@ function showImg(e) {
   e.target.classList.add("selected")
   var clickedImg = document.querySelector("[name=clicked]")
   if (clickedImg) {
-    console.log(clickedImg);
     clickedImg.setAttribute("name", "")
     clickedImg.classList.remove("img-clicked")
   }
   document.querySelector(".del-label").classList.add("hidden")
+
+
 };
 
 function highlight(e) {
@@ -92,11 +100,41 @@ function highlight(e) {
   label.innerHTML = input.value.split("/")[6].split("-thumb")[0] + ".jpg";
   label.classList.remove("hidden")
   document.querySelector("label.alert-danger").classList.add("hidden")
+  var chosenImg = document.getElementsByName("clicked")[0]
+  if (document.querySelector("[name=old-image]")) {
+    document.querySelector("[name=old-image]").remove();
+  }
+  var imgEdit = document.createElement("input");
+  imgEdit.setAttribute('type', "text")
+  imgEdit.className = "img-edit hidden"
+  imgEdit.value = chosenImg.src;
+  imgEdit.name = "oldImage";
+  document.getElementById("updateForm").appendChild(imgEdit);
+
+  var currentCat = document.querySelector("[name=medium]").value
+  var upperCat = currentCat.charAt(0).toLocaleUpperCase() + currentCat.slice(1)
+  var labels = document.querySelectorAll("label.update")
+  for (i=0; i < labels.length; i++) {
+    if (labels[i].innerText === upperCat) {
+      labels[i].click();
+    }
+  }
+  document.querySelector("#subcatUp").value = document.querySelector("#subcat.selected").innerText
+  document.querySelector("#artnameUp").value = document.querySelector(".del-label").innerText.split(".")[0]
+};
+
+
+function update(e) {
+  var catUpdate = e.target;
+  var radioUpdate = document.querySelectorAll("label.update")
+  for (i=0; i < radioUpdate.length; i++) {
+    radioUpdate[i].classList.remove("selected")
+  }
+  catUpdate.classList.add("selected")
 };
 
 function verify() {
   var found = false;
-  // document.querySelector(".img-clicked").remove()
   var chosenImg = document.querySelectorAll(".img")
   for (i=0; i < chosenImg.length; i++) {
     if (chosenImg[i].getAttribute("name") === "clicked") {
@@ -109,3 +147,19 @@ function verify() {
   }
   return found;
 };
+
+
+function edit() {
+  var icon = document.querySelector("i.fa-angle-double-down");
+  var updateImg = document.querySelectorAll(".img")
+  for (i=0; i < updateImg.length; i++) {
+    if (updateImg[i].getAttribute("name") === "clicked") {
+      document.querySelector(".update-data").classList.toggle("hidden");
+      document.querySelector("label.alert-danger").classList.add("hidden")
+      icon.classList.toggle("hidden");
+      break;
+    } else {
+      document.querySelector("label.alert-danger").classList.remove("hidden")
+    }
+  }
+}

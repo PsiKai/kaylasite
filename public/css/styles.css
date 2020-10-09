@@ -45,7 +45,8 @@ font-family: "Kite One", sans-serif;
 }
 
 .colored {
-  background-color: #d8b9c3;
+  background-color: #ebecf1;
+  /* background-color: #d8b9c3; */
   color: #4d4c7d;
 
 }
@@ -118,7 +119,7 @@ font-family: "Kite One", sans-serif;
 
 footer {
   position: relative;
-  padding: 2% 0 1%;
+  /* padding: 2% 0 1%; */
   background: linear-gradient(#145374, #00334e);
   color: #1a1c20;
   position: relative;
@@ -187,6 +188,7 @@ footer .container-fluid {
 }
 
 .img-fluid {
+  object-fit: cover;
   width: auto;
   height: 500px;
   border: 2px solid #1b1b2f;
@@ -225,6 +227,7 @@ footer .container-fluid {
     height: auto;
     padding: 4% 2%;
     text-align: left;
+    /* background-color: #f6f5f5; */
     background: linear-gradient(135deg, #4d4c7d, #363062);
     border-radius: 10px;
     box-shadow: 0 0 3px 2px;
@@ -318,6 +321,14 @@ input::placeholder{
   color: #827397;
 }
 
+input.update {
+  background-color: #827397;
+}
+
+input.update::placeholder {
+  color: #4d4c7d;
+}
+
 #filename, select, .btn, input:not([class="radio"]), .alert {
   min-width: 300px;
  }
@@ -354,21 +365,26 @@ input::placeholder{
   font-size: 1.25em;
   color: white;
   background-color: #363062;
-  display: inline-block;
+  display: block;
   cursor: pointer;
   cursor: default;
+  margin: 2% 40px 0 40px;
+}
+
+.btn-danger, .btn-success {
   margin: 2% 10px 0 40px;
 }
 
-.btn-danger, .alert{
-  margin: 2% 10px 0 40px;
+.btn-primary {
+  margin: 2% 0 0;
 }
 
  .alert {
-   display: inline-block;
+   display: block;
+   margin: 2% 40px 0;
  }
 
-.btn-danger, .btn-info, .btn#fileName, .alert {
+.btn-danger, .btn-info, .btn#fileName, .alert, .btn-success, .btn-primary {
   font-family: "Open Sans", sans-serif;
 }
 
@@ -602,11 +618,11 @@ label.radio {
    margin: 0;
  }
 
- .del-label, .btn-danger, .alert{
+ .del-label, .btn-danger, .alert, .btn-success, .btn-primary{
    margin: 3% 0 0;
  }
 
- .hidden {
+ input.img-edit, .hidden {
    display: none;
  }
 
@@ -625,6 +641,8 @@ label.radio {
      opacity: 65%;
      display: block;
      overflow: hidden;
+     height: 100%;
+     object-fit: contain;
    }
    .logoEdgeRight {
      transform: rotate(180deg);
@@ -634,10 +652,16 @@ label.radio {
      opacity: 65%;
      display: block;
      overflow: hidden;
+     height: 100%;
+     object-fit: contain;
    }
 
    #biography .logoEdge, #biography .logoEdgeRight {
      top: 0;
+   }
+
+   #upload .logoEdge, #upload .logoEdgeRight {
+     height: auto;
    }
 
    .upload-form, .delete-form {
