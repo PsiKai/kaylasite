@@ -54,8 +54,7 @@ async function listFiles() {
   artWorks = [];
   const [files] = await storage.bucket(bucketName).getFiles();
   files.forEach(file => {
-    function splitStr(str) {
-      var string = str.split("/");
+      var string = file.name.split("/");
       artWorks.push(
         {
           imgCategory: string[0],
@@ -64,9 +63,6 @@ async function listFiles() {
           thumbnail: thumbBucket + file.name.split('.')[0] + "-thumb.jpg",
           alt: string[2]
         });
-    }
-    var str = file.name;
-    splitStr(str);
   });
   console.log("files listed");
 }
@@ -228,7 +224,7 @@ app.post("/upload", upload.single("image"), (req, res) => {
 
   sharp(imagePath)
     .resize(null, 300).toFile(imgTitle + "-thumb.jpg", function(err) {
-      if (err) console.log(err);
+      if (!err) console.log("image resized");
       uploadThumb().catch(console.error);
   })
 
