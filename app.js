@@ -70,7 +70,7 @@ async function listFiles() {
 
 listFiles()
   .then(() => {
-    const server = app.listen(3000, function() {
+    const server = app.listen(process.env.PORT || 3000, function() {
       console.log("server started on port", server.address().port);
     });
     app.get("/", function(req, res) {
