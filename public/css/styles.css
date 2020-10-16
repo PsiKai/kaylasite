@@ -86,6 +86,12 @@ font-family: "Kite One", sans-serif;
   text-align: right;
 }
 
+.admin {
+  margin-left: 10px;
+  padding-left: 10px;
+  border-left: double;
+}
+
 .navbar-brand {
   color: #fff;
 }
@@ -304,6 +310,30 @@ ul.thumbnail-list {
   margin-top: 5%;
 }
 
+/* /////////// Login Page ////////////// */
+
+hr {
+  width: 65%;
+  height: 10px;
+}
+
+.login-form {
+  background-color: #827397;
+  padding: 10% 25% 7%;
+}
+
+.login-form .form {
+  background-color: #d8b9c3;
+  border-radius: 25px;
+  box-shadow: 0 0 5px 3px;
+  padding: 7% 5%;
+  text-align: center;
+}
+
+#password, #username {
+  display: block;
+  margin: 3% auto
+}
 
 /* ////////Upload page/////////// */
 .upload-section {
@@ -547,17 +577,21 @@ label.radio {
      display: none;
    }
 
-  .upload-form, .delete-form {
+  .upload-form, .delete-form, .login-form {
     margin: 0 5% 5%;
     padding: 5%;
   }
 
-  .delete-form {
+  .delete-form, .login-form .form{
     margin-top: 5%;
   }
 
    .img-preview {
      text-align: center;
+   }
+
+   .admin {
+     border: none;
    }
  }
 
