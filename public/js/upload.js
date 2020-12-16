@@ -1,10 +1,15 @@
+
+//Radio button labels to select art medium at upload and delete section
 function select(e) {
+  //remove alerts and any other highlights
   document.querySelector("label.alert-danger").classList.add("hidden")
   var catSelect = e.target;
   var radios = document.querySelectorAll("label.radio")
+
   for (i=0; i < radios.length; i++) {
     radios[i].classList.remove("selected")
   }
+  //highlight selected art medium
   catSelect.classList.add("selected")
   var subSelect = document.querySelector(".sub.selected")
   if (subSelect) {
@@ -12,20 +17,28 @@ function select(e) {
   }
 };
 
+//file upload label that replaces native input[type="file"] layout
 function onSelect() {
+  //parses file name
   var inputFile = document.querySelector(".inputfile").value;
   var splitFile = inputFile.split('\\')
   document.querySelector("#fileName").innerHTML = splitFile[2];
   document.querySelector(".inputfile").filename = inputFile;
+  
+  //create thumbnail preview of file upload
   var preview = document.getElementById('preview');
   preview.src = window.URL.createObjectURL(event.target.files[0])
   preview.classList.remove("hidden")
 };
 
+//reveals subcategory buttons when art medium category is selected
 function onChange(e) {
+  //hides any revealed subcategories
   document.querySelector("label.del-label").classList.add("hidden")
   document.querySelector(".update-data").classList.add("hidden");
   document.querySelector(".fa-angle-double-down").classList.add("hidden");
+
+  //removes .hidden from elements to be revealed
   var select = e.target.value;
   var subs = document.querySelectorAll(".sub");
   var hiddenSubs = document.querySelectorAll(".sub:not(.hidden)");
@@ -43,10 +56,13 @@ function onChange(e) {
 };
 
 
+//reveals thumbnails of images to be deleted/edited
 function showImg(e) {
+  //hides any revealed thumbnail images
   document.querySelector(".update-data").classList.add("hidden");
   document.querySelector(".fa-angle-double-down").classList.add("hidden")
   document.querySelector(".alert").classList.add("hidden")
+  
   var refresh = document.querySelectorAll(".img")
   for (i=0; i < refresh.length; i++) {
     var src = refresh[i].getAttribute("src")
@@ -56,6 +72,8 @@ function showImg(e) {
   for (i = 0; i < allImgs.length; i++) {
     allImgs[i].classList.add("hidden")
   }
+
+  //shows label with selected thumbnail image's file name
   var subject = e.target.innerHTML.toLowerCase().replace(/ /g, "-").replace("&amp;", "and");
   var select = document.querySelectorAll("[name=medium]")
   var category = ''
@@ -83,27 +101,36 @@ function showImg(e) {
 
 };
 
+//highlights the selected thumbnail images
 function highlight(e) {
   for (i = 0; i < document.querySelectorAll("[name=clicked]").length; i++) {
     var clicked = document.querySelectorAll("[name=clicked]");
     clicked[i].removeAttribute("name", "clicked")
   }
+
   for (i = 0; i < document.querySelectorAll(".img-clicked").length; i++) {
     var imgSelect = document.querySelectorAll(".img-clicked");
     imgSelect[i].classList.remove("img-clicked")
   }
+
   e.target.classList.toggle("img-clicked")
   e.target.setAttribute('name', "clicked")
+
   var input = document.querySelector(".delete-img")
   input.setAttribute("value", document.querySelectorAll("[name=clicked]")[0].src)
+
   var label = document.querySelector(".del-label");
   label.innerHTML = input.value.split("/")[6].split("-thumb")[0] + ".jpg";
   label.classList.remove("hidden")
+
   document.querySelector("label.alert-danger").classList.add("hidden")
+
   var chosenImg = document.getElementsByName("clicked")[0]
   if (document.querySelector("[name=old-image]")) {
     document.querySelector("[name=old-image]").remove();
   }
+
+
   var imgEdit = document.createElement("input");
   imgEdit.setAttribute('type', "text")
   imgEdit.className = "img-edit hidden"
@@ -124,6 +151,7 @@ function highlight(e) {
 };
 
 
+//selects art medium in update form
 function update(e) {
   var catUpdate = e.target;
   var radioUpdate = document.querySelectorAll("label.update")
@@ -133,6 +161,8 @@ function update(e) {
   catUpdate.classList.add("selected")
 };
 
+
+//form verification
 function verify() {
   var found = false;
   var chosenImg = document.querySelectorAll(".img")
@@ -148,7 +178,7 @@ function verify() {
   return found;
 };
 
-
+//reveals update form with selected artwork to edit
 function edit() {
   var icon = document.querySelector("i.fa-angle-double-down");
   var updateImg = document.querySelectorAll(".img")

@@ -1,3 +1,5 @@
+//require node modules and initialize
+
 require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -33,6 +35,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+//connect to mongoDB for login verification
+
 mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -52,11 +56,15 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+//initialize google cloud storage 
+
 const bucketName = process.env.BUCKETNAME;
 const thumbs = process.env.THUMBS;
 const bucket = process.env.BUCKET;
 const thumbBucket = process.env.THUMBBUCKET;
 let artWorks = [];
+
+//copy to display in the ejs templates
 
 let titleDesc = [{
   title: "Painting",
@@ -72,6 +80,7 @@ let titleDesc = [{
   description: "When I got to college it was time to take on a new challenge in my artistic development.  The idea of digital art was outside my realm, but it was required for my degree in Commercial Illustration.  That isn't to say that I didn't have a ton of fun learning and creating in this new medium!  I especially enjoyed digital painting, but I also became an experienced vector-art designer and even did some 3d modeling.  In my career I designed logos, business cards, car wraps, and just about everything in print media."
 }];
 
+//gets a list of all the files in the google cloud storage bucket
 
 async function listFiles() {
   artWorks = [];
@@ -90,6 +99,9 @@ async function listFiles() {
 }
 
 
+//homescreen GET request
+//calls google storage and waits to load homepage until the request is complete
+
 listFiles()
   .then(() => {
     const server = app.listen(process.env.PORT || 3000, function() {
@@ -105,6 +117,8 @@ listFiles()
   })
   .catch(console.error);
 
+
+//GET requests for ejs template pages
 
 app.get("/painting", function(req, res) {
   var paintings = artWorks.filter(function(artWork) {
@@ -165,10 +179,13 @@ app.get("/digital", function(req, res) {
   });
 });
 
+//GET request for user login page
 
 app.get("/login", (req, res) => {
   res.render("login")
 });
+
+//POST from login form to verify user and redirect to home or upload page
 
 app.post('/login', function(req, res) {
   passport.authenticate('local', function(err, user, info) {
@@ -187,8 +204,11 @@ app.post('/login', function(req, res) {
  });
 
 
+//upload page GET request
+
 app.get("/upload", function(req, res) {
 
+  //filters all artworks in to category then sub-category
   var paintings = artWorks.filter(function(artWork) {
     return artWork.imgCategory === "Painting"
   });
@@ -220,6 +240,7 @@ app.get("/upload", function(req, res) {
 
 });
 
+//init Multer middleware to write user inputted file to local storage for upload to google database
 
 var localStorage = multer.diskStorage({
   destination: function(req, file, cb) {
@@ -241,7 +262,10 @@ var upload = multer({
   storage: localStorage
 });
 
+//POST request from upload page to upload image
+
 app.post("/upload", upload.single("image"), (req, res) => {
+  //combines form inputs to create a filename for google cloud
   let cat = req.body.categories;
   let subCatLiteral = req.body.subcat.split(" ");
   let subCat = ""
@@ -257,6 +281,7 @@ app.post("/upload", upload.single("image"), (req, res) => {
   let imgTitle = img.split(".")[0];
   let imagePath = cat + '/' + subCat + '/' + img
 
+  //uploads thumbnail
   async function uploadThumb() {
     await storage.bucket(thumbs).upload(imgTitle + "-thumb.jpg", {
       metadata: {
@@ -269,6 +294,7 @@ app.post("/upload", upload.single("image"), (req, res) => {
     fs.unlinkSync(imgTitle + "-thumb.jpg")
   }
 
+  //uploads full-size image
   async function uploadFile() {
     await storage.bucket(bucketName).upload(imagePath, {
       metadata: {
@@ -285,6 +311,7 @@ app.post("/upload", upload.single("image"), (req, res) => {
     await listFiles().catch(console.error);
   }
 
+  //sharp middleware creates a thumbnail image to upload to google cloud
   sharp(imagePath)
     .resize(null, 300).toFile(imgTitle + "-thumb.jpg", function(err) {
       if (!err) console.log("image resized");
@@ -294,6 +321,7 @@ app.post("/upload", upload.single("image"), (req, res) => {
   res.redirect("/upload#upload");
 });
 
+//POST request from upload page to delete file from google cloud
 
 app.post("/delete", (req, res) => {
   let imgUrl = req.body.image.split("/")
@@ -310,8 +338,10 @@ app.post("/delete", (req, res) => {
   res.redirect("/upload#delete")
 })
 
+//POST request from upload page to update existing file in google cloud
 
 app.post("/update", (req, res) => {
+  //combines form data to create a file name that exists in google cloud
   let oldImg = req.body.oldImage.split("/")
   let oldSrc = oldImg[4] + "/" + oldImg[5] + "/" + oldImg[6].split("-thumb.jpg")[0];
   let newSubcat = req.body.subcatUp.split(" ")
@@ -326,6 +356,7 @@ app.post("/update", (req, res) => {
   }
   let newSrc = req.body.upCat + "/" + subCat + "/" + req.body.nameUp.replace(/ /g, "-")
 
+  //changes old file to new file by changing location in google cloud bucket
   async function moveFile() {
     await storage.bucket(thumbs).file(oldSrc + "-thumb.jpg").move(newSrc + "-thumb.jpg")
     console.log("thumb moved from " + oldSrc + " to " + newSrc);

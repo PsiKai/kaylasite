@@ -91,6 +91,7 @@
         </li>
         <li>
           <div class="flex-container">
+            <!-- creates a label for every sub-category  -->
             <% Object.keys(paintSub).forEach(function (sub) { %>
                 <label id="subcat" name="subcat" value=<%=sub%> class="btn btn-sm sub hidden painting" onclick="showImg(event)"><%=sub%></label>
             <%  }); %>
@@ -108,6 +109,7 @@
       </ul>
       <div class="thumbnail-container scrollbar scrollbar-deep-blue">
         <ul class="thumbnail-list">
+          <!-- creates a thumbnail for each artwork organized by sub-category  -->
           <% artWorks.forEach((artWork) => { %>
           <img alt=<%=artWork.alt%> class="thumbnail-image img hidden <%=artWork.imgCategory.toLowerCase()%> <%=artWork.subCat.toLowerCase().replace(/ /g, "-").replace(/&/g, "and") %>" src=<%=artWork.thumbnail%> onclick="highlight(event)" />
           <%  }) %>
