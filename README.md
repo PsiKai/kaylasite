@@ -27,6 +27,8 @@ The artist can login to create, read, update, and delete any artwork on the site
 
 Artwork data is persisted by Google Cloud Storage, and user login information is stored with MongoDB.
 
+All the thumbnails on the site are generated upon upload and are low resolution for maximum site performance, however, any image can be clicked on to view to full resolution file which is often larger than any screen size, giving the user the full experience of the art.
+
 ### Hosting
 
 The current version of this site can be found at https://kaylakossajda.com
