@@ -1,7 +1,6 @@
 # Gallery Site for Multimedia Artist Kayla Kossajda
 
 ![Screenshot](public/images/landing-screenshot.png)
-![Screenshot](public/images/section-screenshot.png)
 
 A full stack application for an artist to keep all her favorite artworks from her many disciplines in one place.
 
@@ -16,6 +15,8 @@ A full stack application for an artist to keep all her favorite artworks from he
 ## Description of Application
 
 Keeping all of her art in different social media profiles was too much to organize, and made it difficult to show potential employers and clients her work and skillset. This application was designed to have all her work organized in one central location and to allow her to make changes as necessary.
+
+![Screenshot](public/images/section-screenshot.png)
 
 Now, she can direct anyone to her site, and they can easily see what they're looking for.
 
