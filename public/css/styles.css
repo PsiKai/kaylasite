@@ -346,6 +346,10 @@ hr {
   grid-template-columns: 1fr 1fr;
 }
 
+.update-data {
+  display: block;
+}
+
 .upload-data li {
   grid-column: 1;
 }
@@ -386,7 +390,7 @@ select,
 .btn,
 input:not([class="radio"]),
 .alert {
-  min-width: 300px;
+  min-width: 90%;
 }
 
 .wrapper {
@@ -558,7 +562,7 @@ label.radio {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .img:hover {

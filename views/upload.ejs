@@ -6,6 +6,7 @@
   <div class="upload-form">
     <h2>New Artwork</h2>
     <div class="form-data">
+
       <form action="/upload" method="post" enctype="multipart/form-data" class="form">
         <ul class="upload-data">
           <li>
@@ -14,19 +15,19 @@
           <li>
             <div class="wrapper">
               <input id="photo" type="radio" name="categories" value="Photography" class="radio" required>
-              <label for="photo" class="radio btn" onclick="select(event)">Photography</label>
+              <label for="photo" class="radio btn" onclick="selectMedium(event)">Photography</label>
             </div>
             <div class="wrapper">
               <input id="paint" type="radio" name="categories" value="Painting" class="radio">
-              <label for="paint" class="radio btn" onclick="select(event)">Painting</label>
+              <label for="paint" class="radio btn" onclick="selectMedium(event)">Painting</label>
             </div>
             <div class="wrapper">
               <input id="draw" type="radio" name="categories" value="Drawing" class="radio">
-              <label for="draw" class="radio btn" onclick="select(event)">Drawing</label>
+              <label for="draw" class="radio btn" onclick="selectMedium(event)">Drawing</label>
             </div>
             <div class="wrapper">
               <input id="digital" type="radio" name="categories" value="Digital" class="radio">
-              <label for="digital" class="radio btn" onclick="select(event)">Digital</label>
+              <label for="digital" class="radio btn" onclick="selectMedium(event)">Digital</label>
             </div>
           </li>
           <li>
@@ -45,7 +46,7 @@
             <img name="preview" id="preview" src="" class="hidden" />
           </li>
           <li>
-            <input type="file" id="img" name="image" accept="image/*" class="inputfile" onchange="onSelect()" required />
+            <input type="file" id="img" name="image" accept="image/*" class="inputfile" onchange="previewImageUpload()" required />
             <label id="fileName" for="img" class="btn"><i class="fas fa-search"></i>Choose a file</label>
           </li>
           <li>
@@ -53,6 +54,7 @@
           </li>
         </ul>
       </form>
+
     </div>
   </div>
 </section>
@@ -68,20 +70,24 @@
         </li>
         <li>
           <div class="wrapper">
-            <input id="photos" type="radio" name="medium" value="photography" class="radio" required onclick="onChange(event)">
-            <label for="photos" class="radio btn" onclick="select(event)">Photography</label>
+            <input 
+              id="photos" type="radio" name="medium" value="photography" class="radio" required onclick="revealSubCategories(event)">
+            <label for="photos" class="radio btn" onclick="selectMedium(event)">Photography</label>
           </div>
           <div class="wrapper">
-            <input id="paintings" type="radio" name="medium" value="painting" class="radio" onclick="onChange(event)">
-            <label for="paintings" class="radio btn" onclick="select(event)">Painting</label>
+            <input 
+              id="paintings" type="radio" name="medium" value="painting" class="radio" onclick="revealSubCategories(event)">
+            <label for="paintings" class="radio btn" onclick="selectMedium(event)">Painting</label>
           </div>
           <div class="wrapper">
-            <input id="drawings" type="radio" name="medium" value="drawing" class="radio" onclick="onChange(event)">
-            <label for="drawings" class="radio btn" onclick="select(event)">Drawing</label>
+            <input 
+              id="drawings" type="radio" name="medium" value="drawing" class="radio" onclick="revealSubCategories(event)">
+            <label for="drawings" class="radio btn" onclick="selectMedium(event)">Drawing</label>
           </div>
           <div class="wrapper">
-            <input id="digitals" type="radio" name="medium" value="digital" class="radio" onclick="onChange(event)">
-            <label for="digitals" class="radio btn" onclick="select(event)">Digital</label>
+            <input 
+              id="digitals" type="radio" name="medium" value="digital" class="radio" onclick="revealSubCategories(event)">
+            <label for="digitals" class="radio btn" onclick="selectMedium(event)">Digital</label>
           </div>
         </li>
         <li>
@@ -111,8 +117,13 @@
         <ul class="thumbnail-list">
           <!-- creates a thumbnail for each artwork organized by sub-category  -->
           <% artWorks.forEach((artWork) => { %>
-          <img alt=<%=artWork.alt%> class="thumbnail-image img hidden <%=artWork.imgCategory.toLowerCase()%> <%=artWork.subCat.toLowerCase().replace(/ /g, "-").replace(/&/g, "and") %>" src=<%=artWork.thumbnail%> onclick="highlight(event)" />
-          <%  }) %>
+            <img 
+              alt=<%=artWork.alt%> 
+              class="thumbnail-image img hidden <%=artWork.imgCategory.toLowerCase()%> <%=artWork.subCat.toLowerCase().replace(/ /g, "-").replace(/&/g, "and") %>"
+              data-category="<%=artWork.imgCategory%>/<%=artWork.subCat.toLowerCase().replace(/ /g, "-").replace(/&/g, "and") %>" 
+              src=<%=artWork.thumbnail%> 
+              onclick="highlight(event)" />
+          <% }) %>
         </ul>
       </div>
       <label class="alert alert-danger hidden"><i class="fa fa-exclamation-circle"></i><strong> Please select an artwork to update or delete!</strong></label>
@@ -131,19 +142,19 @@
         <li>
           <div class="wrapper">
             <input id="photoUp" type="radio" name="upCat" value="Photography" class="radio" required>
-            <label for="photoUp" class="update radio btn" onclick="update(event)">Photography</label>
+            <label for="photoUp" class="update radio btn" onclick="updateMedium(event)">Photography</label>
           </div>
           <div class="wrapper">
             <input id="paintUp" type="radio" name="upCat" value="Painting" class="radio">
-            <label for="paintUp" class="update radio btn" onclick="update(event)">Painting</label>
+            <label for="paintUp" class="update radio btn" onclick="updateMedium(event)">Painting</label>
           </div>
           <div class="wrapper">
             <input id="drawUp" type="radio" name="upCat" value="Drawing" class="radio">
-            <label for="drawUp" class="update radio btn" onclick="update(event)">Drawing</label>
+            <label for="drawUp" class="update radio btn" onclick="updateMedium(event)">Drawing</label>
           </div>
           <div class="wrapper">
             <input id="digitalUp" type="radio" name="upCat" value="Digital" class="radio">
-            <label for="digitalUp" class="update radio btn" onclick="update(event)">Digital</label>
+            <label for="digitalUp" class="update radio btn" onclick="updateMedium(event)">Digital</label>
           </div>
         </li>
         <li>

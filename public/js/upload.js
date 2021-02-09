@@ -1,136 +1,131 @@
+// Define global variables 
+var radios = Array.from(document.querySelectorAll("label.radio"))
+var alert = document.querySelector("label.alert-danger")
+var updateForm = document.querySelector(".update-data")
+var downArrow = document.querySelector(".fa-angle-double-down")
+var thumbnails = Array.from(document.querySelectorAll(".img"));
+var artworkName = document.querySelector(".del-label")
+
+
 
 //Radio button labels to select art medium at upload and delete section
-function select(e) {
-  //remove alerts and any other highlights
-  document.querySelector("label.alert-danger").classList.add("hidden")
-  var catSelect = e.target;
-  var radios = document.querySelectorAll("label.radio")
+function selectMedium(e) {
 
-  for (i=0; i < radios.length; i++) {
-    radios[i].classList.remove("selected")
-  }
+  //remove alerts and any other highlights
+  alert.classList.add("hidden")
+  artworkName.classList.add('hidden');
+  radios.forEach(radio => radio.classList.remove("selected"))
+
+
   //highlight selected art medium
+  var catSelect = e.target;
   catSelect.classList.add("selected")
   var subSelect = document.querySelector(".sub.selected")
   if (subSelect) {
     subSelect.classList.remove("selected")
   }
+
 };
 
+
 //file upload label that replaces native input[type="file"] layout
-function onSelect() {
-  //parses file name
-  var inputFile = document.querySelector(".inputfile").value;
-  var splitFile = inputFile.split('\\')
-  document.querySelector("#fileName").innerHTML = splitFile[2];
-  document.querySelector(".inputfile").filename = inputFile;
+function previewImageUpload() {
+
+  //parses file name and sets it to the label text 
+  var inputFile = document.querySelector(".inputfile");
+  var splitFile = inputFile.value.split('\\')
+  var inputLabel = document.querySelector("#fileName")
+  inputLabel.innerHTML = splitFile[2];
+  inputFile.filename = inputFile;
   
   //create thumbnail preview of file upload
   var preview = document.getElementById('preview');
   preview.src = window.URL.createObjectURL(event.target.files[0])
   preview.classList.remove("hidden")
+
 };
 
+
 //reveals subcategory buttons when art medium category is selected
-function onChange(e) {
-  //hides any revealed subcategories
-  document.querySelector("label.del-label").classList.add("hidden")
-  document.querySelector(".update-data").classList.add("hidden");
-  document.querySelector(".fa-angle-double-down").classList.add("hidden");
+function revealSubCategories(e) {
+
+  //hides any revealed subcategories and update form
+  alert.classList.add("hidden")
+  updateForm.classList.add("hidden");
+  downArrow.classList.add("hidden");
 
   //removes .hidden from elements to be revealed
+  var hiddenCategories = Array.from(document.querySelectorAll(".sub:not(.hidden)"));
+  var revealedThumbnails = Array.from(document.querySelectorAll('.img:not(.hidden)')); 
+  revealedThumbnails.forEach(img => img.classList.add('hidden'));
+  hiddenCategories.forEach(category => category.classList.add('hidden'))
+
+  //reveals subcategory buttons for selected medium
   var select = e.target.value;
-  var subs = document.querySelectorAll(".sub");
-  var hiddenSubs = document.querySelectorAll(".sub:not(.hidden)");
-  var allImgs = document.querySelectorAll('.img:not(.hidden)');
-  for (i = 0; i < allImgs.length; i++) {
-    allImgs[i].classList.add('hidden')
-  }
-  for (i = 0; i < hiddenSubs.length; i++) {
-    hiddenSubs[i].classList.add('hidden')
-  }
-  var options  = document.getElementsByClassName("sub " + select)
-  for (i=0; i < options.length; i++) {
-    options[i].classList.remove("hidden")
-  }
+  var options  = Array.from(document.getElementsByClassName("sub " + select));
+  options.forEach(option => option.classList.remove('hidden'))
+
 };
 
 
 //reveals thumbnails of images to be deleted/edited
 function showImg(e) {
-  //hides any revealed thumbnail images
-  document.querySelector(".update-data").classList.add("hidden");
-  document.querySelector(".fa-angle-double-down").classList.add("hidden")
-  document.querySelector(".alert").classList.add("hidden")
-  
-  var refresh = document.querySelectorAll(".img")
-  for (i=0; i < refresh.length; i++) {
-    var src = refresh[i].getAttribute("src")
-    refresh[i].setAttribute("src", src)
-  }
-  var allImgs = document.querySelectorAll('.img:not(.hidden)');
-  for (i = 0; i < allImgs.length; i++) {
-    allImgs[i].classList.add("hidden")
-  }
+  //hides any revealed thumbnail images and resets selection to event target
+  updateForm.classList.add("hidden");
+  downArrow.classList.add("hidden")
+  alert.classList.add('hidden');
+  artworkName.classList.add("hidden")
 
-  //shows label with selected thumbnail image's file name
-  var subject = e.target.innerHTML.toLowerCase().replace(/ /g, "-").replace("&amp;", "and");
-  var select = document.querySelectorAll("[name=medium]")
-  var category = ''
-  for (i=0; i < select.length; i++) {
-    if (select[i].checked) {
-      var category = select[i].value;
-    }
-  }
-  var images = document.querySelectorAll("." + subject + "." + category);
-  for (i = 0; i < images.length; i++) {
-    images[i].classList.remove("hidden")
-  }
-  var subs = document.querySelectorAll(".sub")
-  for (i=0; i < subs.length; i++) {
-    subs[i].classList.remove("selected")
-  }
-  e.target.classList.add("selected")
+  var revealedThumbnails = Array.from(document.querySelectorAll('.img:not(.hidden)'));
+  revealedThumbnails.forEach(img => img.classList.add('hidden'));
+
+  var subCategories = Array.from(document.querySelectorAll(".sub"));
+  subCategories.forEach(sub => sub.classList.remove("selected"))
+
   var clickedImg = document.querySelector("[name=clicked]")
   if (clickedImg) {
     clickedImg.setAttribute("name", "")
     clickedImg.classList.remove("img-clicked")
   }
-  document.querySelector(".del-label").classList.add("hidden")
+  
+  e.target.classList.add("selected")
 
+  //reveals thumbnails of images matching the chosen subcategory
+  var subject = e.target.innerHTML.toLowerCase().replace(/ /g, "-").replace("&amp;", "and");
+  var category = document.querySelector("[name=medium]:checked").value
+  var images = Array.from(document.querySelectorAll("." + subject + "." + category));
+  images.forEach(img => img.classList.remove("hidden"))
 
 };
 
+
 //highlights the selected thumbnail images
 function highlight(e) {
-  for (i = 0; i < document.querySelectorAll("[name=clicked]").length; i++) {
-    var clicked = document.querySelectorAll("[name=clicked]");
-    clicked[i].removeAttribute("name", "clicked")
-  }
 
-  for (i = 0; i < document.querySelectorAll(".img-clicked").length; i++) {
-    var imgSelect = document.querySelectorAll(".img-clicked");
-    imgSelect[i].classList.remove("img-clicked")
-  }
+  //Removes previously selected image and alert
+  var highlightedImg = Array.from(document.querySelectorAll("[name=clicked]"))
+  highlightedImg.forEach(img => {
+    img.removeAttribute("name", "clicked")
+    img.classList.remove("img-clicked")
+  });
+  alert.classList.add("hidden")
 
+  //Sets new styles on selected image 
   e.target.classList.toggle("img-clicked")
   e.target.setAttribute('name', "clicked")
+  var chosenImg = document.querySelector("[name=clicked]")
 
+  //Reveals a label with the current selection's title
   var input = document.querySelector(".delete-img")
-  input.setAttribute("value", document.querySelectorAll("[name=clicked]")[0].src)
+  input.setAttribute("value", chosenImg.src)
+  artworkName.innerHTML = input.value.split("/")[6].split("-thumb")[0] + ".jpg";
+  artworkName.classList.remove("hidden")
 
-  var label = document.querySelector(".del-label");
-  label.innerHTML = input.value.split("/")[6].split("-thumb")[0] + ".jpg";
-  label.classList.remove("hidden")
 
-  document.querySelector("label.alert-danger").classList.add("hidden")
-
-  var chosenImg = document.getElementsByName("clicked")[0]
+  //Delete input and create new input with current selection starting values
   if (document.querySelector("[name=old-image]")) {
     document.querySelector("[name=old-image]").remove();
   }
-
-
   var imgEdit = document.createElement("input");
   imgEdit.setAttribute('type', "text")
   imgEdit.className = "img-edit hidden"
@@ -138,32 +133,29 @@ function highlight(e) {
   imgEdit.name = "oldImage";
   document.getElementById("updateForm").appendChild(imgEdit);
 
-  var currentCat = document.querySelector("[name=medium]").value
-  var upperCat = currentCat.charAt(0).toLocaleUpperCase() + currentCat.slice(1)
-  var labels = document.querySelectorAll("label.update")
-  for (i=0; i < labels.length; i++) {
-    if (labels[i].innerText === upperCat) {
-      labels[i].click();
-    }
-  }
+  //Fill update form with current selection starting values
+  var currentCategory = e.target.getAttribute("data-category").split("/")[0]
+  var labels = Array.from(document.querySelectorAll("label.update"))
+  labels.forEach(label => label.innerText === currentCategory && label.click())
   document.querySelector("#subcatUp").value = document.querySelector("#subcat.selected").innerText
-  document.querySelector("#artnameUp").value = document.querySelector(".del-label").innerText.split(".")[0]
+  document.querySelector("#artnameUp").value = artworkName.innerText.split(".")[0]
+
 };
 
 
 //selects art medium in update form
-function update(e) {
-  var catUpdate = e.target;
-  var radioUpdate = document.querySelectorAll("label.update")
-  for (i=0; i < radioUpdate.length; i++) {
-    radioUpdate[i].classList.remove("selected")
-  }
-  catUpdate.classList.add("selected")
+function updateMedium(e) {
+
+  var radioUpdate = Array.from(document.querySelectorAll("label.update"))
+  radioUpdate.forEach(medium => medium.classList.remove("selected"))
+  e.target.classList.add("selected")
+
 };
 
 
 //form verification
 function verify() {
+
   var found = false;
   var chosenImg = document.querySelectorAll(".img")
   for (i=0; i < chosenImg.length; i++) {
@@ -173,23 +165,26 @@ function verify() {
     }
   }
   if (found === false) {
-    document.querySelector("label.alert-danger").classList.remove("hidden")
+    alert.classList.remove("hidden")
   }
   return found;
+
 };
 
 //reveals update form with selected artwork to edit
 function edit() {
-  var icon = document.querySelector("i.fa-angle-double-down");
+
   var updateImg = document.querySelectorAll(".img")
+
   for (i=0; i < updateImg.length; i++) {
     if (updateImg[i].getAttribute("name") === "clicked") {
-      document.querySelector(".update-data").classList.toggle("hidden");
-      document.querySelector("label.alert-danger").classList.add("hidden")
-      icon.classList.toggle("hidden");
+      updateForm.classList.toggle("hidden");
+      alert.classList.add("hidden")
+      downArrow.classList.toggle("hidden");
       break;
     } else {
-      document.querySelector("label.alert-danger").classList.remove("hidden")
+      alert.classList.remove("hidden")
     }
   }
+
 }
