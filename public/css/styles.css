@@ -47,6 +47,7 @@ h4 {
 
 .colored {
   background-color: #ebecf1;
+  background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
   /* background-color: #d8b9c3; */
   color: #4d4c7d;
 }
@@ -111,7 +112,9 @@ h4 {
 }
 
 .carousel {
-  background: linear-gradient(170deg, #827397, #4d4c7d);
+  /* background: linear-gradient(170deg, #827397, #4d4c7d); */
+  background-color: #4d4c7d;
+  background-image: url(https://www.transparenttextures.com/patterns/padded.png);
   padding: 1% 7%;
 }
 
@@ -135,7 +138,7 @@ footer {
 
 .media {
   padding: 0 15px;
-  color: #827397;
+  color: #4d4c7d;
 }
 
 footer .media {
@@ -231,8 +234,10 @@ footer .container-fluid {
   height: auto;
   padding: 4% 2%;
   text-align: left;
-  /* background-color: #f6f5f5; */
-  background: linear-gradient(135deg, #4d4c7d, #363062);
+  /* background: linear-gradient(135deg, #4d4c7d, #363062); */
+  background-color: #4d4c7d;
+  background-image: url("https://www.transparenttextures.com/patterns/padded.png");
+  /* background-image: url("https://www.transparenttextures.com/patterns/padded-light.png"); */
   border-radius: 10px;
   box-shadow: 0 0 3px 2px;
 }
@@ -257,10 +262,22 @@ ul.thumbnail-list {
 
 .thumbnail-section {
   background-color: #827397;
+  /* background-image: url(http://www.transparenttextures.com/patterns/washi.png); */
+  /* background-image: url(https://www.transparenttextures.com/patterns/black-thread.png); */
+  background-image: url(https://www.transparenttextures.com/patterns/black-thread-light.png);
+  /* background-image: url(https://www.transparenttextures.com/patterns/dark-exa.png); */
+  background-image: url(https://www.transparenttextures.com/patterns/flowers.png);
+  /* background-image: url(https://www.transparenttextures.com/patterns/light-grey-floral-motif.png); */
+  background-image: url(https://www.transparenttextures.com/patterns/mirrored-squares.png);
+  /* background-image: url(https://www.transparenttextures.com/patterns/norwegian-rose.png); */
+  background-image: url(https://www.transparenttextures.com/patterns/swirl.png);
+  background-image: url(https://www.transparenttextures.com/patterns/vichy.png);
+  background-image: url(https://www.transparenttextures.com/patterns/xv.png);
   position: relative;
   padding-bottom: 3%;
   text-align: left;
   box-shadow: 0 0 5px 2px;
+  min-height: 64vh;
 }
 
 ::-webkit-scrollbar {
@@ -274,6 +291,10 @@ ul.thumbnail-list {
 
 .thumbnail-container::-webkit-scrollbar-track {
   border-radius: 6px;
+}
+
+.thumbnail-container::-webkit-scrollbar {
+  height: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -315,8 +336,10 @@ hr {
 }
 
 .login-form {
-  background-color: #827397;
-  padding: 10% 25% 7%;
+  /* background-color: #827397; */
+  margin: 0 auto 7%;
+  max-width: 500px;
+  padding-top: 4rem;
 }
 
 .login-form .form {
@@ -476,6 +499,7 @@ li {
 
 .upload-form {
   background-color: #827397;
+  background-image: url(https://www.transparenttextures.com/patterns/xv.png);
   border-radius: 25px;
   margin: 0 15% 5%;
   text-align: left;
