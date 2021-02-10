@@ -36,7 +36,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //connect to mongoDB for login verification
-
 mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -56,29 +55,18 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-//initialize google cloud storage 
 
+//initialize google cloud storage 
 const bucketName = process.env.BUCKETNAME;
 const thumbs = process.env.THUMBS;
 const bucket = process.env.BUCKET;
 const thumbBucket = process.env.THUMBBUCKET;
 let artWorks = [];
 
-//copy to display in the ejs templates
 
-let titleDesc = [{
-  title: "Painting",
-  description: "I love to paint with watercolors, but I also do a lot with acrylic.  You can see in this section how my love of animals inspires so much of my art. Some of these paintings are commissioned pet portraits from other animal lovers, and some are professional works I have done for clients, including one of the children's books I illustrated. My favorite work here might be from the Dragon Boat Festival in Nashville where my design was picked for one of the official posters of the event!"
-}, {
-  title: "Photography",
-  description: "Ask anyone who knows me, and they will tell you how much I enjoy doing photoshoots.  Whether it is exploring nature and finding lots of critters or dressing up my friends and family in wild costumes so they can be models.  I have even done more serious work like senior portraits and professional profile pictures.  Of course, you can't forget the countless pictures of my cats and all the kittens I foster.  I just love to find something beautiful and capture it with photography."
-}, {
-  title: "Drawing",
-  description: "I have always been drawing or doodling and I have filled countless sketchbooks in my life.  Between the sketches, graphic novellas, children's books, and even some branding work, I have narrowed it down to just the favorites.  Colored pencil and graphite are my primary media, and my signature sketch is my dahlia flower, which is present in so much of my drawing.  Nature and fantasy are huge inspirations for the work that I do, and I would probably draw dragons and flowers all day if I could!"
-}, {
-  title: "Digital Media",
-  description: "When I got to college it was time to take on a new challenge in my artistic development.  The idea of digital art was outside my realm, but it was required for my degree in Commercial Illustration.  That isn't to say that I didn't have a ton of fun learning and creating in this new medium!  I especially enjoyed digital painting, but I also became an experienced vector-art designer and even did some 3d modeling.  In my career I designed logos, business cards, car wraps, and just about everything in print media."
-}];
+//copy to display in the ejs templates
+const titleDesc = require("./copy/title_description")
+
 
 //gets a list of all the files in the google cloud storage bucket
 
@@ -115,6 +103,7 @@ listFiles()
         artWorks: artWorks
       })
     })
+    exports.artWorks = artWorks
   })
   .catch(console.error);
 
@@ -180,14 +169,14 @@ app.get("/digital", function(req, res) {
   });
 });
 
-//GET request for user login page
 
+//GET request for user login page
 app.get("/login", (req, res) => {
   res.render("login")
 });
 
-//POST from login form to verify user and redirect to home or upload page
 
+//POST from login form to verify user and redirect to home or upload page
 app.post('/login', function(req, res) {
   passport.authenticate('local', function(err, user, info) {
      if (user) {
@@ -206,7 +195,6 @@ app.post('/login', function(req, res) {
 
 
 //upload page GET request
-
 app.get("/upload", function(req, res) {
 
   //filters all artworks in to category then sub-category
@@ -285,9 +273,7 @@ app.post("/upload", upload.single("image"), (req, res) => {
   //uploads thumbnail
   async function uploadThumb() {
     await storage.bucket(thumbs).upload(imgTitle + "-thumb.jpg", {
-      metadata: {
-        cacheControl: "no-cache"
-      },
+      metadata: {cacheControl: "no-cache"},
       gzip: true,
       destination: cat + "/" + subCat + "/" + req.body.name.replace(/ /g, "-") + "-thumb.jpg"
     })
@@ -298,9 +284,7 @@ app.post("/upload", upload.single("image"), (req, res) => {
   //uploads full-size image
   async function uploadFile() {
     await storage.bucket(bucketName).upload(imagePath, {
-      metadata: {
-        cacheControl: "no-cache"
-      },
+      metadata: {cacheControl: "no-cache"},
       gzip: true,
       destination: cat + "/" + subCat + "/" + req.body.name.replace(/ /g, "-") + ".jpg"
     })
@@ -322,8 +306,8 @@ app.post("/upload", upload.single("image"), (req, res) => {
   res.redirect("/upload#upload");
 });
 
-//POST request from upload page to delete file from google cloud
 
+//POST request from upload page to delete file from google cloud
 app.post("/delete", (req, res) => {
   let imgUrl = req.body.image.split("/")
   let thumb = imgUrl[4] + "/" + imgUrl[5] + "/" + imgUrl[6]
@@ -339,8 +323,8 @@ app.post("/delete", (req, res) => {
   res.redirect("/upload#delete")
 })
 
-//POST request from upload page to update existing file in google cloud
 
+//POST request from upload page to update existing file in google cloud
 app.post("/update", (req, res) => {
   //combines form data to create a file name that exists in google cloud
   let oldImg = req.body.oldImage.split("/")
