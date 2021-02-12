@@ -65,7 +65,7 @@ let artWorks = [];
 
 
 //copy to display in the ejs templates
-const titleDesc = require("./copy/title_description")
+const {titleDesc} = require("./copy/title_description")
 
 
 //gets a list of all the files in the google cloud storage bucket
@@ -96,7 +96,7 @@ listFiles()
     const server = app.listen(process.env.PORT || 3000, function() {
       console.log("server started on port", server.address().port);
     });
-    app.get("/", function(req, res) {
+    app.get("/", (req, res) => {
       let randomArt = Math.floor(Math.random() * artWorks.length);
       res.render("index", {
         randomArt: randomArt,
@@ -108,68 +108,6 @@ listFiles()
   .catch(console.error);
 
 
-//GET requests for ejs template pages
-
-app.get("/painting", function(req, res) {
-  var paintings = artWorks.filter(function(artWork) {
-    return artWork.imgCategory === "Painting"
-  });
-  var subCated = _.groupBy(paintings, function(e) {
-    return e.subCat;
-  });
-  res.render("template", {
-    subCated: subCated,
-    subCategoryList: Object.keys(subCated),
-    pageType: titleDesc[0],
-  });
-});
-
-
-app.get("/photography", function(req, res) {
-  var photos = artWorks.filter(function(artWork) {
-    return artWork.imgCategory === "Photography"
-  });
-  var subCated = _.groupBy(photos, function(e) {
-    return e.subCat;
-  });
-  res.render("template", {
-    subCated: subCated,
-    subCategoryList: Object.keys(subCated),
-    pageType: titleDesc[1],
-  });
-});
-
-
-app.get("/drawing", function(req, res) {
-  var drawings = artWorks.filter(function(artWork) {
-    return artWork.imgCategory === "Drawing"
-  });
-  var subCated = _.groupBy(drawings, function(e) {
-    return e.subCat;
-  });
-  res.render("template", {
-    subCated: subCated,
-    subCategoryList: Object.keys(subCated),
-    pageType: titleDesc[2],
-  });
-});
-
-
-app.get("/digital", function(req, res) {
-  var digitalMedia = artWorks.filter(function(artWork) {
-    return artWork.imgCategory === "Digital"
-  });
-  var subCated = _.groupBy(digitalMedia, function(e) {
-    return e.subCat;
-  });
-  res.render("template", {
-    subCated: subCated,
-    subCategoryList: Object.keys(subCated),
-    pageType: titleDesc[3],
-  });
-});
-
-
 //GET request for user login page
 app.get("/login", (req, res) => {
   res.render("login")
@@ -177,10 +115,10 @@ app.get("/login", (req, res) => {
 
 
 //POST from login form to verify user and redirect to home or upload page
-app.post('/login', function(req, res) {
-  passport.authenticate('local', function(err, user, info) {
+app.post('/login', (req, res) => {
+  passport.authenticate('local', (err, user, info) => {
      if (user) {
-       req.login(user, function(err) {
+       req.login(user, (err) => {
          if (!err) {
            res.redirect('/upload');
          } else {
@@ -195,25 +133,18 @@ app.post('/login', function(req, res) {
 
 
 //upload page GET request
-app.get("/upload", function(req, res) {
+app.get("/upload", (req, res) => {
 
-  //filters all artworks in to category then sub-category
-  var paintings = artWorks.filter(function(artWork) {
-    return artWork.imgCategory === "Painting"
-  });
-  var digitalMedia = artWorks.filter(function(artWork) {
-    return artWork.imgCategory === "Digital"
-  });
-  var drawings = artWorks.filter(function(artWork) {
-    return artWork.imgCategory === "Drawing"
-  });
-  var photos = artWorks.filter(function(artWork) {
-    return artWork.imgCategory === "Photography"
-  });
-  var paintSub = _.groupBy(paintings, (e) => e.subCat);
-  var digitalSub = _.groupBy(digitalMedia, (e) => e.subCat);
+  //filters all artworks into category then sub-category
+  var paintings = artWorks.filter(artWork => artWork.imgCategory === "Painting")
+  var digitalMedia = artWorks.filter(artWork => artWork.imgCategory === "Digital")
+  var drawings = artWorks.filter(artWork => artWork.imgCategory === "Drawing")
+  var photos = artWorks.filter(artWork => artWork.imgCategory === "Photography") 
+  
+  var paintSub = _.groupBy(paintings, (e) => e.subCat.replace(/&/g, "\&"));
+  var digitalSub = _.groupBy(digitalMedia, (e) => e.subCat.replace(/&/g, "\&"));
   var drawSub = _.groupBy(drawings, (e) => e.subCat.replace(/&/g, "\&"));
-  var photoSub = _.groupBy(photos, (e) => e.subCat);
+  var photoSub = _.groupBy(photos, (e) => e.subCat.replace(/&/g, "\&"));
 
   if (req.isAuthenticated()) {
     res.render("upload", {
@@ -233,7 +164,9 @@ app.get("/upload", function(req, res) {
 
 var localStorage = multer.diskStorage({
   destination: function(req, file, cb) {
-    const imageDirect = req.body.categories + "/" + req.body.subcat.charAt(0).toUpperCase() + req.body.subcat.slice(1).replace(/ /g, "-") + "/";
+    const {categories, subcat} = req.body
+    const subCategory = subcat.split(" ").map(_.capitalize).join(" ").replace(/ /g, "-")
+    const imageDirect = categories + "/" + subCategory + "/";
     var dir = "./" + imageDirect;
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
@@ -255,27 +188,20 @@ var upload = multer({
 
 app.post("/upload", upload.single("image"), (req, res) => {
   //combines form inputs to create a filename for google cloud
-  let cat = req.body.categories;
-  let subCatLiteral = req.body.subcat.split(" ");
-  let subCat = ""
-  for (i = 0; i < subCatLiteral.length; i++) {
-    var eachWord = subCatLiteral[i].charAt(0).toUpperCase() + subCatLiteral[i].slice(1);
-    if (i < subCatLiteral.length - 1) {
-      subCat = subCat.concat(eachWord + "-");
-    } else {
-      subCat = subCat.concat(eachWord);
-    }
-  }
+  const {categories, subcat, name} = req.body;
+  const subCat = subcat.split(" ").map(_.capitalize).join(" ").replace(/ /g, "-")
+  const imgName = name.split(" ").map(_.capitalize).join(" ").replace(/ /g, "-")
   let img = req.imageName.replace(/ /g, "-");
   let imgTitle = img.split(".")[0];
-  let imagePath = cat + '/' + subCat + '/' + img
+  let imagePath = categories + '/' + subCat + '/' + img
+  const thumbTitle = imgTitle + "-thumb.jpg"
 
   //uploads thumbnail
   async function uploadThumb() {
-    await storage.bucket(thumbs).upload(imgTitle + "-thumb.jpg", {
+    await storage.bucket(thumbs).upload(thumbTitle, {
       metadata: {cacheControl: "no-cache"},
       gzip: true,
-      destination: cat + "/" + subCat + "/" + req.body.name.replace(/ /g, "-") + "-thumb.jpg"
+      destination: categories + "/" + subCat + "/" + imgName + "-thumb.jpg"
     })
     uploadFile().catch(console.error);
     fs.unlinkSync(imgTitle + "-thumb.jpg")
@@ -286,19 +212,19 @@ app.post("/upload", upload.single("image"), (req, res) => {
     await storage.bucket(bucketName).upload(imagePath, {
       metadata: {cacheControl: "no-cache"},
       gzip: true,
-      destination: cat + "/" + subCat + "/" + req.body.name.replace(/ /g, "-") + ".jpg"
+      destination: categories + "/" + subCat + "/" + imgName + ".jpg"
     })
-    fs.unlinkSync(`${cat}/${subCat}/${img}`)
-    fs.rmdirSync(`./${cat}/${subCat}/`)
+    fs.unlinkSync(`${categories}/${subCat}/${img}`)
+    fs.rmdirSync(`./${categories}/${subCat}/`)
     setTimeout(() => {
-      fs.rmdirSync(`./${cat}`)
+      fs.rmdirSync(`./${categories}`)
     }, 500)
     await listFiles().catch(console.error);
   }
 
   //sharp middleware creates a thumbnail image to upload to google cloud
   sharp(imagePath)
-    .resize(null, 300).toFile(imgTitle + "-thumb.jpg", function(err) {
+    .resize(null, 300).toFile(thumbTitle, (err) => {
       if (!err) console.log("image resized");
       uploadThumb().catch(console.error);
     })
@@ -327,19 +253,11 @@ app.post("/delete", (req, res) => {
 //POST request from upload page to update existing file in google cloud
 app.post("/update", (req, res) => {
   //combines form data to create a file name that exists in google cloud
-  let oldImg = req.body.oldImage.split("/")
+  const {oldImage, subcatUp, upCat, nameUp} = req.body
+  let oldImg = oldImage.split("/")
   let oldSrc = oldImg[4] + "/" + oldImg[5] + "/" + oldImg[6].split("-thumb.jpg")[0];
-  let newSubcat = req.body.subcatUp.split(" ")
-  let subCat = ''
-  for (i = 0; i < newSubcat.length; i++) {
-    var eachWord = newSubcat[i].charAt(0).toUpperCase() + newSubcat[i].slice(1);
-    if (i < newSubcat.length - 1) {
-      subCat = subCat.concat(eachWord + "-");
-    } else {
-      subCat = subCat.concat(eachWord);
-    }
-  }
-  let newSrc = req.body.upCat + "/" + subCat + "/" + req.body.nameUp.replace(/ /g, "-")
+  const subCat = subcatUp.split(" ").map(_.capitalize).join(" ").replace(/ /g, "-")
+  let newSrc = upCat + "/" + subCat + "/" + nameUp.replace(/ /g, "-")
 
   //changes old file to new file by changing location in google cloud bucket
   async function moveFile() {
@@ -352,4 +270,18 @@ app.post("/update", (req, res) => {
 
   moveFile().catch(console.error);
   res.redirect('/upload#delete')
+})
+
+
+// Get request for main art pages
+app.get("/:category", (req, res) => {
+  var page = _.capitalize(req.params.category)
+  const category = artWorks.filter(artWork => artWork.imgCategory === page) 
+  const subCated = _.groupBy(category, e => e.subCat)
+  const description = titleDesc.filter(item => item.page === page)
+  res.render("template", {
+    subCated: subCated,
+    subCategoryList: Object.keys(subCated),
+    pageType: description[0]
+  })
 })

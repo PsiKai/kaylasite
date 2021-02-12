@@ -34,19 +34,22 @@
             <label for="subcat"><p><strong>Subject Matter</strong></p></label>
           </li>
           <li>
-            <input id="subcategory" type="text" name="subcat" class="subcat" autocomplete="off" placeholder="Enter Subject" required spellcheck="false"/>
+            <input 
+              id="subcategory" type="text" name="subcat" class="subcat" autocomplete="off" placeholder="Enter Subject" required spellcheck="false"/>
           </li>
           <li>
             <label for="subcat"><p><strong>Artwork Title</strong></p></label>
           </li>
           <li>
-            <input id="artname" type="text" name="name" value="" class="subcat" placeholder="Name Your Piece" required autocomplete="off" spellcheck="false">
+            <input 
+              id="artname" type="text" name="name" value="" class="subcat" placeholder="Name Your Piece" required autocomplete="off" spellcheck="false">
           </li>
           <li class="img-preview">
             <img name="preview" id="preview" src="" class="hidden" />
           </li>
           <li>
-            <input type="file" id="img" name="image" accept="image/*" class="inputfile" onchange="previewImageUpload()" required />
+            <input 
+              type="file" id="img" name="image" accept="image/*" class="inputfile" onchange="previewImageUpload()" required />
             <label id="fileName" for="img" class="btn"><i class="fas fa-search"></i>Choose a file</label>
           </li>
           <li>
@@ -98,17 +101,17 @@
         <li>
           <div class="flex-container">
             <!-- creates a label for every sub-category  -->
-            <% Object.keys(paintSub).forEach(function (sub) { %>
+            <% Object.keys(paintSub).forEach((sub) => { %>
                 <label id="subcat" name="subcat" value=<%=sub%> class="btn btn-sm sub hidden painting" onclick="showImg(event)"><%=sub%></label>
             <%  }); %>
-            <% Object.keys(drawSub).forEach(function (sub) { %>
-              <label id="subcat" name="subcat" value=<%=sub%> class="btn btn-sm sub hidden drawing" onclick="showImg(event)"><%=sub%></label>
+            <% Object.keys(drawSub).forEach((sub) => { %>
+                <label id="subcat" name="subcat" value=<%=sub%> class="btn btn-sm sub hidden drawing" onclick="showImg(event)"><%=sub%></label>
             <%  }); %>
-            <% Object.keys(digitalSub).forEach(function (sub) { %>
-              <label id="subcat" name="subcat" value=<%=sub%> class="btn btn-sm sub hidden digital" onclick="showImg(event)"><%=sub%></label>
+            <% Object.keys(digitalSub).forEach((sub) => { %>
+                <label id="subcat" name="subcat" value=<%=sub%> class="btn btn-sm sub hidden digital" onclick="showImg(event)"><%=sub%></label>
             <%  }); %>
-            <% Object.keys(photoSub).forEach(function (sub) { %>
-              <label id="subcat" name="subcat" value=<%=sub%> class="btn btn-sm sub hidden photography" onclick="showImg(event)"><%=sub%></label>
+            <% Object.keys(photoSub).forEach((sub) => { %>
+                <label id="subcat" name="subcat" value=<%=sub%> class="btn btn-sm sub hidden photography" onclick="showImg(event)"><%=sub%></label>
             <%  }); %>
             </div>
         </li>
@@ -126,11 +129,21 @@
           <% }) %>
         </ul>
       </div>
-      <label class="alert alert-danger hidden"><i class="fa fa-exclamation-circle"></i><strong> Please select an artwork to update or delete!</strong></label>
+      <label class="alert alert-danger hidden">
+        <i class="fa fa-exclamation-circle"></i>
+        <strong> Please select an artwork to update or delete!</strong>
+      </label>
       <input type="text" id="imgDel" name="image" class="delete-img" value="" />
       <label for="imgDel" class="btn btn-lg hidden del-label" value=""></label>
-      <button name="button" type=submit class="btn btn-lg btn-danger" onclick="verify()"><i class="fa fa-trash"></i> Remove Artwork</button>
-      <label name="updateButton" class="btn btn-lg btn-success" onclick="edit()"><i class="far fa-edit"></i> Edit Artwork <i class='fas fa-angle-double-down hidden'></i></label>
+      <button name="button" type=submit class="btn btn-lg btn-danger" onclick="verify()">
+        <i class="fa fa-trash"></i> 
+        Remove Artwork
+      </button>
+      <label name="updateButton" class="btn btn-lg btn-success" onclick="edit()">
+        <i class="far fa-edit"></i> 
+        Edit Artwork 
+        <i class='fas fa-angle-double-down hidden'></i>
+      </label>
 
     </form>
 
@@ -167,9 +180,13 @@
           <label><p><strong>Artwork Title</strong></p></label>
         </li>
         <li>
-          <input id="artnameUp" type="text" name="nameUp" value="" class="subcat update" placeholder="Name Your Piece" required autocomplete="off" spellcheck="false">
+          <input 
+            id="artnameUp" type="text" name="nameUp" value="" class="subcat update" placeholder="Name Your Piece" required autocomplete="off" spellcheck="false">
         </li>
-          <button type="submit" class="btn btn-lg btn-primary" onclick="verify()"><i class="fas fa-upload"></i> Submit Changes</button>
+          <button type="submit" class="btn btn-lg btn-primary" onclick="verify()">
+            <i class="fas fa-upload"></i> 
+            Submit Changes
+          </button>
       </ul>
     </form>
   </div>

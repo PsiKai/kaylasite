@@ -24,13 +24,18 @@
 
   <section class="thumbnail-section">
     <div class="container-fluid content">
-  <% subCategoryList.forEach(function(art) { %>
+  <% subCategoryList.forEach((art) => { %>
       <h2><%= art %></h2>
       <div class="thumbnail-container scrollbar scrollbar-deep-blue">
         <ul class="thumbnail-list">
-    <%  subCated[art].forEach(function(obj) { %>
+    <%  subCated[art].forEach((obj) => { %>
           <a target="_top" href=<%=obj.imgSrc%>>
-            <img id=<%=obj.alt%> class="thumbnail-image" src="<%= obj.thumbnail %>" alt="<%= obj.alt %>"/>
+            <img 
+              id=<%=obj.alt%> 
+              class="thumbnail-image" 
+              src="<%= obj.thumbnail %>" 
+              alt="<%= obj.alt %>"
+            />
           </a>
     <% }); %>
       </ul>
