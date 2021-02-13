@@ -232,7 +232,7 @@ footer .container-fluid {
   scrollbar-width: thin;
   overflow-x: auto;
   height: auto;
-  padding: 4% 2%;
+  padding: 2rem 1rem;
   text-align: left;
   /* background: linear-gradient(135deg, #4d4c7d, #363062); */
   background-color: #4d4c7d;
@@ -262,14 +262,9 @@ ul.thumbnail-list {
 
 .thumbnail-section {
   background-color: #827397;
-  /* background-image: url(http://www.transparenttextures.com/patterns/washi.png); */
-  /* background-image: url(https://www.transparenttextures.com/patterns/black-thread.png); */
   background-image: url(https://www.transparenttextures.com/patterns/black-thread-light.png);
-  /* background-image: url(https://www.transparenttextures.com/patterns/dark-exa.png); */
   background-image: url(https://www.transparenttextures.com/patterns/flowers.png);
-  /* background-image: url(https://www.transparenttextures.com/patterns/light-grey-floral-motif.png); */
   background-image: url(https://www.transparenttextures.com/patterns/mirrored-squares.png);
-  /* background-image: url(https://www.transparenttextures.com/patterns/norwegian-rose.png); */
   background-image: url(https://www.transparenttextures.com/patterns/swirl.png);
   background-image: url(https://www.transparenttextures.com/patterns/vichy.png);
   background-image: url(https://www.transparenttextures.com/patterns/xv.png);
@@ -358,7 +353,7 @@ hr {
 
 /* ////////Upload page/////////// */
 .upload-section {
-  padding: 90px 0 3%;
+  padding: calc(80px + 3%) 0 3%;
   background-color: #d8b9c3;
 }
 
@@ -603,9 +598,22 @@ label.radio {
   opacity: 50%;
 }
 
-/* MEDIA QUERY SMALL */
+/* MEDIA QUERY TABLET SIZE */
 
 @media (max-width: 800px) {
+  h1 {
+    font-size: 2.5rem;
+    line-height: 3rem;
+  }
+
+  h4 {
+    font-size: 1.2rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
   .navbar {
     padding: 1% 3%;
   }
@@ -614,8 +622,17 @@ label.radio {
     height: 2rem;
   }
 
+  .colored .container-fluid {
+    padding: 100px 15% 2%;
+  }
+
+  .carousel {
+    padding: 0;
+  }
+
   .img-fluid {
-    max-height: 200px;
+    max-height: 300px;
+    max-width: 90%;
   }
 
   .bio {
@@ -624,15 +641,18 @@ label.radio {
   }
 
   #main {
-    max-width: 300px;
+    max-width: 400px;
   }
+
   #biography {
-    padding: 4%;
+    padding: 4% 4% 6%;
     text-align: left;
   }
+
   .logo {
     padding-left: 0;
   }
+
   .right {
     text-align: left;
   }
@@ -667,20 +687,23 @@ label.radio {
 
 /* MEDIA QUERY SMALL TABLET  */
 @media (max-width: 700px) {
+  #main {
+    max-width: 300px;
+  }
+
+  .colored .container-fluid {
+    padding: 100px 5% 2%;
+  }
+
   .upload-data {
     display: inherit;
   }
 }
 
-/* MEDIA QUERY EXTRA SMALL */
+/* MEDIA QUERY MOBILE PHONE SIZE */
 @media (max-width: 500px) {
-  h1 {
-    font-size: 2.5rem;
-    line-height: 3rem;
-  }
-
-  p {
-    font-size: 0.9rem;
+  #main {
+    max-width: 94vw;
   }
 
   h2 {
@@ -692,7 +715,7 @@ label.radio {
   }
 
   .colored .container-fluid {
-    padding: 62px 3% 2%;
+    padding: 80px 3% 2%;
   }
 
   .navbar-nav > li {
@@ -720,6 +743,7 @@ label.radio {
 
   .thumbnail-container {
     margin: 1rem 0;
+    padding: 1rem 0.5rem;
   }
 
   .line-break,
@@ -771,7 +795,7 @@ label.radio {
   }
 }
 
-/* MEDIA QUERY LARGE */
+/* MEDIA QUERY EXTRA LARGE */
 @media (min-width: 1200px) {
   .logoEdge {
     left: 0;
@@ -808,13 +832,9 @@ label.radio {
   .upload-form,
   .delete-form {
     max-width: 1000px;
-    margin: 0 auto 5%;
+    margin: 0 auto;
     position: relative;
     z-index: 1;
-  }
-
-  .delete-form {
-    margin-top: 5%;
   }
 
   .bio {
