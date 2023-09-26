@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { default as _ } from "lodash"
-import bcrypt from "bcrypt"
+// import bcrypt from "bcrypt"
 import { getArt } from "../artState.js"
 import { titleDesc } from "../copy/title_description.js"
 import Artwork from "../db/models/artwork.js"
@@ -24,20 +24,25 @@ pageRouter.get("/login", (req, res) => {
 
 pageRouter.post("/login", async (req, res) => {
 	const { username, password } = req.body
-	const user = await User.findOne({ username })
+	const user = await User.findOne({ username }).lean()
 	if (!user) return res.status(400).render("login")
-	const isMatch = await bcrypt.compare(password, user.password)
+	const isMatch = await Bun.password.verify(password, user.password)
 	if (!isMatch) return res.status(400).render("login")
 
 	req.session.regenerate((sessionError) => {
 		if (sessionError) console.log("ERROR GENERATING SESSION: ", sessionError)
-		req.session.user = user._id
+		req.session.user = user._id.toString()
 		req.session.save((sessionSaveError) => {
-			if (sessionError) console.log("ERROR GENERATING SESSION: ", sessionError)
+			if (sessionSaveError)
+				console.log("ERROR GENERATING SESSION: ", sessionSaveError)
 			res.redirect("/upload")
 		})
 	})
-	// let newUser = await User.findOne({ username: "kaylakoss" })
+	// const newPass = await Bun.password.hash("K4yLa4rti5t")
+	// let newUser = await User.findOneAndUpdate(
+	// 	{ username: "kaylakoss" },
+	// 	{ password: newPass }
+	// )
 	// if (!newUser) {
 	// 	newUser = new User({
 	// 		username: "kaylakoss",

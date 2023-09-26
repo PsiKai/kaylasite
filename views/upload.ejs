@@ -1,5 +1,6 @@
 <%- include("partials/header") -%>
 
+
 <section class="upload-section" id="upload">
   <img class="up logoEdge" src="images/kaylalogogreen.png" alt="">
   <img class="up logoEdgeRight" src="images/kaylalogogreen.png" alt="">
@@ -192,6 +193,9 @@
     </form>
   </div>
 </section>
+
+<div id="artwork-admin" data-state="<%= JSON.stringify(artWorks) %>"></div>
+<script src="build/src/index.js" crossorigin></script>
 
 <%- include("partials/footer") -%>
 

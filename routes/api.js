@@ -1,5 +1,5 @@
 import { Router } from "express"
-import sharp from "sharp"
+// import sharp from "sharp"
 import multer from "multer"
 import fs from "fs"
 import { Storage } from "@google-cloud/storage"
@@ -102,12 +102,12 @@ apiRouter.post("/upload", upload.single("image"), (req, res) => {
 		await listFiles().catch(console.error)
 	}
 
-	sharp(imagePath)
-		.resize(null, 300)
-		.toFile(thumbTitle, (err) => {
-			if (!err) console.log("image resized")
-			uploadThumb().catch(console.error)
-		})
+	// sharp(imagePath)
+	// 	.resize(null, 300)
+	// 	.toFile(thumbTitle, (err) => {
+	// 		if (!err) console.log("image resized")
+	// 		uploadThumb().catch(console.error)
+	// 	})
 
 	res.redirect("/upload#upload")
 })
