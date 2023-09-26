@@ -1,47 +1,46 @@
 <%- include("partials/header") -%>
 
- <section class="colored">
-   <img class="logoEdge" src="images/kaylalogogreen.png" alt="">
-   <img class="logoEdgeRight" src="images/kaylalogogreen.png" alt="">
-   <div class="category container-fluid">
-         <h1> <%= pageType.title %> </h1>
-      <div class="bio">
-        <p><%= pageType.description %> </p>
-      </div>
-      <div class="call-action">
-        <a target="_blank" href="https://www.facebook.com/kayla.kossajda">
-        <i class="media fab fa-facebook-f fa-2x"></i>
-        </a>
-        <a target="_blank" href="https://www.instagram.com/kaylakossart/">
-        <i class="media fab fa-instagram fa-2x"></i>
-        </a>
-        <a href="mailto:kkossajda@gmail.com">
-        <i class="media fas fa-envelope fa-2x"></i>
-        </a>
-      </div>
+<section class="colored">
+	<img class="logoEdge" src="images/kaylalogogreen.png" alt="" />
+  <img class="logoEdgeRight" src="images/kaylalogogreen.png" alt="" />
+  <div class="category container-fluid">
+  	<h1> <%= pageType.title %> </h1>
+    <div class="bio">
+    	<p><%= pageType.description %> </p>
     </div>
-  </section>
+    <div class="call-action">
+    	<a target="_blank" href="https://www.facebook.com/kayla.kossajda">
+      	<i class="media fab fa-facebook-f fa-2x"></i>
+      </a>
+      <a target="_blank" href="https://www.instagram.com/kaylakossart/">
+      	<i class="media fab fa-instagram fa-2x"></i>
+      </a>
+      <a href="mailto:kkossajda@gmail.com">
+        <i class="media fas fa-envelope fa-2x"></i>
+      </a>
+    </div>
+  </div>
+</section>
 
-  <section class="thumbnail-section">
-    <div class="container-fluid content">
-  <% subCategoryList.forEach((art) => { %>
-      <h2><%= art %></h2>
+<section class="thumbnail-section">
+  <div class="container-fluid content">
+  	<% subCategoryList.forEach((subCatTitle) => { %>
+      <h2><%= subCatTitle %></h2>
       <div class="thumbnail-container scrollbar scrollbar-deep-blue">
         <ul class="thumbnail-list">
-    <%  subCated[art].forEach((obj) => { %>
-          <a target="_top" href=<%=obj.imgSrc%>>
-            <img 
-              id=<%=obj.alt%> 
-              class="thumbnail-image" 
-              src="<%= obj.thumbnail %>" 
-              alt="<%= obj.alt %>"
-            />
-          </a>
-    <% }); %>
-      </ul>
-    </div>
-  <% }); %>
-
+    			<% subCated[subCatTitle].forEach((art) => { %>
+          	<a target="_top" href=<%= art.src %>>
+            	<img 
+              	id=<%= art.alt %>
+              	class="thumbnail-image"
+              	src="<%= art.thumbnail %>"
+              	alt="<%= art.alt %>"
+            	/>
+          	</a>
+    			<% }) %>
+      	</ul>
+    	</div>
+  	<% }) %>
   </div>
 </section>
 

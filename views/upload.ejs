@@ -122,10 +122,11 @@
           <% artWorks.forEach((artWork) => { %>
             <img 
               alt=<%=artWork.alt%> 
-              class="thumbnail-image img hidden <%=artWork.imgCategory.toLowerCase()%> <%=artWork.subCat.toLowerCase().replace(/ /g, "-").replace(/&/g, "and") %>"
-              data-category="<%=artWork.imgCategory%>/<%=artWork.subCat.toLowerCase().replace(/ /g, "-").replace(/&/g, "and") %>" 
+              class="thumbnail-image img hidden <%=artWork.category.toLowerCase()%> <%=artWork.subCategory.toLowerCase().replace(/ /g, "-").replace(/&/g, "and") %>"
+              data-category="<%=artWork.category%>/<%=artWork.subCategory.toLowerCase().replace(/ /g, "-").replace(/&/g, "and") %>" 
               src=<%=artWork.thumbnail%> 
-              onclick="highlight(event)" />
+              onclick="highlight(event)" 
+						/>
           <% }) %>
         </ul>
       </div>
@@ -193,3 +194,4 @@
 </section>
 
 <%- include("partials/footer") -%>
+
