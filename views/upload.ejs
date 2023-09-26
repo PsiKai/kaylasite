@@ -1,198 +1,198 @@
 <%- include("partials/header") -%>
 
 
-<section class="upload-section" id="upload">
-  <img class="up logoEdge" src="images/kaylalogogreen.png" alt="">
-  <img class="up logoEdgeRight" src="images/kaylalogogreen.png" alt="">
-  <div class="upload-form">
-    <h2>New Artwork</h2>
-    <div class="form-data">
+<!-- <section class="upload-section" id="upload"> -->
+<!--   <img class="up logoEdge" src="images/kaylalogogreen.png" alt=""> -->
+<!--   <img class="up logoEdgeRight" src="images/kaylalogogreen.png" alt=""> -->
+<!--   <div class="upload-form"> -->
+<!--     <h2>New Artwork</h2> -->
+<!--     <div class="form-data"> -->
 
-      <form action="/upload" method="post" enctype="multipart/form-data" class="form">
-        <ul class="upload-data">
-          <li>
-            <label for="categories"><p><strong>Art Medium</strong></p></label>
-          </li>
-          <li>
-            <div class="wrapper">
-              <input id="photo" type="radio" name="categories" value="Photography" class="radio" required>
-              <label for="photo" class="radio btn" onclick="selectMedium(event)">Photography</label>
-            </div>
-            <div class="wrapper">
-              <input id="paint" type="radio" name="categories" value="Painting" class="radio">
-              <label for="paint" class="radio btn" onclick="selectMedium(event)">Painting</label>
-            </div>
-            <div class="wrapper">
-              <input id="draw" type="radio" name="categories" value="Drawing" class="radio">
-              <label for="draw" class="radio btn" onclick="selectMedium(event)">Drawing</label>
-            </div>
-            <div class="wrapper">
-              <input id="digital" type="radio" name="categories" value="Digital" class="radio">
-              <label for="digital" class="radio btn" onclick="selectMedium(event)">Digital</label>
-            </div>
-          </li>
-          <li>
-            <label for="subcat"><p><strong>Subject Matter</strong></p></label>
-          </li>
-          <li>
-            <input 
-              id="subcategory" type="text" name="subcat" class="subcat" autocomplete="off" placeholder="Enter Subject" required spellcheck="false"/>
-          </li>
-          <li>
-            <label for="subcat"><p><strong>Artwork Title</strong></p></label>
-          </li>
-          <li>
-            <input 
-              id="artname" type="text" name="name" value="" class="subcat" placeholder="Name Your Piece" required autocomplete="off" spellcheck="false">
-          </li>
-          <li class="img-preview">
-            <img name="preview" id="preview" src="" class="hidden" />
-          </li>
-          <li>
-            <input 
-              type="file" id="img" name="image" accept="image/*" class="inputfile" onchange="previewImageUpload()" required />
-            <label id="fileName" for="img" class="btn"><i class="fas fa-search"></i>Choose a file</label>
-          </li>
-          <li>
-            <button type="submit" class="btn btn-lg btn-info"><i class="fas fa-upload"></i>Upload</button>
-          </li>
-        </ul>
-      </form>
+<!--       <form action="/upload" method="post" enctype="multipart/form-data" class="form"> -->
+<!--         <ul class="upload-data"> -->
+<!--           <li> -->
+<!--             <label for="categories"><p><strong>Art Medium</strong></p></label> -->
+<!--           </li> -->
+<!--           <li> -->
+<!--             <div class="wrapper"> -->
+<!--               <input id="photo" type="radio" name="categories" value="Photography" class="radio" required> -->
+<!--               <label for="photo" class="radio btn" onclick="selectMedium(event)">Photography</label> -->
+<!--             </div> -->
+<!--             <div class="wrapper"> -->
+<!--               <input id="paint" type="radio" name="categories" value="Painting" class="radio"> -->
+<!--               <label for="paint" class="radio btn" onclick="selectMedium(event)">Painting</label> -->
+<!--             </div> -->
+<!--             <div class="wrapper"> -->
+<!--               <input id="draw" type="radio" name="categories" value="Drawing" class="radio"> -->
+<!--               <label for="draw" class="radio btn" onclick="selectMedium(event)">Drawing</label> -->
+<!--             </div> -->
+<!--             <div class="wrapper"> -->
+<!--               <input id="digital" type="radio" name="categories" value="Digital" class="radio"> -->
+<!--               <label for="digital" class="radio btn" onclick="selectMedium(event)">Digital</label> -->
+<!--             </div> -->
+<!--           </li> -->
+<!--           <li> -->
+<!--             <label for="subcat"><p><strong>Subject Matter</strong></p></label> -->
+<!--           </li> -->
+<!--           <li> -->
+<!--             <input --> 
+<!--               id="subcategory" type="text" name="subcat" class="subcat" autocomplete="off" placeholder="Enter Subject" required spellcheck="false"/> -->
+<!--           </li> -->
+<!--           <li> -->
+<!--             <label for="subcat"><p><strong>Artwork Title</strong></p></label> -->
+<!--           </li> -->
+<!--           <li> -->
+<!--             <input --> 
+<!--               id="artname" type="text" name="name" value="" class="subcat" placeholder="Name Your Piece" required autocomplete="off" spellcheck="false"> -->
+<!--           </li> -->
+<!--           <li class="img-preview"> -->
+<!--             <img name="preview" id="preview" src="" class="hidden" /> -->
+<!--           </li> -->
+<!--           <li> -->
+<!--             <input --> 
+<!--               type="file" id="img" name="image" accept="image/*" class="inputfile" onchange="previewImageUpload()" required /> -->
+<!--             <label id="fileName" for="img" class="btn"><i class="fas fa-search"></i>Choose a file</label> -->
+<!--           </li> -->
+<!--           <li> -->
+<!--             <button type="submit" class="btn btn-lg btn-info"><i class="fas fa-upload"></i>Upload</button> -->
+<!--           </li> -->
+<!--         </ul> -->
+<!--       </form> -->
 
-    </div>
-  </div>
-</section>
+<!--     </div> -->
+<!--   </div> -->
+<!-- </section> -->
 
 
-<section class="thumbnail-section delete" id="delete">
-  <div class="delete-form">
-    <h2>Existing Artwork</h2>
-    <form action="/delete" method="POST" onsubmit="return verify()">
-      <ul>
-        <li>
-          <label for="medium"><p><strong>Select Medium</strong></p></label>
-        </li>
-        <li>
-          <div class="wrapper">
-            <input 
-              id="photos" type="radio" name="medium" value="photography" class="radio" required onclick="revealSubCategories(event)">
-            <label for="photos" class="radio btn" onclick="selectMedium(event)">Photography</label>
-          </div>
-          <div class="wrapper">
-            <input 
-              id="paintings" type="radio" name="medium" value="painting" class="radio" onclick="revealSubCategories(event)">
-            <label for="paintings" class="radio btn" onclick="selectMedium(event)">Painting</label>
-          </div>
-          <div class="wrapper">
-            <input 
-              id="drawings" type="radio" name="medium" value="drawing" class="radio" onclick="revealSubCategories(event)">
-            <label for="drawings" class="radio btn" onclick="selectMedium(event)">Drawing</label>
-          </div>
-          <div class="wrapper">
-            <input 
-              id="digitals" type="radio" name="medium" value="digital" class="radio" onclick="revealSubCategories(event)">
-            <label for="digitals" class="radio btn" onclick="selectMedium(event)">Digital</label>
-          </div>
-        </li>
-        <li>
-          <label for="subcat">
-            <p><strong>Subject Matter</strong></p>
-          </label>
-        </li>
-        <li>
-          <div class="flex-container">
-            <!-- creates a label for every sub-category  -->
-            <% Object.keys(paintSub).forEach((sub) => { %>
-                <label id="subcat" name="subcat" value=<%=sub%> class="btn btn-sm sub hidden painting" onclick="showImg(event)"><%=sub%></label>
-            <%  }); %>
-            <% Object.keys(drawSub).forEach((sub) => { %>
-                <label id="subcat" name="subcat" value=<%=sub%> class="btn btn-sm sub hidden drawing" onclick="showImg(event)"><%=sub%></label>
-            <%  }); %>
-            <% Object.keys(digitalSub).forEach((sub) => { %>
-                <label id="subcat" name="subcat" value=<%=sub%> class="btn btn-sm sub hidden digital" onclick="showImg(event)"><%=sub%></label>
-            <%  }); %>
-            <% Object.keys(photoSub).forEach((sub) => { %>
-                <label id="subcat" name="subcat" value=<%=sub%> class="btn btn-sm sub hidden photography" onclick="showImg(event)"><%=sub%></label>
-            <%  }); %>
-            </div>
-        </li>
-      </ul>
-      <div class="thumbnail-container scrollbar scrollbar-deep-blue">
-        <ul class="thumbnail-list">
-          <!-- creates a thumbnail for each artwork organized by sub-category  -->
-          <% artWorks.forEach((artWork) => { %>
-            <img 
-              alt=<%=artWork.alt%> 
-              class="thumbnail-image img hidden <%=artWork.category.toLowerCase()%> <%=artWork.subCategory.toLowerCase().replace(/ /g, "-").replace(/&/g, "and") %>"
-              data-category="<%=artWork.category%>/<%=artWork.subCategory.toLowerCase().replace(/ /g, "-").replace(/&/g, "and") %>" 
-              src=<%=artWork.thumbnail%> 
-              onclick="highlight(event)" 
-						/>
-          <% }) %>
-        </ul>
-      </div>
-      <label class="alert alert-danger hidden">
-        <i class="fa fa-exclamation-circle"></i>
-        <strong> Please select an artwork to update or delete!</strong>
-      </label>
-      <input type="text" id="imgDel" name="image" class="delete-img" value="" />
-      <label for="imgDel" class="btn btn-lg hidden del-label" value=""></label>
-      <button name="button" type=submit class="btn btn-lg btn-danger" onclick="verify()">
-        <i class="fa fa-trash"></i> 
-        Remove Artwork
-      </button>
-      <label name="updateButton" class="btn btn-lg btn-success" onclick="edit()">
-        <i class="far fa-edit"></i> 
-        Edit Artwork 
-        <i class='fas fa-angle-double-down hidden'></i>
-      </label>
+<!-- <section class="thumbnail-section delete" id="delete"> -->
+<!--   <div class="delete-form"> -->
+<!--     <h2>Existing Artwork</h2> -->
+<!--     <form action="/delete" method="POST" onsubmit="return verify()"> -->
+<!--       <ul> -->
+<!--         <li> -->
+<!--           <label for="medium"><p><strong>Select Medium</strong></p></label> -->
+<!--         </li> -->
+<!--         <li> -->
+<!--           <div class="wrapper"> -->
+<!--             <input --> 
+<!--               id="photos" type="radio" name="medium" value="photography" class="radio" required onclick="revealSubCategories(event)"> -->
+<!--             <label for="photos" class="radio btn" onclick="selectMedium(event)">Photography</label> -->
+<!--           </div> -->
+<!--           <div class="wrapper"> -->
+<!--             <input --> 
+<!--               id="paintings" type="radio" name="medium" value="painting" class="radio" onclick="revealSubCategories(event)"> -->
+<!--             <label for="paintings" class="radio btn" onclick="selectMedium(event)">Painting</label> -->
+<!--           </div> -->
+<!--           <div class="wrapper"> -->
+<!--             <input --> 
+<!--               id="drawings" type="radio" name="medium" value="drawing" class="radio" onclick="revealSubCategories(event)"> -->
+<!--             <label for="drawings" class="radio btn" onclick="selectMedium(event)">Drawing</label> -->
+<!--           </div> -->
+<!--           <div class="wrapper"> -->
+<!--             <input --> 
+<!--               id="digitals" type="radio" name="medium" value="digital" class="radio" onclick="revealSubCategories(event)"> -->
+<!--             <label for="digitals" class="radio btn" onclick="selectMedium(event)">Digital</label> -->
+<!--           </div> -->
+<!--         </li> -->
+<!--         <li> -->
+<!--           <label for="subcat"> -->
+<!--             <p><strong>Subject Matter</strong></p> -->
+<!--           </label> -->
+<!--         </li> -->
+<!--         <li> -->
+<!--           <div class="flex-container"> -->
+<!--             <!-1- creates a label for every sub-category  -1-> -->
+<!--             <% Object.keys(paintSub).forEach((sub) => { %> -->
+<!--                 <label id="subcat" name="subcat" value=<%=sub%> class="btn btn-sm sub hidden painting" onclick="showImg(event)"><%=sub%></label> -->
+<!--             <%  }); %> -->
+<!--             <% Object.keys(drawSub).forEach((sub) => { %> -->
+<!--                 <label id="subcat" name="subcat" value=<%=sub%> class="btn btn-sm sub hidden drawing" onclick="showImg(event)"><%=sub%></label> -->
+<!--             <%  }); %> -->
+<!--             <% Object.keys(digitalSub).forEach((sub) => { %> -->
+<!--                 <label id="subcat" name="subcat" value=<%=sub%> class="btn btn-sm sub hidden digital" onclick="showImg(event)"><%=sub%></label> -->
+<!--             <%  }); %> -->
+<!--             <% Object.keys(photoSub).forEach((sub) => { %> -->
+<!--                 <label id="subcat" name="subcat" value=<%=sub%> class="btn btn-sm sub hidden photography" onclick="showImg(event)"><%=sub%></label> -->
+<!--             <%  }); %> -->
+<!--             </div> -->
+<!--         </li> -->
+<!--       </ul> -->
+<!--       <div class="thumbnail-container scrollbar scrollbar-deep-blue"> -->
+<!--         <ul class="thumbnail-list"> -->
+<!--           <!-1- creates a thumbnail for each artwork organized by sub-category  -1-> -->
+<!--           <% artWorks.forEach((artWork) => { %> -->
+<!--             <img --> 
+<!--               alt=<%=artWork.alt%> --> 
+<!--               class="thumbnail-image img hidden <%=artWork.category.toLowerCase()%> <%=artWork.subCategory.toLowerCase().replace(/ /g, "-").replace(/&/g, "and") %>" -->
+<!--               data-category="<%=artWork.category%>/<%=artWork.subCategory.toLowerCase().replace(/ /g, "-").replace(/&/g, "and") %>" --> 
+<!--               src=<%=artWork.thumbnail%> --> 
+<!--               onclick="highlight(event)" --> 
+<!-- 						/> -->
+<!--           <% }) %> -->
+<!--         </ul> -->
+<!--       </div> -->
+<!--       <label class="alert alert-danger hidden"> -->
+<!--         <i class="fa fa-exclamation-circle"></i> -->
+<!--         <strong> Please select an artwork to update or delete!</strong> -->
+<!--       </label> -->
+<!--       <input type="text" id="imgDel" name="image" class="delete-img" value="" /> -->
+<!--       <label for="imgDel" class="btn btn-lg hidden del-label" value=""></label> -->
+<!--       <button name="button" type=submit class="btn btn-lg btn-danger" onclick="verify()"> -->
+<!--         <i class="fa fa-trash"></i> --> 
+<!--         Remove Artwork -->
+<!--       </button> -->
+<!--       <label name="updateButton" class="btn btn-lg btn-success" onclick="edit()"> -->
+<!--         <i class="far fa-edit"></i> --> 
+<!--         Edit Artwork --> 
+<!--         <i class='fas fa-angle-double-down hidden'></i> -->
+<!--       </label> -->
 
-    </form>
+<!--     </form> -->
 
-    <form id="updateForm" action="/update" method="POST" onsubmit="return verify()">
-      <ul class="upload-data update-data hidden">
-        <li>
-          <label for="categories"><p><strong>Art Medium</strong></p></label>
-        </li>
-        <li>
-          <div class="wrapper">
-            <input id="photoUp" type="radio" name="upCat" value="Photography" class="radio" required>
-            <label for="photoUp" class="update radio btn" onclick="updateMedium(event)">Photography</label>
-          </div>
-          <div class="wrapper">
-            <input id="paintUp" type="radio" name="upCat" value="Painting" class="radio">
-            <label for="paintUp" class="update radio btn" onclick="updateMedium(event)">Painting</label>
-          </div>
-          <div class="wrapper">
-            <input id="drawUp" type="radio" name="upCat" value="Drawing" class="radio">
-            <label for="drawUp" class="update radio btn" onclick="updateMedium(event)">Drawing</label>
-          </div>
-          <div class="wrapper">
-            <input id="digitalUp" type="radio" name="upCat" value="Digital" class="radio">
-            <label for="digitalUp" class="update radio btn" onclick="updateMedium(event)">Digital</label>
-          </div>
-        </li>
-        <li>
-          <label><p><strong>Subject Matter</strong></p></label>
-        </li>
-        <li>
-          <input id="subcatUp" type="text" name="subcatUp" class="subcat update" autocomplete="off" placeholder="Enter Subject" required spellcheck="false"/>
-        </li>
-        <li>
-          <label><p><strong>Artwork Title</strong></p></label>
-        </li>
-        <li>
-          <input 
-            id="artnameUp" type="text" name="nameUp" value="" class="subcat update" placeholder="Name Your Piece" required autocomplete="off" spellcheck="false">
-        </li>
-          <button type="submit" class="btn btn-lg btn-primary" onclick="verify()">
-            <i class="fas fa-upload"></i> 
-            Submit Changes
-          </button>
-      </ul>
-    </form>
-  </div>
-</section>
+<!--     <form id="updateForm" action="/update" method="POST" onsubmit="return verify()"> -->
+<!--       <ul class="upload-data update-data hidden"> -->
+<!--         <li> -->
+<!--           <label for="categories"><p><strong>Art Medium</strong></p></label> -->
+<!--         </li> -->
+<!--         <li> -->
+<!--           <div class="wrapper"> -->
+<!--             <input id="photoUp" type="radio" name="upCat" value="Photography" class="radio" required> -->
+<!--             <label for="photoUp" class="update radio btn" onclick="updateMedium(event)">Photography</label> -->
+<!--           </div> -->
+<!--           <div class="wrapper"> -->
+<!--             <input id="paintUp" type="radio" name="upCat" value="Painting" class="radio"> -->
+<!--             <label for="paintUp" class="update radio btn" onclick="updateMedium(event)">Painting</label> -->
+<!--           </div> -->
+<!--           <div class="wrapper"> -->
+<!--             <input id="drawUp" type="radio" name="upCat" value="Drawing" class="radio"> -->
+<!--             <label for="drawUp" class="update radio btn" onclick="updateMedium(event)">Drawing</label> -->
+<!--           </div> -->
+<!--           <div class="wrapper"> -->
+<!--             <input id="digitalUp" type="radio" name="upCat" value="Digital" class="radio"> -->
+<!--             <label for="digitalUp" class="update radio btn" onclick="updateMedium(event)">Digital</label> -->
+<!--           </div> -->
+<!--         </li> -->
+<!--         <li> -->
+<!--           <label><p><strong>Subject Matter</strong></p></label> -->
+<!--         </li> -->
+<!--         <li> -->
+<!--           <input id="subcatUp" type="text" name="subcatUp" class="subcat update" autocomplete="off" placeholder="Enter Subject" required spellcheck="false"/> -->
+<!--         </li> -->
+<!--         <li> -->
+<!--           <label><p><strong>Artwork Title</strong></p></label> -->
+<!--         </li> -->
+<!--         <li> -->
+<!--           <input --> 
+<!--             id="artnameUp" type="text" name="nameUp" value="" class="subcat update" placeholder="Name Your Piece" required autocomplete="off" spellcheck="false"> -->
+<!--         </li> -->
+<!--           <button type="submit" class="btn btn-lg btn-primary" onclick="verify()"> -->
+<!--             <i class="fas fa-upload"></i> --> 
+<!--             Submit Changes -->
+<!--           </button> -->
+<!--       </ul> -->
+<!--     </form> -->
+<!--   </div> -->
+<!-- </section> -->
 
 <div id="artwork-admin" data-state="<%= JSON.stringify(artWorks) %>"></div>
 <script src="build/src/index.js" crossorigin></script>

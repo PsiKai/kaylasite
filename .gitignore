@@ -7,3 +7,6 @@ client_secrets.json
 auth.json
 
 client_secret.json
+
+public/build/
+

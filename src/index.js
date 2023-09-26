@@ -1,7 +1,7 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
 
-import App from "./app.jsx"
+import App from "./App.js"
 
 const container = document.getElementById("artwork-admin")
 const artWorks = JSON.parse(container.getAttribute("data-state"))
