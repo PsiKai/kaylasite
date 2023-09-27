@@ -1,6 +1,56 @@
-import React from "react"
+import React, { useContext, useState, useMemo } from "react"
+import { ArtworkContext } from "../context/ArtworkContext.js"
 
 export default function Delete() {
+	const { artWorks } = useContext(ArtworkContext)
+	const [category, setCategory] = useState("")
+	const [subCategory, setSubCategory] = useState("")
+	const [activeArt, setActiveArt] = useState(null)
+
+	const subCategories = useMemo(() => {
+		if (!category) return []
+
+		const newSubCats = artWorks.reduce((categories, art) => {
+			if (art.category !== category) return categories
+			if (categories.has(art.subCategory)) return categories
+			categories.add(art.subCategory)
+			return categories
+		}, new Set())
+
+		return Array.from(newSubCats)
+	}, [category])
+
+	const thumbnails = useMemo(() => {
+		if (!subCategory) return []
+
+		return artWorks.reduce((thumbs, art) => {
+			if (art.category !== category) return thumbs
+			if (art.subCategory !== subCategory) return thumbs
+			thumbs.push(art)
+			return thumbs
+		}, [])
+	}, [subCategory, category])
+
+	const updateActiveArt = (_id) => {
+		if (_id === activeArt?._id) return setActiveArt(null)
+
+		setActiveArt(artWorks.find((art) => art._id === _id))
+	}
+
+	const updateSubCategory = (e) => {
+		if (e.target.value === subCategory) return
+
+		setActiveArt(null)
+		setSubCategory(e.target.value)
+	}
+
+	const updateCategory = (e) => {
+		if (e.target.value === category) return
+
+		setActiveArt(null)
+		setCategory(e.target.value)
+	}
+
 	return (
 		<form action="/delete" method="POST">
 			<ul>
@@ -17,9 +67,10 @@ export default function Delete() {
 							id="photos"
 							type="radio"
 							name="medium"
-							value="photography"
+							value="Photography"
 							className="radio"
 							required
+							onChange={updateCategory}
 						/>
 						<label htmlFor="photos" className="radio btn">
 							Photography
@@ -30,8 +81,9 @@ export default function Delete() {
 							id="paintings"
 							type="radio"
 							name="medium"
-							value="painting"
+							value="Painting"
 							className="radio"
+							onChange={updateCategory}
 						/>
 						<label htmlFor="paintings" className="radio btn">
 							Painting
@@ -42,8 +94,9 @@ export default function Delete() {
 							id="drawings"
 							type="radio"
 							name="medium"
-							value="drawing"
+							value="Drawing"
 							className="radio"
+							onChange={updateCategory}
 						/>
 						<label htmlFor="drawings" className="radio btn">
 							Drawing
@@ -54,8 +107,9 @@ export default function Delete() {
 							id="digitals"
 							type="radio"
 							name="medium"
-							value="digital"
+							value="Digital"
 							className="radio"
+							onChange={updateCategory}
 						/>
 						<label htmlFor="digitals" className="radio btn">
 							Digital
@@ -70,28 +124,47 @@ export default function Delete() {
 					</label>
 				</li>
 				<li>
-					<div className="flex-container"></div>
+					<div className="flex-container">
+						{subCategories.map((subCat) => (
+							<React.Fragment key={subCat}>
+								<input
+									id={subCat}
+									type="radio"
+									className="radio"
+									value={subCat}
+									onClick={updateSubCategory}
+									name="subcategories"
+								/>
+								<label className="radio btn btn-sm sub" htmlFor={subCat}>
+									{subCat}
+								</label>
+							</React.Fragment>
+						))}
+					</div>
 				</li>
 			</ul>
 			<div className="thumbnail-container scrollbar scrollbar-deep-blue">
-				<ul className="thumbnail-list"></ul>
+				<ul className="thumbnail-list">
+					{thumbnails.map(({ _id, thumbnail }) => (
+						<React.Fragment key={_id}>
+							<img
+								className={`thumbnail-image img ${
+									activeArt?._id === _id ? "img-clicked" : ""
+								}`}
+								src={thumbnail}
+								alt={thumbnail}
+								onClick={() => updateActiveArt(_id)}
+							/>
+						</React.Fragment>
+					))}
+				</ul>
 			</div>
 			<label className="alert alert-danger hidden">
 				<i className="fa fa-exclamation-circle" />
 				<strong> Please select an artwork to update or delete!</strong>
 			</label>
-			<input
-				type="text"
-				id="imgDel"
-				name="image"
-				className="delete-img"
-				value=""
-			/>
-			<label
-				htmlFor="imgDel"
-				className="btn btn-lg hidden del-label"
-				value=""
-			></label>
+			<input type="text" id="imgDel" name="image" className="delete-img" />
+			<label htmlFor="imgDel" className="btn btn-lg hidden del-label"></label>
 			<button name="button" type="submit" className="btn btn-lg btn-danger">
 				<i className="fa fa-trash" />
 				Remove Artwork

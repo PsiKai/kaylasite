@@ -549,7 +549,7 @@ input.radio {
 	z-index: -1;
 }
 
-input.radio:checked ~ label {
+input.radio:checked + label {
 	background-color: #4d4c7d !important;
 	border: 1px solid white;
 }

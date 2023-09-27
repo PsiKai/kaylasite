@@ -93,7 +93,6 @@ export default function Edit() {
 						id="artnameUp"
 						type="text"
 						name="nameUp"
-						value=""
 						className="subcat update"
 						placeholder="Name Your Piece"
 						required

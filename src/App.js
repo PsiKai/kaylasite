@@ -2,10 +2,11 @@ import React from "react"
 import Edit from "./components/Edit.js"
 import Upload from "./components/Upload.js"
 import Delete from "./components/Delete.js"
+import { ArtworkProvider } from "./context/ArtworkContext.js"
 
 export default function App({ artWorks }) {
 	return (
-		<>
+		<ArtworkProvider artWorks={artWorks}>
 			<section className="upload-section" id="upload">
 				<img className="up logoEdge" src="images/kaylalogogreen.png" alt="" />
 				<img
@@ -26,6 +27,6 @@ export default function App({ artWorks }) {
 					<Edit />
 				</div>
 			</section>
-		</>
+		</ArtworkProvider>
 	)
 }

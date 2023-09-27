@@ -1,6 +1,8 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
+import { ArtworkContext } from "../context/ArtworkContext"
 
 export default function Upload() {
+	const { artWorks } = useContext(ArtworkContext)
 	const [image, setImage] = useState()
 
 	const updateImage = (e) => {
