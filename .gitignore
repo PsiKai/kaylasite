@@ -7,6 +7,7 @@ client_secrets.json
 auth.json
 
 client_secret.json
+application-default-credentials.json
 
 public/build/
 

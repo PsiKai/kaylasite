@@ -1,39 +1,44 @@
 {
-	"name": "Kaylas-Site",
-	"version": "1.0.0",
-	"description": "",
-	"main": "server.js",
-	"dependencies": {
-		"@google-cloud/storage": "^5.3.0",
-		"bcrypt": "^5.1.1",
-		"dotenv": "^8.2.0",
-		"ejs": "^3.1.2",
-		"express": "^4.17.1",
-		"express-session": "^1.17.1",
-		"file-system": "^2.2.2",
-		"jsonwebtoken": "^8.5.1",
-		"lodash": "^4.17.20",
-		"mongoose": "^7.5.3",
-		"multer": "^1.4.2",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
-		"sharp": "^0.32.6",
-		"ssl-express-www": "^3.0.7"
-	},
-	"devDependencies": {
-		"concurrently": "^8.2.1",
-		"eslint-plugin-prettier": "^5.0.0"
-	},
-	"scripts": {
-		"heroku-postbuild": "NPM_CONFIG_PRODUCTION=true bun install && bun run build",
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "bun build --watch src/ --outdir ./public/build/ --minify",
-		"dev-build": "bun build --watch src/ --outdir ./public/build/",
-		"server": "bun --watch run server.js",
-		"dev": "concurrently \"bun run server\" \"bun run dev-build\""
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"type": "module"
+  "name": "Kaylas-Site",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "@google-cloud/storage": "^5.3.0",
+    "bcrypt": "^5.1.1",
+    "busboy": "^1.6.0",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.1.2",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.4.1",
+    "express-session": "^1.17.1",
+    "file-system": "^2.2.2",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.20",
+    "mongoose": "^7.5.3",
+    "multer": "^1.4.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "sharp": "^0.32.6",
+    "ssl-express-www": "^3.0.7"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.1",
+    "eslint-plugin-prettier": "^5.0.0"
+  },
+  "scripts": {
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=true bun install && bun run build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "bun build --watch src/ --outdir ./public/build/ --minify",
+    "dev-build": "bun build --watch src/ --outdir ./public/build/",
+    "server-bun": "bun --watch run server.js",
+    "server": "node --watch server.js",
+    "dev-node": "concurrently \"npm run server\" \"bun run dev-build\"",
+    "dev-bun": "concurrently \"bun run server-bun\" \"bun run dev-build\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "trustedDependencies": ["sharp"]
 }
