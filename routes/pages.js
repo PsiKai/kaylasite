@@ -11,11 +11,16 @@ const pageRouter = Router()
 
 pageRouter.get("/", async (req, res) => {
   const artWorks = await getArt()
-  let randomArt = Math.floor(Math.random() * artWorks.length)
-  res.render("index", {
-    randomArt,
-    artWorks,
-  })
+  const randomArt = Object.entries(artWorks).reduce((random, [category, subcategories]) => {
+    const subCatValues = Object.values(subcategories)
+    const randomSubcatIndex = Math.floor(Math.random() * subCatValues.length)
+    const randomSubcat = subCatValues[randomSubcatIndex]
+    const randomWorkIndex = Math.floor(Math.random() * randomSubcat.length)
+    random.push(randomSubcat[randomWorkIndex])
+    return random
+  }, [])
+
+  res.render("index", { randomArt, artWorks })
 })
 
 pageRouter.get("/login", (req, res) => {
@@ -59,35 +64,19 @@ pageRouter.post("/login", async (req, res) => {
 // pageRouter.get("/upload", isAuthenticated, async (req, res) => {
 pageRouter.get("/upload", async (req, res) => {
   const artWorks = await getArt()
-  var paintings = artWorks.filter(artWork => artWork.category === "Painting")
-  var digitalMedia = artWorks.filter(artWork => artWork.category === "Digital")
-  var drawings = artWorks.filter(artWork => artWork.category === "Drawing")
-  var photos = artWorks.filter(artWork => artWork.category === "Photography")
-
-  var paintSub = _.groupBy(paintings, e => e.subCategory.replace(/&/g, "&"))
-  var digitalSub = _.groupBy(digitalMedia, e => e.subCategory.replace(/&/g, "&"))
-  var drawSub = _.groupBy(drawings, e => e.subCategory.replace(/&/g, "&"))
-  var photoSub = _.groupBy(photos, e => e.subCategory.replace(/&/g, "&"))
-
-  res.render("upload", {
-    artWorks,
-    paintSub,
-    digitalSub,
-    drawSub,
-    photoSub,
-  })
+  res.render("upload", { artWorks })
 })
 
 pageRouter.get("/:category", async (req, res) => {
   const artWorks = await getArt()
-  const page = _.capitalize(req.params.category)
-  const category = artWorks.filter(artWork => artWork.category === page)
-  const subCated = _.groupBy(category, e => e.subCategory)
-  const description = titleDesc.filter(item => item.page === page)
+  let { category } = req.params
+  category = category.charAt(0).toUpperCase() + category.slice(1)
+  const pageCopy = titleDesc.find(item => item.page === category)
+  const artCategory = artWorks[category]
+
   res.render("template", {
-    subCated,
-    subCategoryList: Object.keys(subCated),
-    pageType: description[0],
+    pageCopy,
+    artCategory,
   })
 })
 

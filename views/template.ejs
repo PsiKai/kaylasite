@@ -4,9 +4,9 @@
 	<img class="logoEdge" src="images/kaylalogogreen.png" alt="" />
   <img class="logoEdgeRight" src="images/kaylalogogreen.png" alt="" />
   <div class="category container-fluid">
-  	<h1> <%= pageType.title %> </h1>
+  	<h1> <%= pageCopy.title %> </h1>
     <div class="bio">
-    	<p><%= pageType.description %> </p>
+    	<p><%= pageCopy.description %> </p>
     </div>
     <div class="call-action">
     	<a target="_blank" href="https://www.facebook.com/kayla.kossajda">
@@ -24,11 +24,11 @@
 
 <section class="thumbnail-section">
   <div class="container-fluid content">
-  	<% subCategoryList.forEach((subCatTitle) => { %>
-      <h2><%= subCatTitle %></h2>
+  	<% Object.entries(artCategory).forEach(([subCategory, artwork]) => { %>
+      <h2><%= subCategory %></h2>
       <div class="thumbnail-container scrollbar scrollbar-deep-blue">
         <ul class="thumbnail-list">
-    			<% subCated[subCatTitle].forEach((art) => { %>
+    			<% artwork.forEach((art) => { %>
           	<a target="_top" href=<%= art.src %>>
             	<img 
               	id=<%= art.alt %>

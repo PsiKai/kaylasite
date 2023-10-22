@@ -1,16 +1,10 @@
 <section id="frontpage-carousel">
 	<div id="carousel" class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
-      <div class="carousel-item active container-fluid">
-        <a href="<%= artWorks[randomArt].category %>#<%=artWorks[randomArt].alt%>">
-					<img class="img-fluid" src="<%= artWorks[randomArt].thumbnail %>" class="d-block w-100"/>
-				</a>
-      </div>
-     	<% artWorks.forEach((artWork) => { %>
-				<% const randomArt = Math.floor(Math.random() * artWorks.length) %>
-				<div class="carousel-item container-fluid">
-        	<a href=<%= artWorks[randomArt].category %>#<%= artWorks[randomArt].alt %>>
-						<img loading="lazy" class="img-fluid" src="<%= artWorks[randomArt].thumbnail %>" class="d-block w-100"/>
+     	<% randomArt.forEach((artWork, i) => { %>
+      <div class="carousel-item container-fluid <%= i === 0 ? 'active' : ''%>">
+        	<a href="<%= artWork.category %>#<%= artWork.alt %>">
+            <img loading="lazy" class="img-fluid" src="<%= artWork.thumbnail %>" alt="<%= artWork.alt %>" class="d-block w-100"/>
 					</a>
       	</div>
     	<% }) %>
