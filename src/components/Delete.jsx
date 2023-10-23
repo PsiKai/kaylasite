@@ -2,7 +2,7 @@ import React, { useContext, useState, useMemo } from "react"
 import { ArtworkContext } from "../context/ArtworkContext.js"
 
 export default function Delete() {
-  const { artWorks } = useContext(ArtworkContext)
+  const { artWorks, dispatch } = useContext(ArtworkContext)
   const [category, setCategory] = useState("")
   const [subCategory, setSubCategory] = useState("")
   const [activeArt, setActiveArt] = useState(null)
@@ -22,7 +22,6 @@ export default function Delete() {
   }
 
   const updateCategory = e => {
-    console.log(e)
     if (e.target.value === category) return
 
     setActiveArt(null)
@@ -36,6 +35,9 @@ export default function Delete() {
       const { src, thumbnail, _id } = activeArt
       const params = new URLSearchParams({ src, thumbnail, _id }).toString()
       await fetch("/api/artwork?" + params, { method: "DELETE" })
+      dispatch({ type: "DELETE_ARTWORK", payload: activeArt })
+      setActiveArt(null)
+      setSubCategory("")
     } catch (err) {
       console.log(err)
     } finally {
@@ -55,7 +57,6 @@ export default function Delete() {
         </li>
         <li>
           {Object.keys(artWorks).map(cat => {
-            console.log(cat)
             return (
               <div className="wrapper" key={cat}>
                 <input

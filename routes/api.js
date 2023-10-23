@@ -2,6 +2,7 @@ import { Router } from "express"
 import Artwork from "../db/models/artwork.js"
 import { uploader } from "../middleware/uploader.js"
 import storage, { baseStorageUrl, bucketName, thumbs } from "../google-client.js"
+import { fetchArt } from "../artState.js"
 
 const apiRouter = Router()
 
@@ -18,6 +19,7 @@ apiRouter.post("/artwork", uploader, async (req, res) => {
   try {
     await newArt.save()
     console.log("Finished uploading new image to collection:", title)
+    fetchArt()
     res.status(201).json({ newArt })
   } catch (err) {
     console.log("Error uploading new image to collection:", title)
@@ -69,6 +71,7 @@ apiRouter.delete("/artwork", async (req, res) => {
 
   try {
     await Promise.all([bucketDeletion, thumbnailDeletion, collectionDeletion])
+    fetchArt()
     res.status(204).end()
   } catch (err) {
     console.log("Error deleting artwork:", src)
@@ -76,21 +79,6 @@ apiRouter.delete("/artwork", async (req, res) => {
     res.status(500).send(err?.message)
   }
 })
-
-//apiRouter.post("/delete", (req, res) => {
-//	let imgUrl = req.body.image.split("/")
-//	let thumb = imgUrl[4] + "/" + imgUrl[5] + "/" + imgUrl[6]
-//	let image = thumb.split("-thumb")[0] + thumb.split("-thumb")[1]
-//	async function deleteFile() {
-//		await storage.bucket(thumbs).file(thumb).delete()
-//		console.log(thumb + " was deleted")
-//		await storage.bucket(bucketName).file(image).delete()
-//		console.log(image + " was deleted")
-//		await listFiles().catch(console.error)
-//	}
-//	deleteFile().catch(console.error)
-//	res.redirect("/upload#delete")
-//})
 
 //apiRouter.post("/update", (req, res) => {
 //	//combines form data to create a file name that exists in google cloud

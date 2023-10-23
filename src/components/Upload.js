@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react"
 import { ArtworkContext } from "../context/ArtworkContext"
 
 export default function Upload() {
-  const { artWorks } = useContext(ArtworkContext)
+  const { artWorks, dispatch } = useContext(ArtworkContext)
   const [image, setImage] = useState()
   const [uploading, setUploading] = useState(false)
 
@@ -25,7 +25,9 @@ export default function Upload() {
         body: uploadForm,
       })
       const { newArt } = await res.json()
-      console.log(newArt)
+      dispatch({ type: "ADD_ARTWORK", payload: newArt })
+      e.target.reset()
+      setImage(null)
     } catch (err) {
       console.log(err)
     } finally {
