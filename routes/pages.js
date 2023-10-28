@@ -6,6 +6,7 @@ import { titleDesc } from "../copy/title_description.js"
 import Artwork from "../db/models/artwork.js"
 import User from "../db/models/user.js"
 import { isAuthenticated } from "../middleware/auth.js"
+import storage, { bucketName } from "../google-client.js"
 
 const pageRouter = Router()
 
@@ -73,11 +74,34 @@ pageRouter.get("/:category", async (req, res) => {
   category = category.charAt(0).toUpperCase() + category.slice(1)
   const pageCopy = titleDesc.find(item => item.page === category)
   const artCategory = artWorks[category]
+  const domain = process.env.DOMAIN
 
   res.render("template", {
     pageCopy,
     artCategory,
+    category,
   })
+})
+
+pageRouter.get("/:category/:subCategory/:_id", async (req, res) => {
+  try {
+    const { _id, category, subCategory } = req.params
+    const artWorks = await getArt()
+    const foundArt = artWorks[category][subCategory]?.find(art => art._id.toString() === _id)
+    if (foundArt) {
+      const options = { action: "read", expires: Date.now() + 60_000 }
+      const { title, extension } = foundArt
+      const filePath = `${category}/${subCategory}/${title}.${extension}`
+      const [signedUrl] = await storage.bucket(bucketName).file(filePath).getSignedUrl(options)
+
+      res.render("single", { signedUrl, artWork: foundArt })
+    } else {
+      res.redirect("/" + category)
+    }
+  } catch (error) {
+    console.log("Error generating signed URL")
+    console.log(error)
+  }
 })
 
 export default pageRouter

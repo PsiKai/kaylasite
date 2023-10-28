@@ -1,8 +1,8 @@
 <%- include("partials/header") -%>
 
 <section class="colored">
-	<img class="logoEdge" src="images/kaylalogogreen.png" alt="" />
-  <img class="logoEdgeRight" src="images/kaylalogogreen.png" alt="" />
+	<img class="logoEdge" src="images/kaylalogogreen.png" aria-hidden />
+  <img class="logoEdgeRight" src="images/kaylalogogreen.png" aria-hidden />
   <div class="category container-fluid">
   	<h1> <%= pageCopy.title %> </h1>
     <div class="bio">
@@ -29,12 +29,12 @@
       <div class="thumbnail-container scrollbar scrollbar-deep-blue">
         <ul class="thumbnail-list">
     			<% artwork.forEach((art) => { %>
-          	<a target="_top" href=<%= art.src %>>
+          	<a href=<%= "/" + category + "/" + subCategory + "/" + art._id %>>
             	<img 
-              	id=<%= art.alt %>
+              	id=<%= art.title %>
               	class="thumbnail-image"
               	src="<%= art.thumbnail %>"
-              	alt="<%= art.alt %>"
+              	alt="<%= art.title %>"
             	/>
           	</a>
     			<% }) %>

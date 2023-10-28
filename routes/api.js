@@ -1,20 +1,22 @@
 import { Router } from "express"
 import Artwork from "../db/models/artwork.js"
-import { uploader } from "../middleware/uploader.js"
+import { uploader, uploadPath } from "../middleware/uploader.js"
 import storage, { baseStorageUrl, bucketName, thumbs } from "../google-client.js"
 import { fetchArt } from "../artState.js"
+import { slugify } from "../utils/stringUtils.js"
 
 const apiRouter = Router()
 
 apiRouter.post("/artwork", uploader, async (req, res) => {
   const { category, subCategory, title } = req.body
-  const [{ googleFileName, thumbName }] = req.files
+  const [{ thumbName, mimeType }] = req.files
+  const [_mime, extension] = mimeType.split("/")
   const newArt = new Artwork({
-    src: `${baseStorageUrl}/${bucketName}/${googleFileName}`,
     thumbnail: `${baseStorageUrl}/${thumbs}/${thumbName}`,
-    alt: title,
+    title: slugify(title),
+    subCategory: slugify(subCategory),
+    extension,
     category,
-    subCategory,
   })
   try {
     await newArt.save()
@@ -29,30 +31,32 @@ apiRouter.post("/artwork", uploader, async (req, res) => {
 })
 
 apiRouter.delete("/artwork", async (req, res) => {
-  const { _id, thumbnail, src } = req.query
+  const { _id } = req.query
+  const art = await Artwork.findOne({ _id })
+  const { category, subCategory, title, extension, thumbnail } = art
 
   const bucketDeletion = new Promise(async (resolve, reject) => {
     try {
-      const [_url, path] = src.split(baseStorageUrl + "/")
-      const [_bucket, fileName] = path.split(bucketName + "/")
-      await storage.bucket(bucketName).file(fileName).delete()
-      console.log("Finished deleting from bucket:", src)
+      await storage
+        .bucket(bucketName)
+        .file(`${category}/${subCategory}/${title}.${extension}`)
+        .delete()
+      console.log("Finished deleting from bucket:", title)
       resolve()
     } catch (err) {
-      console.log("Error deleting from bucket:", src)
+      console.log("Error deleting from bucket:", title)
       console.log(err)
       reject(err)
     }
   })
   const thumbnailDeletion = new Promise(async (resolve, reject) => {
     try {
-      const [_url, path] = thumbnail.split(baseStorageUrl)
-      const [_bucket, fileName] = path.split(thumbs + "/")
+      const [_url, fileName] = thumbnail.split(thumbs + "/")
       await storage.bucket(thumbs).file(fileName).delete()
       console.log("Finished deleting from thumbnail bucket:", thumbnail)
       resolve()
     } catch (err) {
-      console.log("Error deleting from bucket:", src)
+      console.log("Error deleting from bucket:", title)
       console.log(err)
       reject(err)
     }
@@ -63,7 +67,7 @@ apiRouter.delete("/artwork", async (req, res) => {
       console.log("Finished deleting from collection:", _id)
       resolve()
     } catch (err) {
-      console.log("Error deleting from bucket:", src)
+      console.log("Error deleting from bucket:", title)
       console.log(err)
       reject(err)
     }
@@ -74,9 +78,42 @@ apiRouter.delete("/artwork", async (req, res) => {
     fetchArt()
     res.status(204).end()
   } catch (err) {
-    console.log("Error deleting artwork:", src)
+    console.log("Error deleting artwork:", title)
     console.log(err)
     res.status(500).send(err?.message)
+  }
+})
+
+apiRouter.put("/artwork", async (req, res) => {
+  const { oldImg, newImg } = req.body
+  const { extension } = oldImg
+  let { category, subCategory, title } = newImg
+
+  subCategory = slugify(subCategory)
+  title = slugify(title)
+  const movedLocation = `${category}/${subCategory}/${title}`
+  const [_thumbUrl, thumbFileName] = oldImg.thumbnail.split(thumbs + "/")
+
+  try {
+    await storage.bucket(bucketName).file(fileName).move(`${movedLocation}.${extension}`)
+    await storage
+      .bucket(thumbs)
+      .file(thumbFileName)
+      .move(movedLocation + ".webp")
+    await Artwork.findOneAndUpdate(
+      { _id: oldImg._id },
+      {
+        thumbnail: `${baseStorageUrl}/${thumbs}/${thumbFileName}`,
+        title: slugify(title),
+        subCategory: slugify(subCategory),
+        category,
+      },
+      { update: true }
+    )
+  } catch (err) {
+    console.log("Error moving artwork: ", title)
+    console.log(err)
+    res.status(500).send(err.message)
   }
 })
 

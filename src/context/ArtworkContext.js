@@ -24,11 +24,22 @@ function ArtworkReducer(state, action) {
     }
     case "DELETE_ARTWORK": {
       const { category, subCategory, _id } = action.payload
+      console.log(state)
+      console.log(state[category][subCategory])
+      console.log(action.payload)
+      let newSubCategory
+      if (state[category][subCategory]?.length <= 1) {
+        newSubCategory = {}
+      } else {
+        newSubCategory = {
+          [subCategory]: state[category][subCategory].filter(art => art._id === _id),
+        }
+      }
       return {
         ...state,
         [category]: {
           ...state[category],
-          [subCategory]: state[category][subCategory].filter(art => art._id === _id),
+          ...newSubCategory,
         },
       }
     }

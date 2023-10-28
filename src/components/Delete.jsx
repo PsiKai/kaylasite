@@ -32,10 +32,10 @@ export default function Delete() {
     e.preventDefault()
     setDeleting(true)
     try {
-      const { src, thumbnail, _id } = activeArt
-      const params = new URLSearchParams({ src, thumbnail, _id }).toString()
+      const { _id } = activeArt
+      const params = new URLSearchParams({ _id }).toString()
       await fetch("/api/artwork?" + params, { method: "DELETE" })
-      dispatch({ type: "DELETE_ARTWORK", payload: activeArt })
+      dispatch({ type: "DELETE_ARTWORK", payload: { ...activeArt } })
       setActiveArt(null)
       setSubCategory("")
     } catch (err) {
@@ -62,9 +62,10 @@ export default function Delete() {
                 <input
                   id={cat}
                   type="radio"
+                  className="radio"
                   name="medium"
                   value={cat}
-                  className="radio"
+                  checked={category === cat}
                   onChange={updateCategory}
                 />
                 <label htmlFor={cat} className="radio btn">
@@ -90,9 +91,10 @@ export default function Delete() {
                       id={subCat}
                       type="radio"
                       className="radio"
-                      value={subCat}
-                      onClick={updateSubCategory}
                       name="subcategories"
+                      value={subCat}
+                      checked={subCategory === subCat}
+                      onChange={updateSubCategory}
                     />
                     <label className="radio btn btn-sm sub" htmlFor={subCat}>
                       {subCat}
@@ -107,12 +109,12 @@ export default function Delete() {
         <ul className="thumbnail-list">
           {!category || !subCategory
             ? null
-            : artWorks[category][subCategory]?.map(({ _id, thumbnail }) => (
+            : artWorks[category][subCategory]?.map(({ _id, thumbnail, title }) => (
                 <React.Fragment key={_id}>
                   <img
                     className={`thumbnail-image img ${activeArt?._id === _id ? "img-clicked" : ""}`}
                     src={thumbnail}
-                    alt={thumbnail}
+                    alt={title}
                     onClick={() => updateActiveArt(_id)}
                   />
                 </React.Fragment>

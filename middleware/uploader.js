@@ -2,16 +2,10 @@ import busboy from "busboy"
 import sharp from "sharp"
 import stream from "stream"
 import storage, { bucketName, thumbs } from "../google-client.js"
+import { slugify } from "../utils/stringUtils.js"
 
-const slugify = str => {
-  return str
-    .split(" ")
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join("-")
-}
-
-const uploadPath = (category, subCategory, title, mimeType, thumb = false) => {
-  const [file, encoding] = mimeType.split("/")
+export const uploadPath = (category, subCategory, title, mimeType, thumb = false) => {
+  const [_file, encoding] = mimeType.split("/")
   const extension = thumb ? "webp" : encoding
   return `${category}/${slugify(subCategory)}/${slugify(title)}.${extension}`
 }
@@ -38,7 +32,7 @@ export const uploader = async (req, res, next) => {
     const passThrough = new stream.PassThrough()
     const resizeStream = sharp().resize(null, 300).webp()
 
-    req.files.push({ googleFileName, thumbName })
+    req.files.push({ googleFileName, thumbName, mimeType })
 
     file.pipe(passThrough)
 

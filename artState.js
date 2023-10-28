@@ -20,11 +20,11 @@ export async function fetchArt() {
         artworks: {
           $push: {
             _id: "$_id",
-            alt: "$alt",
-            src: "$src",
+            title: "$title",
+            extension: "$extension",
             thumbnail: "$thumbnail",
             category: "$category",
-            subcategory: "$subCategory",
+            subCategory: "$subCategory",
           },
         },
       },

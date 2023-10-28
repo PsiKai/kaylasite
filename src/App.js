@@ -8,8 +8,8 @@ export default function App({ artWorks }) {
   return (
     <ArtworkProvider artWorks={artWorks}>
       <section className="upload-section" id="upload">
-        <img className="up logoEdge" src="images/kaylalogogreen.png" alt="" />
-        <img className="up logoEdgeRight" src="images/kaylalogogreen.png" alt="" />
+        <img className="up logoEdge" src="images/kaylalogogreen.png" aria-hidden />
+        <img className="up logoEdgeRight" src="images/kaylalogogreen.png" aria-hidden />
         <div className="upload-form">
           <h2>New Artwork</h2>
           <Upload />

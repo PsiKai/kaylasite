@@ -2,7 +2,6 @@ import "dotenv/config"
 import express from "express"
 import ejs from "ejs"
 import session from "express-session"
-// import fileUpload from "express-fileupload"
 import secure from "ssl-express-www"
 import connectDB from "./db/init.js"
 import pageRouter from "./routes/pages.js"
@@ -12,9 +11,12 @@ const app = express()
 
 app.use(secure)
 
+app.use((req, res, next) => {
+  app.locals.baseUrl = `${req.protocol}://${req.get("host")}`
+  next()
+})
 app.set("view engine", "ejs")
 app.use(express.static("public"))
-// app.use(fileUpload())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(
