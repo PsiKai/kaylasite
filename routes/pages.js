@@ -6,7 +6,7 @@ import { titleDesc } from "../copy/title_description.js"
 import Artwork from "../db/models/artwork.js"
 import User from "../db/models/user.js"
 import { isAuthenticated } from "../middleware/auth.js"
-import storage, { bucketName } from "../google-client.js"
+import { storageClient } from "../google-client.js"
 
 const pageRouter = Router()
 
@@ -89,10 +89,7 @@ pageRouter.get("/:category/:subCategory/:_id", async (req, res) => {
     const artWorks = await getArt()
     const foundArt = artWorks[category][subCategory]?.find(art => art._id.toString() === _id)
     if (foundArt) {
-      const options = { action: "read", expires: Date.now() + 60_000 }
-      const { title, extension } = foundArt
-      const filePath = `${category}/${subCategory}/${title}.${extension}`
-      const [signedUrl] = await storage.bucket(bucketName).file(filePath).getSignedUrl(options)
+      const [signedUrl] = await storageClient.signedUrl(foundArt)
 
       res.render("single", { signedUrl, artWork: foundArt })
     } else {
@@ -101,6 +98,7 @@ pageRouter.get("/:category/:subCategory/:_id", async (req, res) => {
   } catch (error) {
     console.log("Error generating signed URL")
     console.log(error)
+    res.redirect("/" + category)
   }
 })
 

@@ -1,15 +1,15 @@
 <%- include("partials/header") -%>
 
 <section class="colored">
-	<img class="logoEdge" src="images/kaylalogogreen.png" aria-hidden />
+  <img class="logoEdge" src="images/kaylalogogreen.png" aria-hidden />
   <img class="logoEdgeRight" src="images/kaylalogogreen.png" aria-hidden />
   <div class="category container-fluid">
-  	<h1> <%= pageCopy.title %> </h1>
+    <h1> <%= pageCopy.title %> </h1>
     <div class="bio">
     	<p><%= pageCopy.description %> </p>
     </div>
     <div class="call-action">
-    	<a target="_blank" href="https://www.facebook.com/kayla.kossajda">
+      <a target="_blank" href="https://www.facebook.com/kayla.kossajda">
       	<i class="media fab fa-facebook-f fa-2x"></i>
       </a>
       <a target="_blank" href="https://www.instagram.com/kaylakossart/">
@@ -24,23 +24,23 @@
 
 <section class="thumbnail-section">
   <div class="container-fluid content">
-  	<% Object.entries(artCategory).forEach(([subCategory, artwork]) => { %>
+    <% Object.entries(artCategory).forEach(([subCategory, artwork]) => { %>
       <h2><%= subCategory %></h2>
       <div class="thumbnail-container scrollbar scrollbar-deep-blue">
         <ul class="thumbnail-list">
-    			<% artwork.forEach((art) => { %>
-          	<a href=<%= "/" + category + "/" + subCategory + "/" + art._id %>>
-            	<img 
+    	  <% artwork.forEach((art) => { %>
+            <a href=<%= "/" + category + "/" + subCategory + "/" + art._id %>>
+              <img 
               	id=<%= art.title %>
               	class="thumbnail-image"
               	src="<%= art.thumbnail %>"
               	alt="<%= art.title %>"
-            	/>
-          	</a>
-    			<% }) %>
+              />
+            </a>
+    	  <% }) %>
       	</ul>
-    	</div>
-  	<% }) %>
+      </div>
+    <% }) %>
   </div>
 </section>
 

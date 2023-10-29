@@ -1,18 +1,16 @@
 import { Router } from "express"
 import Artwork from "../db/models/artwork.js"
-import { uploader, uploadPath } from "../middleware/uploader.js"
-import storage, { baseStorageUrl, bucketName, thumbs } from "../google-client.js"
+import { uploader } from "../middleware/uploader.js"
+import { storageClient } from "../google-client.js"
 import { fetchArt } from "../artState.js"
 import { slugify } from "../utils/stringUtils.js"
 
 const apiRouter = Router()
 
 apiRouter.post("/artwork", uploader, async (req, res) => {
-  const { category, subCategory, title } = req.body
-  const [{ thumbName, mimeType }] = req.files
-  const [_mime, extension] = mimeType.split("/")
+  const { category, subCategory, title, extension } = req.body
   const newArt = new Artwork({
-    thumbnail: `${baseStorageUrl}/${thumbs}/${thumbName}`,
+    thumbnail: storageClient.buildThumbnailUrl({ category, subCategory, title }),
     title: slugify(title),
     subCategory: slugify(subCategory),
     extension,
@@ -32,49 +30,16 @@ apiRouter.post("/artwork", uploader, async (req, res) => {
 
 apiRouter.delete("/artwork", async (req, res) => {
   const { _id } = req.query
-  const art = await Artwork.findOne({ _id })
-  const { category, subCategory, title, extension, thumbnail } = art
-
-  const bucketDeletion = new Promise(async (resolve, reject) => {
-    try {
-      await storage
-        .bucket(bucketName)
-        .file(`${category}/${subCategory}/${title}.${extension}`)
-        .delete()
-      console.log("Finished deleting from bucket:", title)
-      resolve()
-    } catch (err) {
-      console.log("Error deleting from bucket:", title)
-      console.log(err)
-      reject(err)
-    }
-  })
-  const thumbnailDeletion = new Promise(async (resolve, reject) => {
-    try {
-      const [_url, fileName] = thumbnail.split(thumbs + "/")
-      await storage.bucket(thumbs).file(fileName).delete()
-      console.log("Finished deleting from thumbnail bucket:", thumbnail)
-      resolve()
-    } catch (err) {
-      console.log("Error deleting from bucket:", title)
-      console.log(err)
-      reject(err)
-    }
-  })
-  const collectionDeletion = new Promise(async (resolve, reject) => {
-    try {
-      await Artwork.deleteOne({ _id })
-      console.log("Finished deleting from collection:", _id)
-      resolve()
-    } catch (err) {
-      console.log("Error deleting from bucket:", title)
-      console.log(err)
-      reject(err)
-    }
-  })
-
+  let art
   try {
-    await Promise.all([bucketDeletion, thumbnailDeletion, collectionDeletion])
+    art = await Artwork.findOne({ _id })
+  } catch (err) {
+    console.log("Unable to fetch art from params:", _id)
+    console.log(err)
+    res.status(400).send(err.message)
+  }
+  try {
+    await Promise.all([...storageClient.deleteFile(art), Artwork.deleteOne({ _id })])
     fetchArt()
     res.status(204).end()
   } catch (err) {
@@ -86,30 +51,18 @@ apiRouter.delete("/artwork", async (req, res) => {
 
 apiRouter.put("/artwork", async (req, res) => {
   const { oldImg, newImg } = req.body
-  const { extension } = oldImg
+  const thumbNail = storageClient.buildThumbnailUrl(newImg)
   let { category, subCategory, title } = newImg
-
   subCategory = slugify(subCategory)
   title = slugify(title)
-  const movedLocation = `${category}/${subCategory}/${title}`
-  const [_thumbUrl, thumbFileName] = oldImg.thumbnail.split(thumbs + "/")
 
   try {
-    await storage.bucket(bucketName).file(fileName).move(`${movedLocation}.${extension}`)
-    await storage
-      .bucket(thumbs)
-      .file(thumbFileName)
-      .move(movedLocation + ".webp")
-    await Artwork.findOneAndUpdate(
-      { _id: oldImg._id },
-      {
-        thumbnail: `${baseStorageUrl}/${thumbs}/${thumbFileName}`,
-        title: slugify(title),
-        subCategory: slugify(subCategory),
-        category,
-      },
-      { update: true }
-    )
+    await Promise.all([
+      ...storageClient.moveFile(oldImg, newImg),
+      ArtWork.findOneAndUpdate({ _id: oldImg._id }, { thumbnail, title, subCategory, category }),
+    ])
+    fetchArt()
+    res.status(204).end()
   } catch (err) {
     console.log("Error moving artwork: ", title)
     console.log(err)
