@@ -1,5 +1,6 @@
 import React, { useContext, useState, useMemo } from "react"
 import { ArtworkContext } from "../context/ArtworkContext.js"
+import useAlerts from "../hooks/useAlerts.js"
 
 export default function Delete() {
   const { artWorks, dispatch } = useContext(ArtworkContext)
@@ -7,6 +8,7 @@ export default function Delete() {
   const [subCategory, setSubCategory] = useState("")
   const [activeArt, setActiveArt] = useState(null)
   const [deleting, setDeleting] = useState(false)
+  const { setAlert } = useAlerts()
 
   const updateActiveArt = _id => {
     if (_id === activeArt?._id) return setActiveArt(null)
@@ -36,10 +38,12 @@ export default function Delete() {
       const params = new URLSearchParams({ _id }).toString()
       await fetch("/api/artwork?" + params, { method: "DELETE" })
       dispatch({ type: "DELETE_ARTWORK", payload: { ...activeArt } })
+      setAlert({ message: "Successfully deleted artwork!", type: "success" })
       setActiveArt(null)
       setSubCategory("")
     } catch (err) {
       console.log(err)
+      setAlert({ message: "There was an error deleting this artwork", type: "error" })
     } finally {
       setDeleting(false)
     }

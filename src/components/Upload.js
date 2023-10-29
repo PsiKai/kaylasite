@@ -1,10 +1,12 @@
 import React, { useState, useContext } from "react"
 import { ArtworkContext } from "../context/ArtworkContext"
+import useAlerts from "../hooks/useAlerts.js"
 
 export default function Upload() {
   const { artWorks, dispatch } = useContext(ArtworkContext)
   const [image, setImage] = useState()
   const [uploading, setUploading] = useState(false)
+  const { setAlert } = useAlerts()
 
   const updateImage = e => {
     const [imgFile] = e.target.files
@@ -26,10 +28,12 @@ export default function Upload() {
       })
       const { newArt } = await res.json()
       dispatch({ type: "ADD_ARTWORK", payload: newArt })
+      setAlert({ message: "Successfully uploaded artwork!", type: "success" })
       e.target.reset()
       setImage(null)
     } catch (err) {
       console.log(err)
+      setAlert({ message: "There was an error uploading this artwork", type: "error" })
     } finally {
       setUploading(false)
     }

@@ -318,6 +318,30 @@ ul.thumbnail-list {
   background-color: transparent;
 }
 
+/* ALERTS SECTION */
+
+.alerts-container {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  z-index: 500;
+}
+
+.alert-toast {
+  background-color: #827397;
+  background-image: url(https://www.transparenttextures.com/patterns/xv.png);
+  border-radius: 0.5rem;
+  padding: 1rem 1.5rem;
+  box-shadow: 8px 8px 16px 8px rgba(0, 0, 0, 0.4);
+  border: 1px solid white;
+}
+
+.alert-message {
+  font-size: 1.5rem;
+  font-weight: bolder;
+  margin-block: revert;
+}
+
 /* BIOGRAPHY SECTION */
 
 #biography {
