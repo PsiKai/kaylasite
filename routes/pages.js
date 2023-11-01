@@ -2,7 +2,7 @@ import { Router } from "express"
 import { default as _ } from "lodash"
 // import bcrypt from "bcrypt"
 import { getArt } from "../artState.js"
-import { titleDesc } from "../copy/title_description.js"
+import { titleDesc, singleArtCopy } from "../copy/title_description.js"
 import Artwork from "../db/models/artwork.js"
 import User from "../db/models/user.js"
 import { isAuthenticated } from "../middleware/auth.js"
@@ -21,11 +21,11 @@ pageRouter.get("/", async (req, res) => {
     return random
   }, [])
 
-  res.render("index", { randomArt, artWorks })
+  res.render("index", { randomArt, artWorks, pageCopy: titleDesc[0] })
 })
 
 pageRouter.get("/login", (req, res) => {
-  res.render("login")
+  res.render("login", { pageCopy: titleDesc[0], path: "/login" })
 })
 
 pageRouter.post("/login", async (req, res) => {
@@ -65,7 +65,7 @@ pageRouter.post("/login", async (req, res) => {
 // pageRouter.get("/upload", isAuthenticated, async (req, res) => {
 pageRouter.get("/upload", async (req, res) => {
   const artWorks = await getArt()
-  res.render("upload", { artWorks })
+  res.render("upload", { artWorks, pageCopy: titleDesc[0], path: "/upload" })
 })
 
 pageRouter.get("/:category", async (req, res) => {
@@ -74,12 +74,12 @@ pageRouter.get("/:category", async (req, res) => {
   category = category.charAt(0).toUpperCase() + category.slice(1)
   const pageCopy = titleDesc.find(item => item.page === category)
   const artCategory = artWorks[category]
-  const domain = process.env.DOMAIN
 
   res.render("template", {
     pageCopy,
     artCategory,
     category,
+    path: `/${category}`,
   })
 })
 
@@ -90,8 +90,14 @@ pageRouter.get("/:category/:subCategory/:_id", async (req, res) => {
     const foundArt = artWorks[category][subCategory]?.find(art => art._id.toString() === _id)
     if (foundArt) {
       const [signedUrl] = await storageClient.signedUrl(foundArt)
+      const pageCopy = singleArtCopy(foundArt)
 
-      res.render("single", { signedUrl, artWork: foundArt })
+      res.render("single", {
+        signedUrl,
+        artWork: foundArt,
+        pageCopy,
+        path: `/${category}/${subCategory}/${_id}`,
+      })
     } else {
       res.redirect("/" + category)
     }

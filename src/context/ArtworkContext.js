@@ -30,6 +30,7 @@ function ArtworkReducer(state, action) {
       let newSubCategory
       if (state[category][subCategory]?.length <= 1) {
         newSubCategory = {}
+        delete state[category][subCategory]
       } else {
         newSubCategory = {
           [subCategory]: state[category][subCategory].filter(art => art._id === _id),
