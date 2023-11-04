@@ -21,7 +21,7 @@ pageRouter.get("/", async (req, res) => {
     return random
   }, [])
 
-  res.render("index", { randomArt, artWorks, pageCopy: titleDesc[0] })
+  res.render("index", { randomArt, artWorks, pageCopy: titleDesc[0], path: "/" })
 })
 
 pageRouter.get("/login", (req, res) => {

@@ -1,5 +1,4 @@
 import React from "react"
-import Edit from "./components/Edit.js"
 import Upload from "./components/Upload.js"
 import Delete from "./components/Delete.jsx"
 import Alerts from "./components/Alerts.js"
@@ -23,7 +22,6 @@ export default function App({ artWorks }) {
           <div className="delete-form">
             <h2>Existing Artwork</h2>
             <Delete />
-            <Edit />
           </div>
         </section>
         <Alerts />

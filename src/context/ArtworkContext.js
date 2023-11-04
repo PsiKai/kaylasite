@@ -1,4 +1,5 @@
 import { createContext, useReducer } from "react"
+import { addNewArt, removeArt } from "../../utils/stateUtils.js"
 
 export const ArtworkContext = createContext()
 
@@ -13,36 +14,14 @@ export function ArtworkProvider(props) {
 function ArtworkReducer(state, action) {
   switch (action.type) {
     case "ADD_ARTWORK": {
-      const { category, subCategory } = action.payload
-      return {
-        ...state,
-        [category]: {
-          ...state[category],
-          [subCategory]: [...(state[category][subCategory] || []), action.payload],
-        },
-      }
+      return addNewArt(state, action.payload)
     }
     case "DELETE_ARTWORK": {
-      const { category, subCategory, _id } = action.payload
-      console.log(state)
-      console.log(state[category][subCategory])
-      console.log(action.payload)
-      let newSubCategory
-      if (state[category][subCategory]?.length <= 1) {
-        newSubCategory = {}
-        delete state[category][subCategory]
-      } else {
-        newSubCategory = {
-          [subCategory]: state[category][subCategory].filter(art => art._id === _id),
-        }
-      }
-      return {
-        ...state,
-        [category]: {
-          ...state[category],
-          ...newSubCategory,
-        },
-      }
+      return removeArt(state, action.payload)
+    }
+    case "MOVE_ARTWORK": {
+      const { newImg, oldImg } = action.payload
+      return addNewArt(removeArt(state, oldImg), newImg)
     }
     default:
       return state

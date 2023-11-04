@@ -44,8 +44,8 @@ class GoogleClient extends Storage {
     })
 
     return [
-      this.mainBucket.file(oldFullSizeFile).move(movedLocation),
-      this.thumbBucket.file(oldThumbnailFile).move(movedLocation),
+      this.mainBucket.file(oldFullSizeFile).move(newFullSizePath),
+      this.thumbBucket.file(oldThumbnailFile).move(newThumbnailPath),
     ]
   }
 

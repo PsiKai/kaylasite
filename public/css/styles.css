@@ -434,6 +434,7 @@ input {
   background-color: #d8b9c3;
   font-family: "Open Sans", sans-serif;
   padding-left: 12px !important;
+  border: 1px solid #827397 !important;
 }
 
 input::placeholder {
