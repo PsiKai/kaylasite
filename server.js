@@ -9,7 +9,7 @@ import apiRouter from "./routes/api.js"
 
 const app = express()
 
-app.use(secure)
+if (process.env.NODE_ENV === "production") app.use(secure)
 
 app.use((req, res, next) => {
   app.locals.baseUrl = `${req.protocol}://${req.get("host")}`

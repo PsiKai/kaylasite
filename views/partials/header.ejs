@@ -5,11 +5,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width" />
 
-  <meta name="description" content="<%= pageCopy.htmlDescription %>" />
+  <meta name="description" content="<%= pageCopy?.htmlDescription %>" />
   <meta property="og:url" content="<%= baseUrl + path %>">
   <meta property="og:type" content="website">
   <meta property="og:title" content="<%= pageCopy.htmlTitle %>">
-  <meta property="og:description" content="<%= pageCopy.htmlDescription %>">
+  <meta property="og:description" content="<%= pageCopy?.htmlDescription %>">
   <meta property="og:image" content="<%= pageCopy.thumbnail || 'http://i.imgur.com/RG2BoCq.png' %>">
   <meta name="author" content="David Irvin" />
 

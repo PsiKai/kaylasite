@@ -2,6 +2,8 @@ import React, { useContext, useState, useMemo } from "react"
 import { ArtworkContext } from "../context/ArtworkContext.js"
 import useAlerts from "../hooks/useAlerts.js"
 import Edit from "./Edit.js"
+import CategoryRadios from "./CategoryRadios.js"
+import SubCategoryRadios from "./SubCategoryRadios.js"
 
 export default function Delete() {
   const { artWorks, dispatch } = useContext(ArtworkContext)
@@ -59,66 +61,33 @@ export default function Delete() {
   return (
     <>
       <form onSubmit={handleDeletion}>
-        <ul>
-          <li>
-            <label htmlFor="medium">
-              <p>
-                <strong>Select Medium</strong>
-              </p>
-            </label>
-          </li>
-          <li>
-            {Object.keys(artWorks).map(cat => {
-              return (
-                <div className="wrapper" key={cat}>
-                  <input
-                    id={cat}
-                    type="radio"
-                    className="radio"
-                    name="medium"
-                    value={cat}
-                    checked={category === cat}
-                    onChange={updateCategory}
-                  />
-                  <label htmlFor={cat} className="radio btn">
-                    {cat}
-                  </label>
-                </div>
-              )
-            })}
-          </li>
-          <li>
-            <label htmlFor="subcat">
-              <p>
-                <strong>Subject Matter</strong>
-              </p>
-            </label>
-          </li>
-          <li>
-            <div className="flex-container">
-              {category
-                ? Object.keys(artWorks[category]).map(subCat => (
-                    <React.Fragment key={subCat}>
-                      <input
-                        id={subCat}
-                        type="radio"
-                        className="radio"
-                        name="subcategories"
-                        value={subCat}
-                        checked={subCategory === subCat}
-                        onChange={updateSubCategory}
-                      />
-                      <label className="radio btn btn-sm sub" htmlFor={subCat}>
-                        {subCat}
-                      </label>
-                    </React.Fragment>
-                  ))
-                : null}
-            </div>
-          </li>
-        </ul>
-        <div className="thumbnail-container scrollbar scrollbar-deep-blue">
-          <ul className="thumbnail-list">
+        <div>
+          <label htmlFor="medium">
+            <p>
+              <strong>Select Medium</strong>
+            </p>
+          </label>
+          <div className="radio-btn-container">
+            <CategoryRadios value={category} onChange={updateCategory} idModifier={"delete"} />
+          </div>
+          <label htmlFor="subcat">
+            <p>
+              <strong>Subject Matter</strong>
+            </p>
+          </label>
+          <div className="radio-btn-container">
+            {category ? (
+              <SubCategoryRadios
+                subCategories={Object.keys(artWorks[category])}
+                onChange={updateSubCategory}
+                value={subCategory}
+                idModifier={"delete"}
+              />
+            ) : null}
+          </div>
+        </div>
+        <div className="thumbnail-container scrollbar scrollbar-deep-blue ">
+          <div className="thumbnail-list">
             {!category || !subCategory
               ? null
               : artWorks[category][subCategory]?.map(({ _id, thumbnail, title }) => (
@@ -133,14 +102,8 @@ export default function Delete() {
                     />
                   </React.Fragment>
                 ))}
-          </ul>
+          </div>
         </div>
-        <label className="alert alert-danger hidden">
-          <i className="fa fa-exclamation-circle" />
-          <strong> Please select an artwork to update or delete!</strong>
-        </label>
-        <input type="text" id="imgDel" name="image" className="delete-img" />
-        <label htmlFor="imgDel" className="btn btn-lg hidden del-label"></label>
         <button
           disabled={deleting || !activeArt}
           name="button"
@@ -150,11 +113,6 @@ export default function Delete() {
           <i className="fa fa-trash" />
           {deleting ? "Removing Artwork..." : "Remove Artwork"}
         </button>
-        {/* <label name="updateButton" className="btn btn-lg btn-success"> */}
-        {/*   <i className="far fa-edit" /> */}
-        {/*   Edit Artwork */}
-        {/*   <i className="fas fa-angle-double-down hidden" /> */}
-        {/* </label> */}
       </form>
       {activeArt ? <Edit artWork={activeArt} onUpdateComplete={onUpdateComplete} /> : null}
     </>

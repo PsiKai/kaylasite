@@ -1,5 +1,7 @@
 import React, { useState, useContext } from "react"
 import { ArtworkContext } from "../context/ArtworkContext.js"
+import CategoryRadios from "./CategoryRadios.js"
+import SubCategoryRadios from "./SubCategoryRadios.js"
 
 export default function Edit({ artWork, onUpdateComplete }) {
   const [form, setForm] = useState(artWork || {})
@@ -34,59 +36,29 @@ export default function Edit({ artWork, onUpdateComplete }) {
 
   return (
     <form id="updateForm" onSubmit={submitUpdates}>
-      <ul className="upload-data update-data">
-        <li>
-          <label htmlFor="categories">
-            <p>
-              <strong>Art Medium</strong>
-            </p>
-          </label>
-        </li>
-        <li>
-          {["Photography", "Painting", "Drawing", "Digital"].map(category => (
-            <div className="wrapper" key={category}>
-              <input
-                id="photoUp"
-                type="radio"
-                name="category"
-                value={category}
-                className="radio"
-                required
-                onChange={updateForm}
-                checked={form.category === category}
-              />
-              <label htmlFor="photoUp" className="update radio btn">
-                {category}
-              </label>
-            </div>
-          ))}
-        </li>
-        <li>
-          <label>
-            <p>
-              <strong>Subject Matter</strong>
-            </p>
-          </label>
-        </li>
-        <li>
-          {Object.keys(artWorks[form.category] || {}).map(subCat => (
-            <React.Fragment key={`${subCat}-update`}>
-              <input
-                id={`${subCat}-update`}
-                type="radio"
-                className="radio"
-                name="subCategory"
-                value={subCat}
-                checked={form.subCategory === subCat}
-                onChange={updateForm}
-              />
-              <label className="radio btn btn-sm sub" htmlFor={`${subCat}-update`}>
-                {subCat}
-              </label>
-            </React.Fragment>
-          ))}
-        </li>
-        <li>
+      <div className="upload-data update-data">
+        <label htmlFor="categories">
+          <p>
+            <strong>Art Medium</strong>
+          </p>
+        </label>
+        <div className="radio-btn-container">
+          <CategoryRadios onChange={updateForm} value={form.category} idModifier="update" />
+        </div>
+        <label>
+          <p>
+            <strong>Subject Matter</strong>
+          </p>
+        </label>
+        <div className="radio-btn-container">
+          <SubCategoryRadios
+            subCategories={Object.keys(artWorks[form.category] || {})}
+            value={form.subCategory}
+            onChange={updateForm}
+            idModifier="update"
+          />
+        </div>
+        <div>
           <input
             id="subcatUp"
             type="text"
@@ -99,15 +71,13 @@ export default function Edit({ artWork, onUpdateComplete }) {
             value={form.subCategory}
             onChange={updateForm}
           />
-        </li>
-        <li>
-          <label>
-            <p>
-              <strong>Artwork Title</strong>
-            </p>
-          </label>
-        </li>
-        <li>
+        </div>
+        <label>
+          <p>
+            <strong>Artwork Title</strong>
+          </p>
+        </label>
+        <div>
           <input
             id="artnameUp"
             type="text"
@@ -120,12 +90,12 @@ export default function Edit({ artWork, onUpdateComplete }) {
             autoComplete="off"
             spellCheck="false"
           />
-        </li>
+        </div>
         <button type="submit" className="btn btn-lg btn-primary" disabled={updating}>
           <i className="fas fa-upload" />
           {updating ? "Submitting..." : "Submit Changes"}
         </button>
-      </ul>
+      </div>
     </form>
   )
 }

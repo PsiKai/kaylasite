@@ -1,10 +1,14 @@
 import React, { useState, useContext } from "react"
 import { ArtworkContext } from "../context/ArtworkContext"
 import useAlerts from "../hooks/useAlerts.js"
+import CategoryRadios from "./CategoryRadios.js"
+import SubCategoryRadios from "./SubCategoryRadios.js"
+import FileUpload from "./FileUpload.js"
 
 export default function Upload() {
   const { artWorks, dispatch } = useContext(ArtworkContext)
   const [image, setImage] = useState()
+  const [form, setForm] = useState({})
   const [uploading, setUploading] = useState(false)
   const { setAlert } = useAlerts()
 
@@ -14,12 +18,27 @@ export default function Upload() {
       setImage(imgFile)
     } else {
       setImage("")
+      setForm({})
     }
+  }
+
+  const updateForm = e => {
+    setForm(prev => {
+      return {
+        ...prev,
+        [e.target.name]: e.target.value,
+      }
+    })
   }
 
   const uploadNewArt = async e => {
     e.preventDefault()
+
     const uploadForm = new FormData(e.target)
+    const imageField = uploadForm.get("image")
+    uploadForm.delete("image")
+    uploadForm.append("image", imageField)
+
     setUploading(true)
     try {
       const res = await fetch("/api/artwork", {
@@ -30,6 +49,7 @@ export default function Upload() {
       dispatch({ type: "ADD_ARTWORK", payload: newArt })
       setAlert({ message: "Successfully uploaded artwork!", type: "success" })
       e.target.reset()
+      setForm({})
       setImage(null)
     } catch (err) {
       console.log(err)
@@ -42,115 +62,91 @@ export default function Upload() {
   return (
     <div className="form-data">
       <form className="form" onSubmit={uploadNewArt}>
-        <ul className="upload-data">
-          <li>
-            <label htmlFor="category">
-              <p>
-                <strong>Art Medium</strong>
-              </p>
-            </label>
-          </li>
-          <li>
-            <div className="wrapper">
-              <input
-                id="photo"
-                type="radio"
-                name="category"
-                value="Photography"
-                className="radio"
-                required
-              />
-              <label htmlFor="photo" className="radio btn">
-                Photography
-              </label>
-            </div>
-            <div className="wrapper">
-              <input id="paint" type="radio" name="category" value="Painting" className="radio" />
-              <label htmlFor="paint" className="radio btn">
-                Painting
-              </label>
-            </div>
-            <div className="wrapper">
-              <input id="draw" type="radio" name="category" value="Drawing" className="radio" />
-              <label htmlFor="draw" className="radio btn">
-                Drawing
-              </label>
-            </div>
-            <div className="wrapper">
-              <input id="digital" type="radio" name="category" value="Digital" className="radio" />
-              <label htmlFor="digital" className="radio btn">
-                Digital
-              </label>
-            </div>
-          </li>
-          <li>
-            <label htmlFor="subcategory">
-              <p>
-                <strong>Subject Matter</strong>
-              </p>
-            </label>
-          </li>
-          <li>
-            <input
-              id="subcategory"
-              type="text"
-              name="subCategory"
-              className="subcat"
-              autoComplete="off"
-              placeholder="Enter Subject"
-              required
-              spellCheck="false"
-            />
-          </li>
-          <li>
-            <label htmlFor="title">
-              <p>
-                <strong>Artwork Title</strong>
-              </p>
-            </label>
-          </li>
-          <li>
-            <input
-              id="title"
-              type="text"
-              name="title"
-              className="subcat"
-              placeholder="Name Your Piece"
-              required
-              autoComplete="off"
-              spellCheck="false"
-            />
-          </li>
-          <li className="img-preview">
-            <img
-              name="preview"
-              id="preview"
-              src={image ? URL.createObjectURL(image) : ""}
-              alt={image?.name || ""}
-            />
-          </li>
-          <li>
-            <input
-              type="file"
-              id="img"
-              name="image"
-              accept="image/*"
-              className="inputfile"
-              required
-              onChange={updateImage}
-            />
-            <label id="fileName" htmlFor="img" className="btn">
-              <i className="fas fa-search" />
-              {image?.name || "Choose a file"}
-            </label>
-          </li>
-          <li>
-            <button type="submit" className="btn btn-lg btn-info" disabled={uploading}>
-              <i className="fas fa-upload" />
-              {uploading ? "Uploading..." : "Upload"}
-            </button>
-          </li>
-        </ul>
+        <div className="upload-data">
+          <FileUpload file={image} onFile={updateImage} />
+          {!image ? null : (
+            <>
+              <div>
+                <label htmlFor="category">
+                  <p>
+                    <strong>Art Medium</strong>
+                  </p>
+                </label>
+                <div className="radio-btn-container">
+                  <CategoryRadios
+                    idModifier="upload"
+                    onChange={updateForm}
+                    value={form.category || ""}
+                  />
+                </div>
+              </div>
+              {!form.category ? null : (
+                <>
+                  <div>
+                    <label htmlFor="subcategory">
+                      <p>
+                        <strong>Subject Matter</strong>
+                      </p>
+                    </label>
+                    <div className="radio-btn-container">
+                      <SubCategoryRadios
+                        idModifier="upload"
+                        subCategories={Object.keys(artWorks[form.category] || {})}
+                        value={form.subCategory || ""}
+                        onChange={updateForm}
+                      />
+                    </div>
+                    <div>
+                      <input
+                        id="subcategory"
+                        type="text"
+                        name="subCategory"
+                        className="subcat"
+                        autoComplete="off"
+                        placeholder="Enter Subject"
+                        required
+                        spellCheck="false"
+                        value={form.subCategory || ""}
+                        onChange={updateForm}
+                      />
+                    </div>
+                  </div>
+                  {!form.subCategory ? null : (
+                    <>
+                      <div>
+                        <label htmlFor="title">
+                          <p>
+                            <strong>Artwork Title</strong>
+                          </p>
+                        </label>
+                        <input
+                          id="title"
+                          type="text"
+                          name="title"
+                          className="subcat"
+                          placeholder="Name Your Piece"
+                          required
+                          autoComplete="off"
+                          spellCheck="false"
+                          value={form.title || ""}
+                          onChange={updateForm}
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        className="submit-button btn btn-lg btn-info"
+                        disabled={uploading || !form.title}
+                      >
+                        <i className="fas fa-upload" />
+                        {uploading ? "Uploading..." : "Upload"}
+                      </button>
+                    </>
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </div>
       </form>
     </div>
   )

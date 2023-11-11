@@ -33,6 +33,7 @@ apiRouter.delete("/artwork", async (req, res) => {
   let art
   try {
     art = await Artwork.findOne({ _id })
+    if (!art) throw new Error("Artwork not found")
   } catch (err) {
     console.log("Unable to fetch art from params:", _id)
     console.log(err)
@@ -43,7 +44,7 @@ apiRouter.delete("/artwork", async (req, res) => {
     fetchArt()
     res.status(204).end()
   } catch (err) {
-    console.log("Error deleting artwork:", title)
+    console.log("Error deleting artwork:", art?.title)
     console.log(err)
     res.status(500).send(err?.message)
   }

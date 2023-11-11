@@ -4,10 +4,15 @@ html {
 }
 
 body {
+  font-family: "Kite One", sans-serif;
   text-align: center;
   min-height: 100vh;
   display: grid;
   grid-template-rows: max-content auto max-content;
+}
+
+#artwork-admin {
+  display: contents;
 }
 
 h1 {
@@ -132,7 +137,6 @@ h4 {
 
 footer {
   position: relative;
-  /* padding: 2% 0 1%; */
   background: linear-gradient(#145374, #00334e);
   color: #1a1c20;
   position: relative;
@@ -237,7 +241,6 @@ footer .container-fluid {
   scrollbar-width: thin;
   overflow-x: auto;
   height: auto;
-  max-width: fit-content;
   padding: 2rem 1rem;
   text-align: left;
   /* background: linear-gradient(135deg, #4d4c7d, #363062); */
@@ -257,6 +260,7 @@ ul.thumbnail-list {
   display: inline-block;
   padding: 0;
   filter: drop-shadow(3px 3px 3px black);
+  width: 1rem;
 }
 
 .thumbnail-image {
@@ -398,36 +402,26 @@ hr {
 
 /* ////////Upload page/////////// */
 .upload-section {
-  padding: calc(80px + 3%) 0 3%;
+  padding: 2rem 0;
   background-color: #d8b9c3;
 }
 
 .upload-data {
   width: 100%;
   display: grid;
-  grid-template-rows: repeat(7, auto);
-  grid-template-columns: 1fr 1fr;
+  /* grid-template-rows: auto repeat(3, 1fr) auto; */
+  /* grid-template-columns: 1fr 1fr; */
+  gap: 1rem;
 }
 
 .update-data {
   display: block;
 }
 
-.upload-data li {
-  grid-column: 1;
-}
-
-.upload-data li:nth-child(1),
-.upload-data li:nth-child(2) {
-  grid-column: 1 / 3;
-}
-
 .upload-data .img-preview {
   display: flex;
   justify-content: center;
   align-items: center;
-  grid-row: 3 / 9;
-  grid-column: 2 / 3;
 }
 
 input {
@@ -452,14 +446,14 @@ input.update::placeholder {
 #filename,
 select,
 .btn,
-input:not([class="radio"]),
+input:not(#img, [class="radio"]),
 .alert {
   min-width: 90%;
+  min-width: 100%;
 }
 
 .wrapper {
   display: inline;
-  margin-bottom: 5%;
 }
 
 #img,
@@ -473,17 +467,99 @@ input:not([class="radio"]),
   z-index: -1;
 }
 
-#img + label {
-  font-size: 1.25em;
+#fileName {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  border: 2px dashed #4d4c7d;
+  border-radius: 0.5rem;
+  padding: 1rem 1rem 0.5rem;
+  font-size: 1.25rem;
+  font-weight: bolder;
+  color: #363062;
+  transition:
+    opacity 75ms,
+    border-color 75ms,
+    background-color 75ms;
+}
+
+#fileName.is-dragged-over {
+  opacity: 0.5;
+  border-color: #d8b9c3;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+#fileName .btn {
+  cursor: pointer;
   color: white;
   background-color: #363062;
-  display: inline-block;
-  cursor: pointer;
+  min-width: fit-content;
+}
+
+.upload-image-placeholder {
+  height: 250px;
+  display: grid;
+  place-items: center;
+}
+
+.drag-image-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  align-self: flex-end;
+}
+
+.upload-image-placeholder i {
+  font-size: 3rem;
+  color: #363062;
 }
 
 #img:focus + label,
-#img + label:hover {
+#fileName .btn:hover {
   background-color: #4d4c7d !important;
+}
+
+#fileName:focus {
+  outline: auto;
+}
+
+.image-preview-container {
+  position: relative;
+  min-height: 250px;
+}
+
+.image-preview-container button {
+  background: transparent;
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.4);
+  padding: 0.25rem;
+  border-bottom-left-radius: 0.25rem;
+}
+
+.image-preview-container button i {
+  color: black;
+}
+
+.image-preview-container * {
+  transition:
+    color 75ms,
+    background-color 75ms;
+}
+
+.image-preview-container button:hover,
+.image-preview-container button:focus {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.image-preview-container button:hover i,
+.image-preview-container button:focus i {
+  color: white;
 }
 
 .del-label {
@@ -494,11 +570,6 @@ input:not([class="radio"]),
   cursor: pointer;
   cursor: default;
   margin: 2% 40px 0 40px;
-}
-
-.btn-danger,
-.btn-success {
-  margin: 2% 10px 0 40px;
 }
 
 .btn-primary {
@@ -512,7 +583,7 @@ input:not([class="radio"]),
 
 .btn-danger,
 .btn-info,
-.btn#fileName,
+#fileName .btn,
 .alert,
 .btn-success,
 .btn-primary {
@@ -533,32 +604,39 @@ li {
 }
 
 #preview {
-  max-height: 290px;
   max-width: 100%;
-  width: auto;
+  width: fit-content;
+  max-height: 250px;
+  object-fit: contain;
 }
 
 .upload-form {
   background-color: #827397;
   background-image: url(https://www.transparenttextures.com/patterns/xv.png);
   border-radius: 25px;
-  margin: 0 15% 5%;
+  margin: 0 auto;
   text-align: left;
-  padding: 2%;
   box-shadow: 0 0 5px 2px;
 }
 
 .delete-form {
   background-color: #d8b9c3;
   border-radius: 25px;
-  margin: 5% 15%;
+  margin: 1rem auto;
   text-align: left;
-  padding: 2%;
   box-shadow: 0 0 5px 2px;
 }
 
+.upload-form,
+.delete-form {
+  max-width: 1000px;
+  width: 90%;
+  padding: 2rem;
+}
+
 .thumbnail-section.delete {
-  padding-top: 3%;
+  min-height: auto;
+  padding: 2rem 0;
   box-shadow: 0 0 3px 1px black;
 }
 .form-data {
@@ -569,16 +647,16 @@ li {
   background-color: #d8b9c3;
 }
 
-label {
-  margin-right: 10px;
-  margin-bottom: 0;
-}
-
 label.btn-sm {
   background-color: #363062;
   color: white;
-  margin: 2% 2% 2% 0;
   min-width: 130px;
+}
+
+.radio-btn-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.5rem;
 }
 
 label.radio:hover {
@@ -604,10 +682,8 @@ label.radio {
   background-color: #363062;
   color: white;
   min-width: 130px;
-  margin-bottom: 10px;
 }
 
-.btn-sm:hover,
 .selected {
   background-color: #4d4c7d !important;
   border: 1px solid white;
@@ -645,8 +721,7 @@ label.radio {
 }
 
 .img-clicked {
-  border: 3px solid red;
-  opacity: 50%;
+  outline: 3px solid green;
 }
 
 /* MEDIA QUERY TABLET SIZE */
@@ -715,14 +790,11 @@ label.radio {
     display: none;
   }
 
-  .upload-form,
-  .delete-form,
   .login-form {
     margin: 0 3% 5%;
     padding: 3%;
   }
 
-  .delete-form,
   .login-form .form {
     margin-top: 3%;
   }
@@ -744,10 +816,6 @@ label.radio {
 
   .colored .container-fluid {
     padding: 100px 5% 2%;
-  }
-
-  .upload-data {
-    display: inherit;
   }
 }
 
@@ -805,18 +873,11 @@ label.radio {
   label,
   select,
   .btn,
-  input:not([type="radio"]),
+  input:not(#img, [type="radio"]),
   .alert {
     display: block;
     min-width: inherit;
     width: 100%;
-    padding: 2% 2%;
-    margin-top: 2%;
-  }
-
-  label.btn-sm {
-    width: 45%;
-    margin: 2% auto;
   }
 
   .flex-container {
@@ -828,14 +889,6 @@ label.radio {
     margin: 0;
   }
 
-  .del-label,
-  .btn-danger,
-  .alert,
-  .btn-success,
-  .btn-primary {
-    margin: 3% 0;
-  }
-
   input.img-edit,
   .hidden {
     display: none;
@@ -843,6 +896,15 @@ label.radio {
 
   ::-webkit-scrollbar {
     display: none;
+  }
+
+  .upload-form,
+  .delete-form {
+    padding: 1rem;
+  }
+
+  #fileName {
+    font-size: 1.05rem;
   }
 }
 
@@ -882,10 +944,10 @@ label.radio {
 
   .upload-form,
   .delete-form {
-    max-width: 1000px;
     margin: 0 auto;
     position: relative;
     z-index: 1;
+    padding: 2rem;
   }
 
   .bio {
