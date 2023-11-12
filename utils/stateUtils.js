@@ -17,7 +17,7 @@ export function removeArt(state, payload) {
     delete state[category][subCategory]
   } else {
     newSubCategory = {
-      [subCategory]: state[category][subCategory].filter(art => art._id === _id),
+      [subCategory]: state[category][subCategory].filter(art => art._id !== _id),
     }
   }
   return {

@@ -1,9 +1,10 @@
-import React, { useContext, useState, useMemo } from "react"
+import React, { useRef, useContext, useState, useMemo } from "react"
 import { ArtworkContext } from "../context/ArtworkContext.js"
 import useAlerts from "../hooks/useAlerts.js"
 import Edit from "./Edit.js"
 import CategoryRadios from "./CategoryRadios.js"
 import SubCategoryRadios from "./SubCategoryRadios.js"
+import ConfirmationModal from "./ConfirmationModal.js"
 
 export default function Delete() {
   const { artWorks, dispatch } = useContext(ArtworkContext)
@@ -12,6 +13,7 @@ export default function Delete() {
   const [activeArt, setActiveArt] = useState(null)
   const [deleting, setDeleting] = useState(false)
   const { setAlert } = useAlerts()
+  const dialogRef = useRef()
 
   const updateActiveArt = _id => {
     if (_id === activeArt?._id) return setActiveArt(null)
@@ -31,10 +33,10 @@ export default function Delete() {
 
     setActiveArt(null)
     setCategory(e.target.value)
+    setSubCategory("")
   }
 
   const handleDeletion = async e => {
-    e.preventDefault()
     setDeleting(true)
     try {
       const { _id } = activeArt
@@ -59,62 +61,91 @@ export default function Delete() {
   }
 
   return (
-    <>
-      <form onSubmit={handleDeletion}>
+    <div className="upload-data">
+      <div>
+        <label htmlFor="medium">
+          <p>
+            <strong>Select Medium</strong>
+          </p>
+        </label>
+        <div className="radio-btn-container">
+          <CategoryRadios value={category} onChange={updateCategory} idModifier={"delete"} />
+        </div>
+      </div>
+      {category ? (
         <div>
-          <label htmlFor="medium">
-            <p>
-              <strong>Select Medium</strong>
-            </p>
-          </label>
-          <div className="radio-btn-container">
-            <CategoryRadios value={category} onChange={updateCategory} idModifier={"delete"} />
-          </div>
           <label htmlFor="subcat">
             <p>
               <strong>Subject Matter</strong>
             </p>
           </label>
           <div className="radio-btn-container">
-            {category ? (
-              <SubCategoryRadios
-                subCategories={Object.keys(artWorks[category])}
-                onChange={updateSubCategory}
-                value={subCategory}
-                idModifier={"delete"}
-              />
-            ) : null}
+            <SubCategoryRadios
+              subCategories={Object.keys(artWorks[category])}
+              onChange={updateSubCategory}
+              value={subCategory}
+              idModifier={"delete"}
+            />
           </div>
         </div>
-        <div className="thumbnail-container scrollbar scrollbar-deep-blue ">
-          <div className="thumbnail-list">
-            {!category || !subCategory
-              ? null
-              : artWorks[category][subCategory]?.map(({ _id, thumbnail, title }) => (
-                  <React.Fragment key={_id}>
-                    <img
-                      className={`thumbnail-image img ${
-                        activeArt?._id === _id ? "img-clicked" : ""
-                      }`}
-                      src={thumbnail}
-                      alt={title}
-                      onClick={() => updateActiveArt(_id)}
-                    />
-                  </React.Fragment>
-                ))}
+      ) : null}
+      {!category || !subCategory ? null : (
+        <div>
+          <label>
+            <p>
+              <strong>Select Artwork</strong>
+            </p>
+          </label>
+          <div className="thumbnail-container scrollbar scrollbar-deep-blue ">
+            <div className="thumbnail-list">
+              {artWorks[category][subCategory]?.map(({ _id, thumbnail, title }) => (
+                <React.Fragment key={_id}>
+                  <img
+                    className={`thumbnail-image img ${activeArt?._id === _id ? "img-clicked" : ""}`}
+                    src={thumbnail}
+                    alt={title}
+                    onClick={() => updateActiveArt(_id)}
+                  />
+                </React.Fragment>
+              ))}
+            </div>
           </div>
         </div>
-        <button
-          disabled={deleting || !activeArt}
-          name="button"
-          type="submit"
-          className="btn btn-lg btn-danger"
-        >
-          <i className="fa fa-trash" />
-          {deleting ? "Removing Artwork..." : "Remove Artwork"}
-        </button>
-      </form>
-      {activeArt ? <Edit artWork={activeArt} onUpdateComplete={onUpdateComplete} /> : null}
-    </>
+      )}
+      {activeArt ? (
+        <>
+          <h3>
+            Editing: <strong>{activeArt.title}</strong>
+          </h3>
+          <div className="edit-art-container upload-form upload-data">
+            <Edit artWork={activeArt} onUpdateComplete={onUpdateComplete} />
+            <p className="text-center">--OR--</p>
+            <button
+              disabled={deleting || !activeArt}
+              name="button"
+              type="submit"
+              className="btn btn-lg btn-danger"
+              onClick={() => dialogRef.current.showModal()}
+            >
+              <i className="fa fa-trash" />
+              {deleting ? "Removing Artwork..." : "Remove Artwork"}
+            </button>
+            <ConfirmationModal ref={dialogRef} onConfirm={handleDeletion} confirmAction="Delete">
+              <div className="delete-confirmation--content">
+                <h3>Are you sure you want to delete this artwork?</h3>
+                <div className="delete--thumbnail">
+                  <img src={activeArt.thumbnail} alt={activeArt.title} />
+                  <h4>{activeArt.title}</h4>
+                </div>
+                <p>
+                  This action is <strong>PERMANENT.</strong> Please confirm you want to remove the
+                  artwork.
+                </p>
+              </div>
+            </ConfirmationModal>
+          </div>
+        </>
+      ) : null}
+    </div>
   )
 }

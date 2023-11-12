@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import React, { useState, useContext, useEffect, useMemo } from "react"
 import { ArtworkContext } from "../context/ArtworkContext.js"
 import CategoryRadios from "./CategoryRadios.js"
 import SubCategoryRadios from "./SubCategoryRadios.js"
@@ -14,6 +14,10 @@ export default function Edit({ artWork, onUpdateComplete }) {
       [e.target.name]: e.target.value,
     }))
   }
+
+  useEffect(() => {
+    setForm(artWork || {})
+  }, [artWork])
 
   const submitUpdates = async e => {
     e.preventDefault()
@@ -34,31 +38,37 @@ export default function Edit({ artWork, onUpdateComplete }) {
     }
   }
 
+  const noChanges = useMemo(() => {
+    return Object.entries(form).every(([field, value]) => artWork[field] === value)
+  }, [form])
+
   return (
     <form id="updateForm" onSubmit={submitUpdates}>
-      <div className="upload-data update-data">
-        <label htmlFor="categories">
-          <p>
-            <strong>Art Medium</strong>
-          </p>
-        </label>
-        <div className="radio-btn-container">
-          <CategoryRadios onChange={updateForm} value={form.category} idModifier="update" />
-        </div>
-        <label>
-          <p>
-            <strong>Subject Matter</strong>
-          </p>
-        </label>
-        <div className="radio-btn-container">
-          <SubCategoryRadios
-            subCategories={Object.keys(artWorks[form.category] || {})}
-            value={form.subCategory}
-            onChange={updateForm}
-            idModifier="update"
-          />
-        </div>
+      <div className="upload-data">
         <div>
+          <label htmlFor="categories">
+            <p>
+              <strong>Art Medium</strong>
+            </p>
+          </label>
+          <div className="radio-btn-container">
+            <CategoryRadios onChange={updateForm} value={form.category} idModifier="update" />
+          </div>
+        </div>
+        <div className="form-field--group">
+          <label>
+            <p>
+              <strong>Subject Matter</strong>
+            </p>
+          </label>
+          <div className="radio-btn-container">
+            <SubCategoryRadios
+              subCategories={Object.keys(artWorks[form.category] || {})}
+              value={form.subCategory}
+              onChange={updateForm}
+              idModifier="update"
+            />
+          </div>
           <input
             id="subcatUp"
             type="text"
@@ -72,12 +82,12 @@ export default function Edit({ artWork, onUpdateComplete }) {
             onChange={updateForm}
           />
         </div>
-        <label>
-          <p>
-            <strong>Artwork Title</strong>
-          </p>
-        </label>
         <div>
+          <label>
+            <p>
+              <strong>Artwork Title</strong>
+            </p>
+          </label>
           <input
             id="artnameUp"
             type="text"
@@ -91,7 +101,7 @@ export default function Edit({ artWork, onUpdateComplete }) {
             spellCheck="false"
           />
         </div>
-        <button type="submit" className="btn btn-lg btn-primary" disabled={updating}>
+        <button type="submit" className="btn btn-lg btn-primary" disabled={updating || noChanges}>
           <i className="fas fa-upload" />
           {updating ? "Submitting..." : "Submit Changes"}
         </button>

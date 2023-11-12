@@ -82,7 +82,7 @@ export default function Upload() {
               </div>
               {!form.category ? null : (
                 <>
-                  <div>
+                  <div className="form-field--group">
                     <label htmlFor="subcategory">
                       <p>
                         <strong>Subject Matter</strong>
