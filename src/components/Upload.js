@@ -53,7 +53,7 @@ export default function Upload() {
       setImage(null)
     } catch (err) {
       console.log(err)
-      setAlert({ message: "There was an error uploading this artwork", type: "error" })
+      setAlert({ message: "There was an error uploading this artwork", type: "danger" })
     } finally {
       setUploading(false)
     }

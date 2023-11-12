@@ -352,24 +352,57 @@ ul.thumbnail-list {
 
 .alerts-container {
   position: fixed;
-  bottom: 2rem;
-  left: 2rem;
+  top: calc(1rem + 60px);
+  right: 1rem;
   z-index: 500;
+  width: 400px;
+  max-width: calc(100% - 2rem);
+  display: grid;
+  gap: 1rem;
 }
 
 .alert-toast {
-  background-color: #827397;
-  background-image: url(https://www.transparenttextures.com/patterns/xv.png);
   border-radius: 0.5rem;
   padding: 1rem 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
   box-shadow: 8px 8px 16px 8px rgba(0, 0, 0, 0.4);
-  border: 1px solid white;
+  border: 4px solid var(--alert-type);
+  color: black;
+  animation: toast-in 400ms forwards;
+}
+
+@keyframes toast-in {
+  from {
+    translate: 200% 0;
+  }
+}
+
+.alert-toast > i {
+  font-size: 2rem;
+  color: var(--alert-type, var(--info));
 }
 
 .alert-message {
-  font-size: 1.5rem;
-  font-weight: bolder;
-  margin-block: revert;
+  font-size: 1.35rem;
+  font-weight: bold;
+  text-align: left;
+}
+
+.alert-dismiss {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: none;
+  border: none;
+  padding: 0 0.25rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+.alert-dismiss:hover {
+  background-color: var(--alert-type);
 }
 
 /* BIOGRAPHY SECTION */

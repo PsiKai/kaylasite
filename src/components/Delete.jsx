@@ -119,7 +119,7 @@ export default function Delete() {
           </h3>
           <div className="edit-art-container upload-form upload-data">
             <Edit artWork={activeArt} onUpdateComplete={onUpdateComplete} />
-            <p className="text-center">--OR--</p>
+            <span className="text-center">--OR--</span>
             <button
               disabled={deleting || !activeArt}
               name="button"

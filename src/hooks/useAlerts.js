@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import { AlertContext } from "../context/AlertContext"
 
-export default function useAlerts(alertDuration = 5_000) {
+export default function useAlerts(alertDuration = 7_000) {
   const { dispatch, alerts } = useContext(AlertContext)
 
   function setAlert({ message, type }) {
@@ -10,12 +10,24 @@ export default function useAlerts(alertDuration = 5_000) {
     dispatch({ type: "NEW_ALERT", payload: { id, message, type } })
 
     setTimeout(() => {
-      dispatch({ type: "REMOVE_ALERT", payload: { id } })
+      dismissAlert(id)
     }, alertDuration)
   }
 
   function dismissAlert(id) {
-    dispatch({ type: "REMOVE_ALERT", payload: { id } })
+    const alert = document.querySelector(`[data-alertid="${id}"]`)
+    const slide = new KeyframeEffect(alert, [{ translate: "200% 0" }], {
+      duration: 200,
+      easing: "ease",
+      direction: "normal",
+      fill: "forwards",
+    })
+
+    const animation = new Animation(slide, document.timeline)
+    animation.play()
+    animation.onfinish = () => {
+      dispatch({ type: "REMOVE_ALERT", payload: { id } })
+    }
   }
 
   return { setAlert, dismissAlert, alerts }
