@@ -37,20 +37,24 @@ export default function useDropzone(handleValidDrop, accept = ["image/*"]) {
   const isValidDragData = e => {
     const { items } = e.dataTransfer
     const files = Array.from(items)
-    return files.every(({ kind, type }) => kind === "file" && type.match(typeMatch))
+    return files.every(({ type }) => type.match(typeMatch))
   }
 
   const handleDragEnter = e => {
-    if (e.target !== e.currentTarget || e.currentTarget.contains(e.relatedTarget)) return
+    if (e.currentTarget.contains(e.relatedTarget)) return
     if (isValidDragData(e)) {
       validDrag.current = true
+      e.dataTransfer.effectAllowed = "copy"
       e.currentTarget.classList.add("is-dragged-over")
+    } else {
+      e.dataTransfer.effectAllowed = "none"
+      resetDragClasses(e)
     }
   }
 
   const handleDragOver = e => {
     e.stopPropagation()
-    e.dataTransfer.effectAllowed = validDrag.current ? "copy" : "none"
+    e.dataTransfer.dropEffect = validDrag.current ? "copy" : "none"
   }
 
   const handleDragLeave = e => {

@@ -1,9 +1,12 @@
 import { useState, useRef, useEffect } from "react"
+import { roundedBytes } from "../../utils/numberUtils.js"
 import useAlerts from "../hooks/useAlerts.js"
 import useDropzone from "../hooks/useDropzone.js"
 
 export default function FileUpload({ onFile, file }) {
   const fileInput = useRef()
+
+  const [previewInfo, setPreviewInfo] = useState({})
 
   function handleValidDrop(e) {
     fileInput.current.files = e.dataTransfer.files
@@ -17,6 +20,23 @@ export default function FileUpload({ onFile, file }) {
     const nullFile = { target: { files: [] } }
     onFile(nullFile)
   }
+
+  useEffect(() => {
+    if (!file) return
+
+    const newPreview = new Image()
+    newPreview.src = URL.createObjectURL(file)
+    newPreview.onload = () =>
+      setPreviewInfo({
+        src: newPreview.src,
+        alt: file.name,
+        title: [
+          `File:\t${file.name}`,
+          `Size:\t${newPreview.naturalWidth} × ${newPreview.naturalHeight}`,
+          `Bytes:\t${roundedBytes(file.size)}`,
+        ].join("\n"),
+      })
+  }, [file])
 
   return (
     <div id="fileName" {...dropzoneProps}>
@@ -32,12 +52,7 @@ export default function FileUpload({ onFile, file }) {
       />
       {file ? (
         <div className="image-preview-container">
-          <img
-            name="preview"
-            id="preview"
-            src={file ? URL.createObjectURL(file) : ""}
-            alt={file?.name || ""}
-          />
+          <img name="preview" id="preview" {...previewInfo} />
           <button type="button" onClick={clearSelectedFile} aria-label="remove selected file">
             <i className="fa fa-times-circle" aria-hidden="true"></i>
           </button>
