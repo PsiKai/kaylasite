@@ -359,6 +359,16 @@ ul.thumbnail-list {
   max-width: calc(100% - 2rem);
   display: grid;
   gap: 1rem;
+  contain: style;
+}
+
+.alerts-container > div {
+  transform: translateZ(0);
+  overflow: hidden;
+  box-shadow: 8px 8px 16px 8px rgba(0, 0, 0, 0.4);
+  animation: toast-in 400ms forwards;
+  border-radius: 0.5rem;
+  will-change: transform, max-height;
 }
 
 .alert-toast {
@@ -367,10 +377,9 @@ ul.thumbnail-list {
   display: flex;
   gap: 1rem;
   align-items: center;
-  box-shadow: 8px 8px 16px 8px rgba(0, 0, 0, 0.4);
   border: 4px solid var(--alert-type);
   color: black;
-  animation: toast-in 400ms forwards;
+  position: relative;
 }
 
 @keyframes toast-in {
