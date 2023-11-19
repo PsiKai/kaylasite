@@ -12,7 +12,9 @@ body {
 }
 
 #artwork-admin {
-  display: contents;
+  /* display: contents; */
+  display: grid;
+  grid-template-rows: max-content auto;
 }
 
 h1 {
@@ -583,7 +585,14 @@ input:not(#img, [class="radio"]),
   color: #363062;
 }
 
-#img:focus + label,
+label {
+  margin-bottom: 0;
+}
+
+#img:focus ~ label {
+  outline: auto;
+}
+
 #fileName .btn:hover {
   background-color: #4d4c7d !important;
 }
@@ -762,7 +771,7 @@ label.btn-sm {
 .radio-btn-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 0 0.5rem;
+  gap: 0.5rem;
   border-radius: 0.25rem;
 }
 

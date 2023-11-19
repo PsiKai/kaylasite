@@ -62,40 +62,22 @@ export default function Delete() {
 
   return (
     <div className="upload-data">
-      <div>
-        <label htmlFor="medium">
-          <p>
-            <strong>Select Medium</strong>
-          </p>
-        </label>
-        <div className="radio-btn-container">
-          <CategoryRadios value={category} onChange={updateCategory} idModifier={"delete"} />
-        </div>
-      </div>
+      <CategoryRadios value={category} onChange={updateCategory} idModifier={"delete"} />
       {category ? (
-        <div>
-          <label htmlFor="subcat">
-            <p>
-              <strong>Subject Matter</strong>
-            </p>
-          </label>
-          <div className="radio-btn-container">
-            <SubCategoryRadios
-              subCategories={Object.keys(artWorks[category])}
-              onChange={updateSubCategory}
-              value={subCategory}
-              idModifier={"delete"}
-            />
-          </div>
-        </div>
+        <SubCategoryRadios
+          subCategories={Object.keys(artWorks[category])}
+          onChange={updateSubCategory}
+          value={subCategory}
+          idModifier={"delete"}
+        />
       ) : null}
       {!category || !subCategory ? null : (
         <div>
-          <label>
+          <legend>
             <p>
               <strong>Select Artwork</strong>
             </p>
-          </label>
+          </legend>
           <div className="thumbnail-container scrollbar scrollbar-deep-blue ">
             <div className="thumbnail-list">
               {artWorks[category][subCategory]?.map(({ _id, thumbnail, title }) => (

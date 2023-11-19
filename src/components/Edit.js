@@ -49,49 +49,22 @@ export default function Edit({ artWork, onUpdateComplete }) {
   return (
     <form id="updateForm" onSubmit={submitUpdates}>
       <div className="upload-data">
+        <CategoryRadios onChange={updateForm} value={form.category} idModifier="update" />
+        <SubCategoryRadios
+          subCategories={Object.keys(artWorks[form.category] || {})}
+          value={form.subCategory}
+          onChange={updateForm}
+          idModifier="update"
+          customSubCat
+        />
         <div>
-          <label htmlFor="categories">
-            <p>
-              <strong>Art Medium</strong>
-            </p>
-          </label>
-          <div className="radio-btn-container">
-            <CategoryRadios onChange={updateForm} value={form.category} idModifier="update" />
-          </div>
-        </div>
-        <div className="form-field--group">
-          <label>
-            <p>
-              <strong>Subject Matter</strong>
-            </p>
-          </label>
-          <div className="radio-btn-container">
-            <SubCategoryRadios
-              subCategories={Object.keys(artWorks[form.category] || {})}
-              value={form.subCategory}
-              onChange={updateForm}
-              idModifier="update"
-            />
-          </div>
-          <input
-            id="subcatUp"
-            type="text"
-            name="subCategory"
-            className="subcat"
-            placeholder="Enter Subject"
-            required
-            autoComplete="off"
-            spellCheck="false"
-            value={form.subCategory}
-            onChange={updateForm}
-          />
-        </div>
-        <div>
-          <label>
-            <p>
-              <strong>Artwork Title</strong>
-            </p>
-          </label>
+          <legend>
+            <label htmlFor="artnameUp">
+              <p>
+                <strong>Artwork Title</strong>
+              </p>
+            </label>
+          </legend>
           <input
             id="artnameUp"
             type="text"

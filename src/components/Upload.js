@@ -66,59 +66,30 @@ export default function Upload() {
           <FileUpload file={image} onFile={updateImage} />
           {!image ? null : (
             <>
-              <div>
-                <label htmlFor="category">
-                  <p>
-                    <strong>Art Medium</strong>
-                  </p>
-                </label>
-                <div className="radio-btn-container">
-                  <CategoryRadios
-                    idModifier="upload"
-                    onChange={updateForm}
-                    value={form.category || ""}
-                  />
-                </div>
-              </div>
+              <CategoryRadios
+                idModifier="upload"
+                onChange={updateForm}
+                value={form.category || ""}
+              />
               {!form.category ? null : (
                 <>
-                  <div className="form-field--group">
-                    <label htmlFor="subcategory">
-                      <p>
-                        <strong>Subject Matter</strong>
-                      </p>
-                    </label>
-                    <div className="radio-btn-container">
-                      <SubCategoryRadios
-                        idModifier="upload"
-                        subCategories={Object.keys(artWorks[form.category] || {})}
-                        value={form.subCategory || ""}
-                        onChange={updateForm}
-                      />
-                    </div>
-                    <div>
-                      <input
-                        id="subcategory"
-                        type="text"
-                        name="subCategory"
-                        className="subcat"
-                        autoComplete="off"
-                        placeholder="Enter Subject"
-                        required
-                        spellCheck="false"
-                        value={form.subCategory || ""}
-                        onChange={updateForm}
-                      />
-                    </div>
-                  </div>
+                  <SubCategoryRadios
+                    idModifier="upload"
+                    subCategories={Object.keys(artWorks[form.category] || {})}
+                    value={form.subCategory || ""}
+                    onChange={updateForm}
+                    customSubCat
+                  />
                   {!form.subCategory ? null : (
                     <>
                       <div>
-                        <label htmlFor="title">
-                          <p>
-                            <strong>Artwork Title</strong>
-                          </p>
-                        </label>
+                        <legend>
+                          <label htmlFor="title">
+                            <p>
+                              <strong>Artwork Title</strong>
+                            </p>
+                          </label>
+                        </legend>
                         <input
                           id="title"
                           type="text"
