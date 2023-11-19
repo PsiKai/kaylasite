@@ -58,12 +58,14 @@ apiRouter.put("/artwork", async (req, res) => {
   title = slugify(title)
 
   try {
-    await Promise.all([
-      ...storageClient.moveFile(oldImg, newImg),
-      Artwork.findOneAndUpdate({ _id: oldImg._id }, { thumbnail, title, subCategory, category }),
-    ])
+    await Promise.all(storageClient.moveFile(oldImg, newImg))
+    const updatedArt = await Artwork.findOneAndUpdate(
+      { _id: oldImg._id },
+      { thumbnail, title, subCategory, category },
+      { new: true }
+    )
     fetchArt()
-    res.status(204).end()
+    res.status(201).json(updatedArt)
   } catch (err) {
     console.log("Error moving artwork: ")
     console.log(err)

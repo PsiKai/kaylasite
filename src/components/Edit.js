@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect, useMemo } from "react"
 import { ArtworkContext } from "../context/ArtworkContext.js"
+import useAlerts from "../hooks/useAlerts.js"
 import CategoryRadios from "./CategoryRadios.js"
 import SubCategoryRadios from "./SubCategoryRadios.js"
 
@@ -7,6 +8,7 @@ export default function Edit({ artWork, onUpdateComplete }) {
   const [form, setForm] = useState(artWork || {})
   const [updating, setUpdating] = useState(false)
   const { artWorks, dispatch } = useContext(ArtworkContext)
+  const { setAlert } = useAlerts()
 
   const updateForm = e => {
     setForm(prev => ({
@@ -24,14 +26,16 @@ export default function Edit({ artWork, onUpdateComplete }) {
     setUpdating(true)
     try {
       const body = { oldImg: artWork, newImg: form }
-      await fetch("/api/artwork/", {
+      const res = await fetch("/api/artwork/", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       })
+      const updatedArt = await res.json()
       onUpdateComplete()
-      dispatch({ type: "MOVE_ARTWORK", payload: body })
+      dispatch({ type: "MOVE_ARTWORK", payload: { ...body, newImg: updatedArt } })
     } catch (error) {
+      setAlert({ type: "warning", message: "There was an error updating this artwork" })
       console.log(error)
     } finally {
       setUpdating(false)
