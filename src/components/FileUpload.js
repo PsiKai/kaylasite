@@ -19,6 +19,7 @@ export default function FileUpload({ onFile, file }) {
   const clearSelectedFile = e => {
     const nullFile = { target: { files: [] } }
     onFile(nullFile)
+    setPreviewInfo({})
   }
 
   useEffect(() => {
