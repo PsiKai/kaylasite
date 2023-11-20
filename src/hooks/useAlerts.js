@@ -6,12 +6,9 @@ export default function useAlerts(alertDuration = 7_000) {
 
   function setAlert({ message, type }) {
     const id = crypto.randomUUID()
+    const timeout = setAlertTimeout(id)
 
-    dispatch({ type: "NEW_ALERT", payload: { id, message, type } })
-
-    setTimeout(() => {
-      requestAnimationFrame(() => dismissAlert(id))
-    }, alertDuration)
+    dispatch({ type: "NEW_ALERT", payload: { id, message, type, timeout } })
   }
 
   function dismissAlert(id) {
@@ -41,9 +38,26 @@ export default function useAlerts(alertDuration = 7_000) {
       collapseAnimation.play()
     }
     collapseAnimation.onfinish = () => {
+      pauseDismissTimer(id)
       dispatch({ type: "REMOVE_ALERT", payload: { id } })
     }
   }
 
-  return { setAlert, dismissAlert, alerts }
+  function pauseDismissTimer(id) {
+    const alert = alerts.find(alert => alert.id === id)
+    clearTimeout(alert?.timeout)
+  }
+
+  function resumeAlertTimer(id, timer) {
+    const timeout = setAlertTimeout(id, timer ?? 4000)
+    dispatch({ type: "UPDATE_ALERT", payload: { id, timeout } })
+  }
+
+  function setAlertTimeout(id, timeout) {
+    return setTimeout(() => {
+      requestAnimationFrame(() => dismissAlert(id))
+    }, timeout ?? alertDuration)
+  }
+
+  return { setAlert, dismissAlert, alerts, pauseDismissTimer, resumeAlertTimer }
 }

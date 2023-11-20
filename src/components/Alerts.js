@@ -11,17 +11,29 @@ const icons = type => {
     case "info":
       return "info-circle"
     default:
-      return "bell-o"
+      return "bell"
   }
 }
 
 export default function Alerts() {
-  const { alerts, dismissAlert } = useAlerts()
+  const { alerts, dismissAlert, pauseDismissTimer, resumeAlertTimer } = useAlerts()
+
+  const handleMouseEnter = e => {
+    pauseDismissTimer(e.currentTarget.dataset.alertid)
+  }
+  const handleMouseLeave = e => {
+    resumeAlertTimer(e.currentTarget.dataset.alertid)
+  }
 
   return (
     <div className="alerts-container">
       {alerts.map(alert => (
-        <div key={alert.id} data-alertid={alert.id}>
+        <div
+          key={alert.id}
+          data-alertid={alert.id}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
           <div
             className="alert-toast colored"
             role="alert"
