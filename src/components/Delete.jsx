@@ -72,7 +72,7 @@ export default function Delete() {
         />
       ) : null}
       {!category || !subCategory ? null : (
-        <div>
+        <fieldset>
           <legend>
             <p>
               <strong>Select Artwork</strong>
@@ -82,17 +82,28 @@ export default function Delete() {
             <div className="thumbnail-list">
               {artWorks[category][subCategory]?.map(({ _id, thumbnail, title }) => (
                 <React.Fragment key={_id}>
-                  <img
-                    className={`thumbnail-image img ${activeArt?._id === _id ? "img-clicked" : ""}`}
-                    src={thumbnail}
-                    alt={title}
-                    onClick={() => updateActiveArt(_id)}
-                  />
+                  <label>
+                    <img
+                      className={`thumbnail-image img ${
+                        activeArt?._id === _id ? "img-clicked" : ""
+                      }`}
+                      src={thumbnail}
+                      alt={title}
+                    />
+                    <input
+                      type="radio"
+                      name="activeArt"
+                      className="radio"
+                      value={_id}
+                      checked={activeArt?._id === _id}
+                      onChange={() => updateActiveArt(_id)}
+                    />
+                  </label>
                 </React.Fragment>
               ))}
             </div>
           </div>
-        </div>
+        </fieldset>
       )}
       {activeArt ? (
         <>
