@@ -5,7 +5,8 @@ export default function useAlerts(alertDuration = 7_000) {
   const { dispatch, alerts } = useContext(AlertContext)
 
   function setAlert({ message, type }) {
-    const id = crypto.randomUUID()
+    // const id = crypto.randomUUID()
+    const id = Math.random()
     const timeout = setAlertTimeout(id)
 
     dispatch({ type: "NEW_ALERT", payload: { id, message, type, timeout } })
