@@ -5,6 +5,7 @@ import Edit from "./Edit.js"
 import CategoryRadios from "./CategoryRadios.js"
 import SubCategoryRadios from "./SubCategoryRadios.js"
 import ConfirmationModal from "./ConfirmationModal.js"
+import EditCarousel from "./EditCarousel.js"
 
 export default function Delete() {
   const { artWorks, dispatch } = useContext(ArtworkContext)
@@ -72,38 +73,11 @@ export default function Delete() {
         />
       ) : null}
       {!category || !subCategory ? null : (
-        <fieldset>
-          <legend>
-            <p>
-              <strong>Select Artwork</strong>
-            </p>
-          </legend>
-          <div className="thumbnail-container scrollbar scrollbar-deep-blue ">
-            <div className="thumbnail-list">
-              {artWorks[category][subCategory]?.map(({ _id, thumbnail, title }) => (
-                <React.Fragment key={_id}>
-                  <label>
-                    <img
-                      className={`thumbnail-image img ${
-                        activeArt?._id === _id ? "img-clicked" : ""
-                      }`}
-                      src={thumbnail}
-                      alt={title}
-                    />
-                    <input
-                      type="radio"
-                      name="activeArt"
-                      className="radio"
-                      value={_id}
-                      checked={activeArt?._id === _id}
-                      onChange={() => updateActiveArt(_id)}
-                    />
-                  </label>
-                </React.Fragment>
-              ))}
-            </div>
-          </div>
-        </fieldset>
+        <EditCarousel
+          onChange={updateActiveArt}
+          activeArt={activeArt}
+          artworks={artWorks[category][subCategory]}
+        />
       )}
       {activeArt ? (
         <>
