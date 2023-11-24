@@ -9,5 +9,5 @@ auth.json
 client_secret.json
 application-default-credentials.json
 
-public/build/
+db/utils/
 
