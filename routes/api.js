@@ -1,11 +1,14 @@
 import { Router } from "express"
 import Artwork from "../db/models/artwork.js"
 import { uploader } from "../middleware/uploader.js"
+import { isAuthenticated } from "../middleware/auth.js"
 import { storageClient } from "../google-client.js"
 import { fetchArt } from "../artState.js"
 import { slugify } from "../utils/stringUtils.js"
 
 const apiRouter = Router()
+
+apiRouter.use(isAuthenticated)
 
 apiRouter.post("/artwork", uploader, async (req, res) => {
   const { category, subCategory, title, extension } = req.body

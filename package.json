@@ -27,7 +27,7 @@
     "eslint-plugin-prettier": "^5.0.0"
   },
   "scripts": {
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=true bun install && bun run build",
+    "bun-heroku-postbuild": "NPM_CONFIG_PRODUCTION=true bun install && bun run build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "bun build --watch src/ --outdir ./public/build/ --minify",
     "dev-build": "bun build --watch src/ --outdir ./public/build/",
