@@ -1,9 +1,16 @@
 import { Storage } from "@google-cloud/storage"
 import { slugify } from "./utils/stringUtils.js"
 
+let googleAuth
+if (process.env.NODE_ENV !== "production") {
+  googleAuth = process.env.GOOGLE_APPLICATION_CREDENTIALS
+} else {
+  googleAuth = "google-credentials.json"
+}
+
 class GoogleClient extends Storage {
   constructor() {
-    super()
+    super({ keyFileName: googleAuth })
   }
 
   baseStorageUrl = "https://storage.googleapis.com"
