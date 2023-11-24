@@ -10,19 +10,23 @@ export default function useDropzone(handleValidDrop, accept = ["image/*"]) {
 
   useEffect(() => {
     function noEffectAllowed(e) {
+      e.preventDefault()
       e.dataTransfer.effectAllowed = "none"
     }
     document.addEventListener("dragover", noEffectAllowed)
+    document.addEventListener("drop", noEffectAllowed)
 
     return () => {
       document.removeEventListener("dragover", noEffectAllowed)
+      document.removeEventListener("drop", noEffectAllowed)
     }
   }, [])
 
   const handleDrop = e => {
     e.preventDefault()
+    e.stopPropagation()
     if (!isValidDragData(e)) {
-      const badFile = Array.from(e.dataTransfer.items).find(({ type }) => !type.match(typeMatch))
+      const badFile = Array.from(e.dataTransfer.items)?.find(({ type }) => !type.match(typeMatch))
       setAlert({
         message: `File with type "${badFile.type}" is not allowed!`,
         type: "warning",
@@ -41,6 +45,7 @@ export default function useDropzone(handleValidDrop, accept = ["image/*"]) {
   }
 
   const handleDragEnter = e => {
+    e.preventDefault()
     if (e.currentTarget.contains(e.relatedTarget)) return
     if (isValidDragData(e)) {
       validDrag.current = true
@@ -53,6 +58,7 @@ export default function useDropzone(handleValidDrop, accept = ["image/*"]) {
   }
 
   const handleDragOver = e => {
+    e.preventDefault()
     e.stopPropagation()
     e.dataTransfer.dropEffect = validDrag.current ? "copy" : "none"
   }
