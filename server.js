@@ -9,7 +9,10 @@ import apiRouter from "./routes/api.js"
 
 const app = express()
 
-if (process.env.NODE_ENV === "production") app.use(secure)
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1)
+  app.use(secure)
+}
 
 app.use((req, res, next) => {
   console.log(`${req.protocol}://${req.get("host")}`)
