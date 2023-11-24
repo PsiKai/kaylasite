@@ -12,6 +12,7 @@ const app = express()
 if (process.env.NODE_ENV === "production") app.use(secure)
 
 app.use((req, res, next) => {
+  console.log(`${req.protocol}://${req.get("host")}`)
   app.locals.baseUrl = `${req.protocol}://${req.get("host")}`
   next()
 })
