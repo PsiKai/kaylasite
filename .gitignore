@@ -10,4 +10,5 @@ client_secret.json
 application-default-credentials.json
 
 db/utils/
+bun.lockb*
 

@@ -27,14 +27,8 @@
     "eslint-plugin-prettier": "^5.0.0"
   },
   "scripts": {
-    "bun-heroku-postbuild": "NPM_CONFIG_PRODUCTION=true bun install && bun run build",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "bun build --watch src/ --outdir ./public/build/ --minify",
-    "dev-build": "bun build --watch src/ --outdir ./public/build/",
-    "server-bun": "bun --watch run server.js",
     "server": "node --watch server.js",
-    "dev-node": "concurrently \"npm run server\" \"bun run dev-build\"",
-    "dev-bun": "concurrently \"bun run server-bun\" \"bun run dev-build\""
+    "dev-node": "concurrently \"npm run server\" \"bun run dev-build\""
   },
   "keywords": [],
   "author": "",
