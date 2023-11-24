@@ -1,18 +1,16 @@
 import { useEffect, useRef } from "react"
-import useAlerts from "../hooks/useAlerts.js"
 
-export default function useDropzone(handleValidDrop, accept = ["image/*"]) {
+function noEffectAllowed(e) {
+  e.preventDefault()
+  e.dataTransfer.effectAllowed = "none"
+}
+
+export default function useDropzone(handleValidDrop, handleInvalidDrop, accept = ["image/*"]) {
   const validDrag = useRef(false)
 
   const typeMatch = new RegExp("^" + accept.join("|"))
 
-  const { setAlert } = useAlerts()
-
   useEffect(() => {
-    function noEffectAllowed(e) {
-      e.preventDefault()
-      e.dataTransfer.effectAllowed = "none"
-    }
     document.addEventListener("dragover", noEffectAllowed)
     document.addEventListener("drop", noEffectAllowed)
 
@@ -25,35 +23,21 @@ export default function useDropzone(handleValidDrop, accept = ["image/*"]) {
   const handleDrop = e => {
     e.preventDefault()
     e.stopPropagation()
-    if (!isValidDragData(e)) {
-      const badFile = Array.from(e.dataTransfer.items)?.find(({ type }) => !type.match(typeMatch))
-      setAlert({
-        message: `File with type "${badFile.type}" is not allowed!`,
-        type: "warning",
-      })
-      resetDragClasses(e)
-      return
-    }
-    handleValidDrop(e)
-    resetDragClasses(e)
-  }
-
-  const isValidDragData = e => {
-    const { items } = e.dataTransfer
-    const files = Array.from(items)
-    return files.every(({ type }) => type.match(typeMatch))
+    setDragClasses(e, false)
+    if (isValidDragData(e)) handleValidDrop(e)
+    else handleInvalidDrop(e)
   }
 
   const handleDragEnter = e => {
     e.preventDefault()
     if (e.currentTarget.contains(e.relatedTarget)) return
+
     if (isValidDragData(e)) {
-      validDrag.current = true
       e.dataTransfer.effectAllowed = "copy"
-      e.currentTarget.classList.add("is-dragged-over")
+      setDragClasses(e, true)
     } else {
       e.dataTransfer.effectAllowed = "none"
-      resetDragClasses(e)
+      setDragClasses(e, false)
     }
   }
 
@@ -65,14 +49,20 @@ export default function useDropzone(handleValidDrop, accept = ["image/*"]) {
 
   const handleDragLeave = e => {
     if (isInsideContainer(e)) return
-    resetDragClasses(e)
+    setDragClasses(e, false)
   }
 
-  const handleDragEnd = e => resetDragClasses(e)
+  const handleDragEnd = e => setDragClasses(e, false)
 
-  const resetDragClasses = e => {
-    validDrag.current = false
-    e.currentTarget.classList.remove("is-dragged-over")
+  const isValidDragData = e => {
+    const { items } = e.dataTransfer
+    const files = Array.from(items)
+    return files.every(({ type }) => type.match(typeMatch))
+  }
+
+  const setDragClasses = (e, value) => {
+    validDrag.current = value
+    e.currentTarget.classList.toggle("is-dragged-over", value)
   }
 
   const isInsideContainer = e => {

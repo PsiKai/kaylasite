@@ -5,6 +5,7 @@ import useDropzone from "../hooks/useDropzone.js"
 
 export default function FileUpload({ onFile, file }) {
   const fileInput = useRef()
+  const { setAlert } = useAlerts()
 
   const [previewInfo, setPreviewInfo] = useState({})
 
@@ -14,7 +15,15 @@ export default function FileUpload({ onFile, file }) {
     fileInput.current.dispatchEvent(changeEvent)
   }
 
-  const dropzoneProps = useDropzone(handleValidDrop)
+  function handleInvalidDrop(e) {
+    const badFile = Array.from(e.dataTransfer.items)?.find(({ type }) => !type.match(typeMatch))
+    setAlert({
+      message: `File with type "${badFile.type}" is not allowed!`,
+      type: "warning",
+    })
+  }
+
+  const dropzoneProps = useDropzone(handleValidDrop, handleValidDrop)
 
   const clearSelectedFile = e => {
     const nullFile = { target: { files: [] } }
