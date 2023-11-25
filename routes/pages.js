@@ -31,9 +31,9 @@ pageRouter.get("/login", (req, res) => {
 pageRouter.post("/login", async (req, res) => {
   const { username, password } = req.body
   const user = await User.findOne({ username }).lean()
-  if (!user) return res.status(400).render("login")
+  if (!user) return res.status(401).redirect("login")
   const isMatch = await bcrypt.compare(password, user.password)
-  if (!isMatch) return res.status(400).render("login")
+  if (!isMatch) return res.status(401).redirect("login")
 
   req.session.regenerate(sessionError => {
     if (sessionError) console.log("ERROR GENERATING SESSION: ", sessionError)
@@ -61,7 +61,7 @@ pageRouter.get("/:category", async (req, res) => {
   const artWorks = await getArt()
   let { category } = req.params
   category = category.charAt(0).toUpperCase() + category.slice(1)
-  const pageCopy = titleDesc.find(item => item.page === category)
+  const pageCopy = titleDesc.find(item => item.page === category) || {}
   const artCategory = artWorks[category]
 
   res.render("template", {
