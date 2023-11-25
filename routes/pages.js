@@ -7,6 +7,7 @@ import Artwork from "../db/models/artwork.js"
 import User from "../db/models/user.js"
 import { isAuthenticated } from "../middleware/auth.js"
 import { storageClient } from "../google-client.js"
+import { capitalize } from "../utils/stringUtils.js"
 
 const pageRouter = Router()
 
@@ -60,7 +61,7 @@ pageRouter.get("/upload", isAuthenticated, async (req, res) => {
 pageRouter.get("/:category", async (req, res) => {
   const artWorks = await getArt()
   let { category } = req.params
-  category = category.charAt(0).toUpperCase() + category.slice(1)
+  category = capitalize(category)
   const pageCopy = titleDesc.find(item => item.page === category) || {}
   const artCategory = artWorks[category]
 
