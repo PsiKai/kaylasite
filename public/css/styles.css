@@ -1073,26 +1073,25 @@ label.radio {
 
 /* MEDIA QUERY EXTRA LARGE */
 @media (min-width: 1200px) {
-  .logoEdge {
-    left: 0;
+  .logoEdge,
+  .logoEdgeRight {
     top: 0;
     position: absolute;
     opacity: 65%;
     display: block;
     overflow: hidden;
     height: 100%;
+    max-height: 100%;
     object-fit: contain;
   }
+
   .logoEdgeRight {
     transform: rotate(180deg);
-    position: absolute;
     right: 0;
-    top: 0;
-    opacity: 65%;
-    display: block;
-    overflow: hidden;
-    height: 100%;
-    object-fit: contain;
+  }
+
+  .logoEdge {
+    left: 0;
   }
 
   #biography .logoEdge,
