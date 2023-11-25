@@ -49,7 +49,7 @@ pageRouter.post("/login", async (req, res) => {
   })
   // const salt = await bcrypt.genSalt(10)
   // const newPass = await bcrypt.hash(password, salt)
-  // await User.findOneAndUpdate({ username: "kaylakoss" }, { password: newPass })
+  // await User.findOneAndUpdate({ username }, { password: newPass })
 })
 
 pageRouter.get("/upload", isAuthenticated, async (req, res) => {
