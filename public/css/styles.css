@@ -901,7 +901,7 @@ label.radio {
   }
 
   .colored .container-fluid {
-    padding: 100px 15% 2%;
+    padding: 2% 15% 2%;
   }
 
   .carousel {
@@ -915,7 +915,7 @@ label.radio {
 
   .bio {
     text-align: left;
-    padding: 2%;
+    padding: 0;
   }
 
   #main {
@@ -967,7 +967,7 @@ label.radio {
   }
 
   .colored .container-fluid {
-    padding: 100px 5% 2%;
+    padding: 2% 5% 2%;
   }
 }
 
@@ -986,7 +986,7 @@ label.radio {
   }
 
   .colored .container-fluid {
-    padding: 80px 3% 2%;
+    padding: 2% 3% 2%;
   }
 
   .navbar-nav > li {
