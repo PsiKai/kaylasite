@@ -36,8 +36,22 @@ export async function fetchArt() {
           $push: {
             subCategory: "$_id.subCategory",
             artworks: "$artworks",
+            subCatSize: { $size: "$artworks" },
           },
         },
+      },
+    },
+    {
+      $unwind: "$subcategories",
+    },
+    {
+      $sort: { "subcategories.subCatSize": -1 },
+    },
+    {
+      $group: {
+        _id: "$_id",
+        category: { $first: "$_id" },
+        subcategories: { $push: "$subcategories" },
       },
     },
     {
