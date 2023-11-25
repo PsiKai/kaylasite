@@ -59,6 +59,7 @@ dialog {
   border-radius: 0.5rem;
   border: none;
   box-shadow: 4px 4px 16px 8px rgba(0, 0, 0, 0.4);
+  padding: 1rem 2rem;
 }
 
 dialog[open] {
@@ -736,7 +737,6 @@ li {
 }
 
 .delete-confirmation--content {
-  padding: 1rem;
   display: grid;
   gap: 1rem;
 }
@@ -762,7 +762,6 @@ li {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1rem;
-  padding: 0 1rem;
 }
 
 .thumbnail-section.delete {
@@ -983,6 +982,14 @@ label.radio {
 
   h2:nth-child(n + 1):first-letter {
     font-size: 3rem;
+  }
+
+  dialog {
+    padding: 1rem;
+  }
+
+  .delete-confirmation--content {
+    gap: 0.5rem;
   }
 
   .colored .container-fluid {
