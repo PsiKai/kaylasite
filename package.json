@@ -28,7 +28,8 @@
   },
   "scripts": {
     "server": "node --watch server.js",
-    "dev-node": "concurrently \"npm run server\" \"bun run dev-build\""
+    "dev-node": "concurrently \"npm run server\" \"bun run dev-build\"",
+    "dev-build": "bun build --watch src/ --outdir ./public/build/"
   },
   "keywords": [],
   "author": "",
