@@ -61,7 +61,7 @@ apiRouter.put("/artwork", async (req, res) => {
   title = slugify(title)
 
   try {
-    await Promise.all(storageClient.moveFile(oldImg, newImg))
+    await Promise.all(storageClient.moveFile(oldImg, { ...newImg, subCategory, title }))
     const updatedArt = await Artwork.findOneAndUpdate(
       { _id: oldImg._id },
       { thumbnail, title, subCategory, category },
