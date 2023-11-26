@@ -81,9 +81,12 @@ export default function Delete() {
       )}
       {activeArt ? (
         <>
-          <h3>
-            Editing: <strong>{activeArt.title}</strong>
-          </h3>
+          <div className="delete--thumbnail">
+            <h4>
+              <strong>{activeArt.title}</strong>
+            </h4>
+            <img id="preview" src={activeArt.thumbnail} alt={activeArt.title} />
+          </div>
           <div className="edit-art-container upload-form upload-data">
             <Edit artWork={activeArt} onUpdateComplete={onUpdateComplete} />
             <span className="text-center">--OR--</span>

@@ -23738,15 +23738,14 @@ function roundedBytes(bytes) {
 
 // src/hooks/useDropzone.js
 var import_react5 = __toESM(require_react(), 1);
-function useDropzone(handleValidDrop, accept = ["image/*"]) {
+var noEffectAllowed = function(e) {
+  e.preventDefault();
+  e.dataTransfer.effectAllowed = "none";
+};
+function useDropzone(handleValidDrop, handleInvalidDrop, accept = ["image/*"]) {
   const validDrag = import_react5.useRef(false);
-  const typeMatch = new RegExp("^" + accept.join("|"));
-  const { setAlert } = useAlerts();
+  const typeMatch2 = new RegExp("^" + accept.join("|"));
   import_react5.useEffect(() => {
-    function noEffectAllowed(e) {
-      e.preventDefault();
-      e.dataTransfer.effectAllowed = "none";
-    }
     document.addEventListener("dragover", noEffectAllowed);
     document.addEventListener("drop", noEffectAllowed);
     return () => {
@@ -23757,34 +23756,22 @@ function useDropzone(handleValidDrop, accept = ["image/*"]) {
   const handleDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!isValidDragData(e)) {
-      const badFile = Array.from(e.dataTransfer.items)?.find(({ type }) => !type.match(typeMatch));
-      setAlert({
-        message: `File with type "${badFile.type}" is not allowed!`,
-        type: "warning"
-      });
-      resetDragClasses(e);
-      return;
-    }
-    handleValidDrop(e);
-    resetDragClasses(e);
-  };
-  const isValidDragData = (e) => {
-    const { items } = e.dataTransfer;
-    const files = Array.from(items);
-    return files.every(({ type }) => type.match(typeMatch));
+    setDragClasses(e, false);
+    if (isValidDragData(e))
+      handleValidDrop(e);
+    else
+      handleInvalidDrop(e);
   };
   const handleDragEnter = (e) => {
     e.preventDefault();
     if (e.currentTarget.contains(e.relatedTarget))
       return;
     if (isValidDragData(e)) {
-      validDrag.current = true;
       e.dataTransfer.effectAllowed = "copy";
-      e.currentTarget.classList.add("is-dragged-over");
+      setDragClasses(e, true);
     } else {
       e.dataTransfer.effectAllowed = "none";
-      resetDragClasses(e);
+      setDragClasses(e, false);
     }
   };
   const handleDragOver = (e) => {
@@ -23795,12 +23782,17 @@ function useDropzone(handleValidDrop, accept = ["image/*"]) {
   const handleDragLeave = (e) => {
     if (isInsideContainer(e))
       return;
-    resetDragClasses(e);
+    setDragClasses(e, false);
   };
-  const handleDragEnd = (e) => resetDragClasses(e);
-  const resetDragClasses = (e) => {
-    validDrag.current = false;
-    e.currentTarget.classList.remove("is-dragged-over");
+  const handleDragEnd = (e) => setDragClasses(e, false);
+  const isValidDragData = (e) => {
+    const { items } = e.dataTransfer;
+    const files = Array.from(items);
+    return files.every(({ type }) => type.match(typeMatch2));
+  };
+  const setDragClasses = (e, value) => {
+    validDrag.current = value;
+    e.currentTarget.classList.toggle("is-dragged-over", value);
   };
   const isInsideContainer = (e) => {
     const { top, bottom, left, right } = e.currentTarget.getBoundingClientRect();
@@ -23819,13 +23811,21 @@ function useDropzone(handleValidDrop, accept = ["image/*"]) {
 var jsx_dev_runtime5 = __toESM(require_jsx_dev_runtime(), 1);
 function FileUpload({ onFile, file }) {
   const fileInput = import_react6.useRef();
+  const { setAlert } = useAlerts();
   const [previewInfo, setPreviewInfo] = import_react6.useState({});
   function handleValidDrop(e) {
     fileInput.current.files = e.dataTransfer.files;
     const changeEvent = new Event("change", { bubbles: true });
     fileInput.current.dispatchEvent(changeEvent);
   }
-  const dropzoneProps = useDropzone(handleValidDrop);
+  function handleInvalidDrop(e) {
+    const badFile = Array.from(e.dataTransfer.items)?.find(({ type }) => !type.match(typeMatch));
+    setAlert({
+      message: `File with type "${badFile.type}" is not allowed!`,
+      type: "warning"
+    });
+  }
+  const dropzoneProps = useDropzone(handleValidDrop, handleValidDrop);
   const clearSelectedFile = (e) => {
     const nullFile = { target: { files: [] } };
     onFile(nullFile);
@@ -24200,12 +24200,12 @@ var jsx_dev_runtime9 = __toESM(require_jsx_dev_runtime(), 1);
 function EditCarousel({ artworks, activeArt, onChange }) {
   const editCarouselScroll = import_react10.useRef();
   const handleFocus = (e) => {
-    const { offsetLeft, offsetWidth: imgWidth } = e.target.parentElement;
-    const { offsetWidth, scrollLeft, scrollWidth } = editCarouselScroll.current;
-    let scrollPosition = offsetLeft - (offsetWidth - imgWidth) / 2;
-    scrollPosition = Math.max(0, Math.min(scrollPosition, scrollWidth - offsetWidth));
+    const { offsetTop, offsetHeight: imgHeight } = e.target.parentElement;
+    const { offsetHeight, scrollTop, scrollHeight } = editCarouselScroll.current;
+    let scrollPosition = offsetTop - (offsetHeight - imgHeight) / 2;
+    scrollPosition = Math.max(0, Math.min(scrollPosition, scrollHeight - offsetHeight));
     editCarouselScroll.current.scroll({
-      left: scrollPosition,
+      top: scrollPosition,
       behavior: "smooth"
     });
   };
@@ -24220,11 +24220,16 @@ function EditCarousel({ artworks, activeArt, onChange }) {
       }, undefined, false, undefined, this),
       jsx_dev_runtime9.jsxDEV("div", {
         className: "thumbnail-container scrollbar scrollbar-deep-blue ",
-        ref: editCarouselScroll,
-        children: jsx_dev_runtime9.jsxDEV("div", {
-          className: "thumbnail-list",
-          children: artworks.map(({ _id, thumbnail, title }) => jsx_dev_runtime9.jsxDEV(import_react10.default.Fragment, {
-            children: jsx_dev_runtime9.jsxDEV("label", {
+        children: [
+          jsx_dev_runtime9.jsxDEV("h3", {
+            className: "current-subcategory--header",
+            children: artworks[0].subCategory
+          }, undefined, false, undefined, this),
+          jsx_dev_runtime9.jsxDEV("div", {
+            className: "thumbnail-list edit-carousel",
+            ref: editCarouselScroll,
+            children: artworks.map(({ _id, thumbnail, title }) => jsx_dev_runtime9.jsxDEV("label", {
+              className: "edit-carousel-item",
               children: [
                 jsx_dev_runtime9.jsxDEV("img", {
                   className: `thumbnail-image img ${activeArt?._id === _id ? "img-clicked" : ""}`,
@@ -24241,10 +24246,10 @@ function EditCarousel({ artworks, activeArt, onChange }) {
                   onFocus: handleFocus
                 }, undefined, false, undefined, this)
               ]
-            }, undefined, true, undefined, this)
-          }, _id, false, undefined, this))
-        }, undefined, false, undefined, this)
-      }, undefined, false, undefined, this)
+            }, _id, true, undefined, this))
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
     ]
   }, undefined, true, undefined, this);
 }
@@ -24320,11 +24325,18 @@ function Delete() {
       }, undefined, false, undefined, this),
       activeArt ? jsx_dev_runtime10.jsxDEV(jsx_dev_runtime10.Fragment, {
         children: [
-          jsx_dev_runtime10.jsxDEV("h3", {
+          jsx_dev_runtime10.jsxDEV("div", {
+            className: "delete--thumbnail",
             children: [
-              "Editing: ",
-              jsx_dev_runtime10.jsxDEV("strong", {
-                children: activeArt.title
+              jsx_dev_runtime10.jsxDEV("h4", {
+                children: jsx_dev_runtime10.jsxDEV("strong", {
+                  children: activeArt.title
+                }, undefined, false, undefined, this)
+              }, undefined, false, undefined, this),
+              jsx_dev_runtime10.jsxDEV("img", {
+                id: "preview",
+                src: activeArt.thumbnail,
+                alt: activeArt.title
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this),
