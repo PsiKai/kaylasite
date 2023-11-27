@@ -1,0 +1,78 @@
+:root {
+  /* Scroll */
+  --scrollbar-color: #00334e #d8b9c3;
+  --h1-color: #4d4c7d;
+  --h2-color: #363062;
+  --h3-color: #4d4c7d;
+  --p-color: #363062;
+  --paper-bg-color: #ebecf1;
+  --paper-bg-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
+  --paper-font-color: #4d4c7d;
+  --header-gradient: linear-gradient(#64958f, #065c6f);
+  --padded-bg-color: #4d4c7d;
+  --padded-bg-image: url(https://www.transparenttextures.com/patterns/padded.png);
+  --footer-gradient: linear-gradient(#145374, #00334e);
+  --footer-font-color: #1a1c20;
+  --social-media-icon-color: #4d4c7d;
+  --link-font-color: #4d4c7d;
+  --link-font-hover: #363062;
+  --carousel-img-border: #1b1b2f;
+  --carousel-img-outline: #142850;
+  --thumb-scrollbar-color: #00334e #d8b9c3;
+  --colored-section-bg-color: #827397;
+  --colored-section-bg-image: url(https://www.transparenttextures.com/patterns/xv.png);
+  --wbkt-scroll-track: #d8b9c3;
+  --wbkt-scroll-track-inset: #827397;
+  --wbkt-scroll-thumb: linear-gradient(#145374, #00334e);
+  --bg-color-pink: #d8b9c3;
+  --input-placeholder-color: #827397;
+  --dark-purple-color: #363062;
+  --dark-purple-hover-color: #4d4c7d;
+  --san-serif-font: "Kite One", sans-serif;
+  --cursive-font: "Dancing Script", cursive;
+  --header-san-serif-font: "Open Sans", sans-serif;
+}
+
+body {
+  font-family: var(--san-serif-font);
+  color: var(--dark-purple-color);
+}
+
+header {
+  background-image: var(--header-gradient);
+}
+
+footer {
+  background-image: var(--footer-gradient);
+  color: var(--footer-font-color);
+}
+
+::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--wbkt-scroll-track);
+  box-shadow: inset 0 0 5px 2px var(--wbkt-scroll-track-inset);
+}
+
+::-webkit-scrollbar-thumb {
+  background-image: var(--wbkt-scroll-thumb);
+}
+
+.padded {
+  background-color: var(--padded-bg-color);
+  background-image: var(--padded-bg-image);
+}
+
+.paper {
+  background-color: var(--paper-bg-color);
+  background-image: var(--paper-bg-image);
+  color: var(--paper-font-color);
+}
+
+.wreath {
+  background-color: var(--colored-section-bg-color);
+  background-image: var(--colored-section-bg-image);
+}

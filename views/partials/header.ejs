@@ -5,51 +5,25 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width" />
 
-  <meta name="description" content="Selected Artworks" />
-  <meta property="og:url" content="https://kaylakossajda.com">
+  <meta name="description" content="<%= pageCopy?.htmlDescription %>" />
+  <meta property="og:url" content="<%= baseUrl + path %>">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Kayla's Art Page">
-  <meta property="og:description" content="A selection of Kayla's favorite art works">
-  <meta property="og:image" content="http://i.imgur.com/RG2BoCq.png">
+  <meta property="og:title" content="<%= pageCopy.htmlTitle %>">
+  <meta property="og:description" content="<%= pageCopy?.htmlDescription %>">
+  <meta property="og:image" content="<%= pageCopy.thumbnail || 'http://i.imgur.com/RG2BoCq.png' %>">
   <meta name="author" content="David Irvin" />
 
-  <title>Kayla's Art Page</title>
-  <link rel="icon" href="images/tool.png">
+  <title><%= pageCopy.htmlTitle %></title>
+  <link rel="icon" href="<%= baseUrl %>/images/tool.png">
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Dancing+Script:wght@400;500;600;700&family=Kite+One&family=Pattaya&family=Rouge+Script&family=Sacramento&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <script src="https://kit.fontawesome.com/6d8e4d74f9.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="<%= baseUrl %>/css/styles.css">
 </head>
 
 <body>
 
-  <section id="header">
-      <nav class="navbar navbar-expand-md navbar-light">
-        <a action="/" href="/"><img class="logo" src="images/kaylalogosimple.png"/></a>
-        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a action="/painting" class="nav-link" href="painting">Painting</a>
-            </li>
-            <li class="nav-item">
-              <a action="/photography" class="nav-link" href="photography">Photography</a>
-            </li>
-            <li class="nav-item">
-              <a action="/drawing" class="nav-link" href="drawing">Drawing</a>
-            </li>
-            <li class="nav-item">
-              <a action="/digital" class="nav-link" href="digital">Digital</a>
-            </li>
-            <li class="nav-item admin">
-              <a action="/upload" class="nav-link" href="upload"><i class="fas fa-sign-in-alt"></i></a>
-            </li>
-          </ul>
-
-      </nav>
-  </section>
+<%- include("navbar") -%> 

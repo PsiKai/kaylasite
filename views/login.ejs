@@ -1,42 +1,36 @@
 <%- include("partials/header") -%>
 
-
 <section class="colored">
-  <img class="up logoEdge" src="images/kaylalogogreen.png" alt="">
-  <img class="up logoEdgeRight" src="images/kaylalogogreen.png" alt="">
-<div class="container-fluid">
-  <h1>Oops! No Artwork here</h1>
-  <div class="bio">
-    <p>This is the admin login page where I can make changes to the content of this site.  Click any link at the top to navigate back to the main site.</p>
-  </div>
-  <div class="call-action">
-    <a target="_blank" href="https://www.facebook.com/kayla.kossajda">
-    <i class="media fab fa-facebook-f fa-2x"></i>
-    </a>
-    <a target="_blank" href="https://www.instagram.com/kaylakossart/">
-    <i class="media fab fa-instagram fa-2x"></i>
-    </a>
-    <a href="mailto:kkossajda@gmail.com">
-    <i class="media fas fa-envelope fa-2x"></i>
-    </a>
-  </div>
-</div>
+  <img class="up logoEdge" src="images/kaylalogogreen.png" aria-hidden \>
+  <img class="up logoEdgeRight" src="images/kaylalogogreen.png" aria-hidden \>
+	<div class="container-fluid">
+  	<h1>Oops! No Artwork here</h1>
+  	<div class="bio">
+   		<p>This is the admin login page where I can make changes to the content of this site.  Click any link at the top to navigate back to the main site.</p>
+  	</div>
+  	<div class="call-action">
+    	<a target="_blank" href="https://www.facebook.com/kayla.kossajda">
+    		<i class="media fab fa-facebook-f fa-2x"></i>
+    	</a>
+    	<a target="_blank" href="https://www.instagram.com/kaylakossart/">
+    		<i class="media fab fa-instagram fa-2x"></i>
+    	</a>
+    	<a href="mailto:kkossajda@gmail.com">
+    		<i class="media fas fa-envelope fa-2x"></i>
+    	</a>
+  	</div>
+	</div>
 </section>
 
 <section class="thumbnail-section">
-    <div class="login-form">
-      <form class="form" action="/login" method="post">
-        <h3>Login to make changes</h3>
-        <input id="username" type="text" class="subcat update" name="username" value="kayla">
-        <input id="password" class="subcat update" type="password" name="password" value="" placeholder="Enter Password" required>
-        <button type="submit" name="button" class="btn btn-lg btn-info">Login <i class="fas fa-sign-in-alt"></i></button>
-      </form>
-    </div>
+	<div class="login-form">
+  	<form class="form" action="/login" method="post">
+    	<h3>Login to make changes</h3>
+      <input id="username" type="text" class="subcat update" name="username" value="kaylakoss">
+      <input id="password" class="subcat update" type="password" name="password" value="" placeholder="Enter Password" required>
+      <button type="submit" name="button" class="btn btn-lg btn-info">Login <i class="fas fa-sign-in-alt"></i></button>
+    </form>
+  </div>
 </section>
-
-
-
-
-
 
 <%- include("partials/footer") -%>
