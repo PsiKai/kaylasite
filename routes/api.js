@@ -18,12 +18,18 @@ apiRouter.post("/artwork", uploader, async (req, res) => {
     subCategory: slugify(subCategory),
     extension,
     category,
+    nextArtwork: null,
   })
   try {
+    const prevArt = await Artwork.findOneAndUpdate(
+      { category, subCategory, nextArtwork: null, _id: { $ne: newArt._id } },
+      { $set: { nextArtwork: newArt._id } },
+      { new: true }
+    )
     await newArt.save()
     console.log("Finished uploading new image to collection:", title)
     fetchArt()
-    res.status(201).json({ newArt })
+    res.status(201).json({ newArt, prevArt })
   } catch (err) {
     console.log("Error uploading new image to collection:", title)
     console.log(err)
@@ -44,8 +50,14 @@ apiRouter.delete("/artwork", async (req, res) => {
   }
   try {
     await Promise.all([...storageClient.deleteFile(art), Artwork.deleteOne({ _id })])
+    const prevArt = await Artwork.findOneAndUpdate(
+      { category: art.category, subCategory: art.subCategory, nextArtwork: art._id },
+      { $set: { nextArtwork: art.nextArtwork } },
+      { new: true }
+    )
+
     fetchArt()
-    res.status(204).end()
+    res.status(200).json({ prevArt })
   } catch (err) {
     console.log("Error deleting artwork:", art?.title)
     console.log(err)
@@ -59,16 +71,40 @@ apiRouter.put("/artwork", async (req, res) => {
   let { category, subCategory, title } = newImg
   subCategory = slugify(subCategory)
   title = slugify(title)
+  const nextArtwork =
+    subCategory === oldImg.subCategory && category === oldImg.category ? newImg.nextArtwork : null
 
   try {
-    await Promise.all(storageClient.moveFile(oldImg, { ...newImg, subCategory, title }))
+    if (
+      title !== oldImg.title ||
+      subCategory !== oldImg.subCategory ||
+      category !== oldImg.category
+    ) {
+      await Promise.all(storageClient.moveFile(oldImg, { ...newImg, subCategory, title }))
+    }
     const updatedArt = await Artwork.findOneAndUpdate(
       { _id: oldImg._id },
-      { thumbnail, title, subCategory, category },
+      { thumbnail, title, subCategory, category, nextArtwork },
+      { new: true }
+    )
+    let prevArt, newLocationPrev
+    prevArt = await Artwork.findOneAndUpdate(
+      {
+        category: oldImg.category,
+        subCategory: oldImg.subCategory,
+        nextArtwork: oldImg._id,
+        _id: { $ne: newImg._id },
+      },
+      { nextArtwork: oldImg.nextArtwork },
+      { new: true }
+    )
+    newLocationPrev = await Artwork.findOneAndUpdate(
+      { category, subCategory, nextArtwork, _id: { $ne: newImg._id } },
+      { nextArtwork: newImg._id },
       { new: true }
     )
     fetchArt()
-    res.status(201).json(updatedArt)
+    res.status(201).json({ updatedArt, prevArt, newLocationPrev })
   } catch (err) {
     console.log("Error moving artwork: ")
     console.log(err)

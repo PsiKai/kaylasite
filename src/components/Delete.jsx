@@ -42,8 +42,10 @@ export default function Delete() {
     try {
       const { _id } = activeArt
       const params = new URLSearchParams({ _id }).toString()
-      await fetch("/api/artwork?" + params, { method: "DELETE" })
-      dispatch({ type: "DELETE_ARTWORK", payload: { ...activeArt } })
+      const res = await fetch("/api/artwork?" + params, { method: "DELETE" })
+      const { prevArt } = await res.json()
+      dispatch({ type: "DELETE_ARTWORK", payload: activeArt })
+      dispatch({ type: "UPDATE_ARTWORK", payload: prevArt })
       setAlert({ message: "Successfully deleted artwork!", type: "success" })
       setActiveArt(null)
       setSubCategory("")

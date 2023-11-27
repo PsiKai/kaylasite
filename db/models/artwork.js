@@ -6,6 +6,10 @@ const artWorkSchema = new mongoose.Schema({
   thumbnail: String,
   title: String,
   extension: String,
+  nextArtwork: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Artworks",
+  },
 })
 
 const Artwork = new mongoose.model("ArtWork", artWorkSchema)

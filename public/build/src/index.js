@@ -23484,23 +23484,67 @@ var import_react7 = __toESM(require_react(), 1);
 // src/context/ArtworkContext.js
 var import_react = __toESM(require_react(), 1);
 
+// utils/LinkedList.js
+class LinkedList {
+  constructor(array) {
+    this.rawList = array;
+    this.entries = this.orderList();
+  }
+  orderList() {
+    let node = this.findHead();
+    const newList = [node];
+    while (node.nextArtwork) {
+      node = this.rawList.find(({ _id }) => _id.toString() === node.nextArtwork.toString());
+      newList.push(node);
+    }
+    return newList;
+  }
+  findHead() {
+    const nextIds = new Set;
+    for (const entry of this.rawList) {
+      nextIds.add(entry.nextArtwork?.toString());
+    }
+    for (const entry of this.rawList) {
+      if (!nextIds.has(entry._id.toString())) {
+        return entry;
+      }
+    }
+    return null;
+  }
+}
+
 // utils/stateUtils.js
 function addNewArt(state, payload) {
+  if (!payload)
+    return state;
   const { category, subCategory } = payload;
+  let current = state[category]?.[subCategory] || [];
+  if (!current.length)
+    current.push(payload);
+  else {
+    const index = current.findIndex(({ _id }) => _id === payload._id);
+    if (index < 0)
+      current.push(payload);
+    else
+      current[index] = payload;
+  }
+  const subCategoryList = new LinkedList(current);
   return {
     ...state,
     [category]: {
       ...state[category],
-      [subCategory]: [...state[category][subCategory] || [], payload]
+      [subCategory]: subCategoryList.entries
     }
   };
 }
 function removeArt(state, payload) {
+  if (!payload)
+    return state;
   const { category, subCategory, _id } = payload;
   let newSubCategory;
-  if (state[category][subCategory]?.length <= 1) {
+  if (state[category]?.[subCategory]?.length <= 1) {
     newSubCategory = {};
-    delete state[category][subCategory];
+    delete state[category]?.[subCategory];
   } else {
     newSubCategory = {
       [subCategory]: state[category][subCategory].filter((art) => art._id !== _id)
@@ -23511,6 +23555,23 @@ function removeArt(state, payload) {
     [category]: {
       ...state[category],
       ...newSubCategory
+    }
+  };
+}
+function updateExistingArt(state, payload) {
+  if (!payload)
+    return state;
+  const { category, subCategory } = payload;
+  let current = state[category]?.[subCategory] || [];
+  const index = current.findIndex(({ _id }) => _id === payload._id);
+  if (index < 0)
+    return state;
+  current[index] = payload;
+  return {
+    ...state,
+    [category]: {
+      ...state[category],
+      [subCategory]: current
     }
   };
 }
@@ -23536,6 +23597,9 @@ var ArtworkReducer = function(state, action) {
     case "MOVE_ARTWORK": {
       const { newImg, oldImg } = action.payload;
       return addNewArt(removeArt(state, oldImg), newImg);
+    }
+    case "UPDATE_ARTWORK": {
+      return updateExistingArt(state, action.payload);
     }
     default:
       return state;
@@ -23949,7 +24013,8 @@ function Upload() {
         method: "POST",
         body: uploadForm
       });
-      const { newArt } = await res.json();
+      const { newArt, prevArt } = await res.json();
+      dispatch({ type: "UPDATE_ARTWORK", payload: prevArt });
       dispatch({ type: "ADD_ARTWORK", payload: newArt });
       setAlert({ message: "Successfully uploaded artwork!", type: "success" });
       e.target.reset();
@@ -24065,14 +24130,17 @@ function Edit({ artWork, onUpdateComplete }) {
     e.preventDefault();
     setUpdating(true);
     try {
-      const body = { oldImg: artWork, newImg: form };
+      const body = { oldImg: artWork, newImg: { ...form, nextArtwork: artWork.nextArtwork } };
       const res = await fetch("/api/artwork/", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
       });
-      const updatedArt = await res.json();
+      const { updatedArt, prevArt, newLocationPrev } = await res.json();
       onUpdateComplete();
+      console.log({ updatedArt, newLocationPrev, prevArt });
+      dispatch({ type: "UPDATE_ARTWORK", payload: newLocationPrev });
+      dispatch({ type: "UPDATE_ARTWORK", payload: prevArt });
       dispatch({ type: "MOVE_ARTWORK", payload: { ...body, newImg: updatedArt } });
     } catch (error) {
       setAlert({ type: "warning", message: "There was an error updating this artwork" });
@@ -24287,8 +24355,10 @@ function Delete() {
     try {
       const { _id } = activeArt;
       const params = new URLSearchParams({ _id }).toString();
-      await fetch("/api/artwork?" + params, { method: "DELETE" });
-      dispatch({ type: "DELETE_ARTWORK", payload: { ...activeArt } });
+      const res = await fetch("/api/artwork?" + params, { method: "DELETE" });
+      const { prevArt } = await res.json();
+      dispatch({ type: "DELETE_ARTWORK", payload: activeArt });
+      dispatch({ type: "UPDATE_ARTWORK", payload: prevArt });
       setAlert({ message: "Successfully deleted artwork!", type: "success" });
       setActiveArt(null);
       setSubCategory("");

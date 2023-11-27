@@ -48,9 +48,16 @@ pageRouter.post("/login", async (req, res) => {
       }
     })
   })
-  // const salt = await bcrypt.genSalt(10)
-  // const newPass = await bcrypt.hash(password, salt)
-  // await User.findOneAndUpdate({ username }, { password: newPass })
+  // try {
+  //   const salt = await bcrypt.genSalt(10)
+  //   const newPass = await bcrypt.hash(password, salt)
+  //   const user = new User({ username, password: newPass })
+  //   await user.save()
+  //   res.redirect("/login")
+  // } catch (err) {
+  //   res.send(err.message)
+  //   console.log(err)
+  // }
 })
 
 pageRouter.get("/upload", isAuthenticated, async (req, res) => {
@@ -63,7 +70,7 @@ pageRouter.get("/:category", async (req, res) => {
   let { category } = req.params
   category = capitalize(category)
   const pageCopy = titleDesc.find(item => item.page === category) || {}
-  const artCategory = artWorks[category]
+  const artCategory = artWorks[category] || {}
 
   res.render("template", {
     pageCopy,

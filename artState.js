@@ -1,4 +1,5 @@
 import Artwork from "./db/models/artwork.js"
+import LinkedList from "./utils/LinkedList.js"
 
 let artWorks = {}
 
@@ -25,6 +26,7 @@ export async function fetchArt() {
             thumbnail: "$thumbnail",
             category: "$category",
             subCategory: "$subCategory",
+            nextArtwork: "$nextArtwork",
           },
         },
       },
@@ -66,7 +68,8 @@ export async function fetchArt() {
   const groupedArt = artworkCollection.reduce((group, { category, subcategories }) => {
     group[category] = {}
     subcategories.forEach(({ subCategory, artworks }) => {
-      group[category][subCategory] = artworks
+      const sortedArt = new LinkedList(artworks)
+      group[category][subCategory] = sortedArt.entries
     })
     return group
   }, {})
