@@ -304,10 +304,16 @@ ul.thumbnail-list {
   flex-wrap: wrap;
   align-content: flex-start;
   max-height: 300px;
+  min-height: 0;
   width: 100%;
   overflow-y: auto;
   margin: 0;
-  padding: 0.5rem;
+  padding: 0.75rem;
+  outline-offset: 4px;
+}
+
+.edit-carousel-item {
+  transition: translate 150ms;
 }
 
 .current-subcategory--header {
@@ -896,12 +902,34 @@ label.radio {
 
 .img-clicked {
   outline: auto;
-  outline-offset: 4px;
 }
 
 .active-art-card {
   display: grid;
   justify-items: center;
+}
+
+.dragged-left-of {
+  translate: 8px 0;
+}
+
+.dragged-left-of::before,
+.dragged-right-of::before {
+  content: "";
+  position: absolute;
+  right: calc(100% + 8px);
+  height: 100%;
+  width: 4px;
+  border-radius: 2px;
+  background-color: white;
+}
+
+.dragged-right-of::before {
+  left: calc(100% + 8px);
+}
+
+[data-dragid] {
+  cursor: grab;
 }
 
 /* MEDIA QUERY TABLET SIZE */

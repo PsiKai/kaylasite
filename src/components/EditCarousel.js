@@ -1,4 +1,5 @@
 import React, { useRef } from "react"
+import useArtOrdering from "../hooks/useArtOrdering.js"
 
 export default function EditCarousel({ artworks, activeArt, onChange }) {
   const editCarouselScroll = useRef()
@@ -14,6 +15,8 @@ export default function EditCarousel({ artworks, activeArt, onChange }) {
     })
   }
 
+  const orderingProps = useArtOrdering(editCarouselScroll)
+
   return (
     <fieldset>
       <legend>
@@ -23,9 +26,9 @@ export default function EditCarousel({ artworks, activeArt, onChange }) {
       </legend>
       <div className="thumbnail-container scrollbar scrollbar-deep-blue ">
         <h3 className="current-subcategory--header">{artworks[0].subCategory}</h3>
-        <div className="thumbnail-list edit-carousel" ref={editCarouselScroll}>
+        <div className="thumbnail-list edit-carousel" ref={editCarouselScroll} {...orderingProps}>
           {artworks.map(({ _id, thumbnail, title }) => (
-            <label key={_id} className="edit-carousel-item">
+            <label key={_id} className="edit-carousel-item" data-dragid={_id}>
               <img
                 className={`thumbnail-image img ${activeArt?._id === _id ? "img-clicked" : ""}`}
                 src={thumbnail}
