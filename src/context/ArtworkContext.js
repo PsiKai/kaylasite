@@ -1,5 +1,10 @@
 import { createContext, useReducer } from "react"
-import { addNewArt, removeArt, updateExistingArt } from "../../utils/stateUtils.js"
+import {
+  addNewArt,
+  removeArt,
+  updateExistingArt,
+  reorderSubCategory,
+} from "../../utils/stateUtils.js"
 
 export const ArtworkContext = createContext()
 
@@ -25,6 +30,9 @@ function ArtworkReducer(state, action) {
     }
     case "UPDATE_ARTWORK": {
       return updateExistingArt(state, action.payload)
+    }
+    case "REORDER_ART": {
+      return reorderSubCategory(state, action.payload)
     }
     default:
       return state

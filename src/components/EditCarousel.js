@@ -1,12 +1,15 @@
-import React, { useRef } from "react"
+import React, { useRef, useContext } from "react"
 import useArtOrdering from "../hooks/useArtOrdering.js"
+import { ArtworkContext } from "../context/ArtworkContext"
+import LinkedList from "../../utils/LinkedList.js"
 
 export default function EditCarousel({ artworks, activeArt, onChange }) {
+  const { dispatch } = useContext(ArtworkContext)
   const editCarouselScroll = useRef()
 
   const handleFocus = e => {
     const { offsetTop, offsetHeight: imgHeight } = e.target.parentElement
-    const { offsetHeight, scrollTop, scrollHeight } = editCarouselScroll.current
+    const { offsetHeight, scrollHeight } = editCarouselScroll.current
     let scrollPosition = offsetTop - (offsetHeight - imgHeight) / 2
     scrollPosition = Math.max(0, Math.min(scrollPosition, scrollHeight - offsetHeight))
     editCarouselScroll.current.scroll({
@@ -15,7 +18,16 @@ export default function EditCarousel({ artworks, activeArt, onChange }) {
     })
   }
 
-  const orderingProps = useArtOrdering(editCarouselScroll)
+  const handleArtReorder = (itemId, neighborId) => {
+    const newList = new LinkedList(artworks)
+    newList.moveListItem(itemId, neighborId)
+    dispatch({
+      type: "REORDER_ART",
+      payload: newList.entries,
+    })
+  }
+
+  const orderingProps = useArtOrdering(editCarouselScroll, handleArtReorder)
 
   return (
     <fieldset>

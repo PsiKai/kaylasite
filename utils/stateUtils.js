@@ -64,3 +64,17 @@ export function updateExistingArt(state, payload) {
     },
   }
 }
+
+export function reorderSubCategory(state, payload) {
+  if (!payload) return state
+
+  const { category, subCategory } = payload[0]
+
+  return {
+    ...state,
+    [category]: {
+      ...state[category],
+      [subCategory]: [...payload],
+    },
+  }
+}

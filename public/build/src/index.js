@@ -23493,11 +23493,24 @@ class LinkedList {
   orderList() {
     let node = this.findHead();
     const newList = [node];
-    while (node.nextArtwork) {
-      node = this.rawList.find(({ _id }) => _id.toString() === node.nextArtwork.toString());
+    while (node?.nextArtwork) {
+      node = this.rawList.find((listNode) => listNode?._id?.toString() === node.nextArtwork.toString());
       newList.push(node);
     }
     return newList;
+  }
+  moveListItem(movedNodeId, neighborNodeId) {
+    const movedNode = this.rawList.findIndex((art) => art._id.toString() === movedNodeId);
+    if (this.rawList[movedNode].nextArtwork?.toString() === neighborNodeId)
+      return;
+    const newNeighbor = this.rawList.findIndex((art) => art.nextArtwork?.toString() === neighborNodeId);
+    const movedNeighbor = this.rawList.findIndex((art) => art.nextArtwork?.toString() === movedNodeId);
+    if (movedNeighbor > -1)
+      this.rawList[movedNeighbor].nextArtwork = this.rawList[movedNode].nextArtwork;
+    if (newNeighbor > -1)
+      this.rawList[newNeighbor].nextArtwork = movedNodeId;
+    this.rawList[movedNode].nextArtwork = neighborNodeId;
+    this.entries = this.orderList();
   }
   findHead() {
     const nextIds = new Set;
@@ -23575,6 +23588,18 @@ function updateExistingArt(state, payload) {
     }
   };
 }
+function reorderSubCategory(state, payload) {
+  if (!payload)
+    return state;
+  const { category, subCategory } = payload[0];
+  return {
+    ...state,
+    [category]: {
+      ...state[category],
+      [subCategory]: [...payload]
+    }
+  };
+}
 
 // src/context/ArtworkContext.js
 var jsx_dev_runtime = __toESM(require_jsx_dev_runtime(), 1);
@@ -23600,6 +23625,9 @@ var ArtworkReducer = function(state, action) {
     }
     case "UPDATE_ARTWORK": {
       return updateExistingArt(state, action.payload);
+    }
+    case "REORDER_ART": {
+      return reorderSubCategory(state, action.payload);
     }
     default:
       return state;
@@ -24284,7 +24312,7 @@ function useArtOrdering(container, onValidDrop) {
     };
   }, [handleDragStart]);
   function children() {
-    return Array.from(container.current?.children || []);
+    return Array.from(container?.current?.children || []);
   }
   function showDropLocation(dropId, dropSide) {
     const toggleOff = dropSide === "left" ? "right" : "left";
@@ -24295,10 +24323,9 @@ function useArtOrdering(container, onValidDrop) {
   }
   function getCurrentRow(e) {
     const { top } = container.current.getBoundingClientRect();
-    const { clientY } = e;
+    const mouseY = e.clientY - top;
     const { scrollTop, scrollHeight } = container.current;
     const rowHeight = scrollHeight / dragGrid.current.length;
-    const mouseY = clientY - top;
     let row = 0;
     let currentHeight = rowHeight;
     while (mouseY + scrollTop > currentHeight) {
@@ -24308,13 +24335,11 @@ function useArtOrdering(container, onValidDrop) {
     return row;
   }
   function getCurrentColumn(e, row) {
-    const { left } = container.current.getBoundingClientRect();
-    const { clientX } = e;
     let column = 0;
     while (column < dragGrid.current[row]?.length) {
       const currItem = dragGrid.current[row][column];
       const midPoint = currItem.left + currItem.width / 2;
-      if (clientX > midPoint)
+      if (e.clientX > midPoint)
         column++;
       else
         break;
@@ -24357,7 +24382,7 @@ function useArtOrdering(container, onValidDrop) {
     }
     dragGrid.current = dragItemGrid;
   }
-  function handleDragEnd(e) {
+  function handleDragEnd() {
     container.current.style.outline = "none";
     dragEnabled.current = false;
   }
@@ -24387,10 +24412,11 @@ function useArtOrdering(container, onValidDrop) {
     e.stopPropagation();
     if (!dragEnabled.current)
       return;
-    const draggedItemid = e.dataTransfer.getData("text");
-    console.log({ draggedItemid });
-    console.log({ neighborId: dropNeighbor.current.id });
+    const draggedItemId = e.dataTransfer.getData("text");
     showDropLocation(null, "left");
+    if (draggedItemId === dropNeighbor.current.id)
+      return;
+    onValidDrop(draggedItemId, dropNeighbor.current.id);
   }
   return {
     onDragOver: handleDragOver,
@@ -24402,10 +24428,11 @@ function useArtOrdering(container, onValidDrop) {
 // src/components/EditCarousel.js
 var jsx_dev_runtime9 = __toESM(require_jsx_dev_runtime(), 1);
 function EditCarousel({ artworks, activeArt, onChange }) {
+  const { dispatch } = import_react11.useContext(ArtworkContext);
   const editCarouselScroll = import_react11.useRef();
   const handleFocus = (e) => {
     const { offsetTop, offsetHeight: imgHeight } = e.target.parentElement;
-    const { offsetHeight, scrollTop, scrollHeight } = editCarouselScroll.current;
+    const { offsetHeight, scrollHeight } = editCarouselScroll.current;
     let scrollPosition = offsetTop - (offsetHeight - imgHeight) / 2;
     scrollPosition = Math.max(0, Math.min(scrollPosition, scrollHeight - offsetHeight));
     editCarouselScroll.current.scroll({
@@ -24413,7 +24440,15 @@ function EditCarousel({ artworks, activeArt, onChange }) {
       behavior: "smooth"
     });
   };
-  const orderingProps = useArtOrdering(editCarouselScroll);
+  const handleArtReorder = (itemId, neighborId) => {
+    const newList = new LinkedList(artworks);
+    newList.moveListItem(itemId, neighborId);
+    dispatch({
+      type: "REORDER_ART",
+      payload: newList.entries
+    });
+  };
+  const orderingProps = useArtOrdering(editCarouselScroll, handleArtReorder);
   return jsx_dev_runtime9.jsxDEV("fieldset", {
     children: [
       jsx_dev_runtime9.jsxDEV("legend", {

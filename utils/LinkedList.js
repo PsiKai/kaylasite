@@ -8,8 +8,10 @@ export default class LinkedList {
   orderList() {
     let node = this.findHead()
     const newList = [node]
-    while (node.nextArtwork) {
-      node = this.rawList.find(({ _id }) => _id.toString() === node.nextArtwork.toString())
+    while (node?.nextArtwork) {
+      node = this.rawList.find(
+        listNode => listNode?._id?.toString() === node.nextArtwork.toString(),
+      )
       newList.push(node)
     }
     return newList
@@ -25,6 +27,21 @@ export default class LinkedList {
   //   }
   //   return head
   // }
+
+  moveListItem(movedNodeId, neighborNodeId) {
+    const movedNode = this.rawList.findIndex(art => art._id.toString() === movedNodeId)
+    if (this.rawList[movedNode].nextArtwork?.toString() === neighborNodeId) return
+
+    const newNeighbor = this.rawList.findIndex(
+      art => art.nextArtwork?.toString() === neighborNodeId,
+    )
+    const movedNeighbor = this.rawList.findIndex(art => art.nextArtwork?.toString() === movedNodeId)
+    if (movedNeighbor > -1)
+      this.rawList[movedNeighbor].nextArtwork = this.rawList[movedNode].nextArtwork
+    if (newNeighbor > -1) this.rawList[newNeighbor].nextArtwork = movedNodeId
+    this.rawList[movedNode].nextArtwork = neighborNodeId
+    this.entries = this.orderList()
+  }
 
   findHead() {
     const nextIds = new Set()

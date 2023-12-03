@@ -20,7 +20,7 @@ export default function useArtOrdering(container, onValidDrop) {
   }, [handleDragStart])
 
   function children() {
-    return Array.from(container.current?.children || [])
+    return Array.from(container?.current?.children || [])
   }
 
   function showDropLocation(dropId, dropSide) {
@@ -33,10 +33,9 @@ export default function useArtOrdering(container, onValidDrop) {
 
   function getCurrentRow(e) {
     const { top } = container.current.getBoundingClientRect()
-    const { clientY } = e
+    const mouseY = e.clientY - top
     const { scrollTop, scrollHeight } = container.current
     const rowHeight = scrollHeight / dragGrid.current.length
-    const mouseY = clientY - top
 
     let row = 0
     let currentHeight = rowHeight
@@ -48,13 +47,12 @@ export default function useArtOrdering(container, onValidDrop) {
   }
 
   function getCurrentColumn(e, row) {
-    const { left } = container.current.getBoundingClientRect()
-    const { clientX } = e
     let column = 0
+
     while (column < dragGrid.current[row]?.length) {
       const currItem = dragGrid.current[row][column]
       const midPoint = currItem.left + currItem.width / 2
-      if (clientX > midPoint) column++
+      if (e.clientX > midPoint) column++
       else break
     }
     return column
@@ -104,7 +102,7 @@ export default function useArtOrdering(container, onValidDrop) {
     dragGrid.current = dragItemGrid
   }
 
-  function handleDragEnd(e) {
+  function handleDragEnd() {
     container.current.style.outline = "none"
     dragEnabled.current = false
   }
@@ -141,10 +139,11 @@ export default function useArtOrdering(container, onValidDrop) {
     e.stopPropagation()
     if (!dragEnabled.current) return
 
-    const draggedItemid = e.dataTransfer.getData("text")
-    console.log({ draggedItemid })
-    console.log({ neighborId: dropNeighbor.current.id })
+    const draggedItemId = e.dataTransfer.getData("text")
     showDropLocation(null, "left")
+    if (draggedItemId === dropNeighbor.current.id) return
+
+    onValidDrop(draggedItemId, dropNeighbor.current.id)
   }
 
   return {

@@ -917,7 +917,7 @@ label.radio {
 .dragged-right-of::before {
   content: "";
   position: absolute;
-  right: calc(100% + 8px);
+  right: calc(100% + 10px);
   height: 100%;
   width: 4px;
   border-radius: 2px;
