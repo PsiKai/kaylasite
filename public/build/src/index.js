@@ -23666,11 +23666,58 @@ var AlertsReducer = function(state, action) {
 };
 var AlertContext = import_react2.createContext();
 
+// node_modules/uuid/dist/esm-browser/rng.js
+var getRandomValues;
+var rnds8 = new Uint8Array(16);
+function rng() {
+  if (!getRandomValues) {
+    getRandomValues = typeof crypto !== "undefined" && crypto.getRandomValues && crypto.getRandomValues.bind(crypto);
+    if (!getRandomValues) {
+      throw new Error("crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported");
+    }
+  }
+  return getRandomValues(rnds8);
+}
+
+// node_modules/uuid/dist/esm-browser/stringify.js
+function unsafeStringify(arr, offset = 0) {
+  return byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + "-" + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + "-" + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + "-" + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + "-" + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]];
+}
+var byteToHex = [];
+for (let i = 0;i < 256; ++i) {
+  byteToHex.push((i + 256).toString(16).slice(1));
+}
+
+// node_modules/uuid/dist/esm-browser/native.js
+var randomUUID = typeof crypto !== "undefined" && crypto.randomUUID && crypto.randomUUID.bind(crypto);
+var native_default = {
+  randomUUID
+};
+
+// node_modules/uuid/dist/esm-browser/v4.js
+var v4 = function(options, buf, offset) {
+  if (native_default.randomUUID && !buf && !options) {
+    return native_default.randomUUID();
+  }
+  options = options || {};
+  const rnds = options.random || (options.rng || rng)();
+  rnds[6] = rnds[6] & 15 | 64;
+  rnds[8] = rnds[8] & 63 | 128;
+  if (buf) {
+    offset = offset || 0;
+    for (let i = 0;i < 16; ++i) {
+      buf[offset + i] = rnds[i];
+    }
+    return buf;
+  }
+  return unsafeStringify(rnds);
+};
+var v4_default = v4;
 // src/hooks/useAlerts.js
 function useAlerts(alertDuration = 7000) {
   const { dispatch, alerts } = import_react3.useContext(AlertContext);
   function setAlert({ message, type }) {
-    const id = Math.random();
+    const id = v4_default();
     const timeout = setAlertTimeout(id);
     dispatch({ type: "NEW_ALERT", payload: { id, message, type, timeout } });
   }
@@ -24429,7 +24476,9 @@ function useArtOrdering(container, onValidDrop) {
 var jsx_dev_runtime9 = __toESM(require_jsx_dev_runtime(), 1);
 function EditCarousel({ artworks, activeArt, onChange }) {
   const { dispatch } = import_react11.useContext(ArtworkContext);
+  const [reordering, setReordering] = import_react11.useState(false);
   const editCarouselScroll = import_react11.useRef();
+  const { setAlert } = useAlerts();
   const handleFocus = (e) => {
     const { offsetTop, offsetHeight: imgHeight } = e.target.parentElement;
     const { offsetHeight, scrollHeight } = editCarouselScroll.current;
@@ -24440,13 +24489,26 @@ function EditCarousel({ artworks, activeArt, onChange }) {
       behavior: "smooth"
     });
   };
-  const handleArtReorder = (itemId, neighborId) => {
-    const newList = new LinkedList(artworks);
-    newList.moveListItem(itemId, neighborId);
-    dispatch({
-      type: "REORDER_ART",
-      payload: newList.entries
-    });
+  const handleArtReorder = async (itemId, neighborId) => {
+    setReordering(true);
+    const originalState = [...artworks.map((art) => ({ ...art }))];
+    try {
+      const newList = new LinkedList(artworks);
+      newList.moveListItem(itemId, neighborId);
+      dispatch({
+        type: "REORDER_ART",
+        payload: newList.entries
+      });
+      await new Promise((resolve, reject) => setTimeout(reject, 1000));
+    } catch (error) {
+      setAlert({ type: "danger", message: "There was an error reordering the artwork" });
+      dispatch({
+        type: "REORDER_ART",
+        payload: originalState
+      });
+    } finally {
+      setReordering(false);
+    }
   };
   const orderingProps = useArtOrdering(editCarouselScroll, handleArtReorder);
   return jsx_dev_runtime9.jsxDEV("fieldset", {
@@ -24466,7 +24528,7 @@ function EditCarousel({ artworks, activeArt, onChange }) {
             children: artworks[0].subCategory
           }, undefined, false, undefined, this),
           jsx_dev_runtime9.jsxDEV("div", {
-            className: "thumbnail-list edit-carousel",
+            className: `thumbnail-list edit-carousel ${reordering ? "drop-pending" : ""}`,
             ref: editCarouselScroll,
             ...orderingProps,
             children: artworks.map(({ _id, thumbnail, title }) => jsx_dev_runtime9.jsxDEV("label", {

@@ -312,8 +312,24 @@ ul.thumbnail-list {
   outline-offset: 4px;
 }
 
+.edit-carousel.drop-pending {
+  cursor: progress;
+}
+
+.edit-carousel.drop-pending .edit-carousel-item {
+  opacity: 0.9;
+  pointer-events: none;
+}
+
 .edit-carousel-item {
-  transition: translate 150ms;
+  transition:
+    translate 150ms,
+    opacity 75ms;
+  cursor: pointer;
+}
+
+.edit-carousel-item:hover {
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .current-subcategory--header {
@@ -647,6 +663,7 @@ label {
   min-height: 250px;
 }
 
+.edit-carousel-item button,
 .image-preview-container button {
   background: transparent;
   display: flex;
@@ -887,14 +904,14 @@ label.radio {
   display: none !important;
 }
 
-.img {
-  transition: opacity 75ms;
-}
-
-.img:hover {
-  cursor: pointer;
-  opacity: 75%;
-}
+/* .img { */
+/*   transition: opacity 75ms; */
+/* } */
+/**/
+/* .img:hover { */
+/*   cursor: pointer; */
+/*   opacity: 75%; */
+/* } */
 
 .fa-check {
   display: none;
@@ -928,9 +945,9 @@ label.radio {
   left: calc(100% + 8px);
 }
 
-[data-dragid] {
-  cursor: grab;
-}
+/* [data-dragid] { */
+/*   cursor: grab; */
+/* } */
 
 /* MEDIA QUERY TABLET SIZE */
 
