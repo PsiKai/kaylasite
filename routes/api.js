@@ -5,6 +5,7 @@ import { isAuthenticated } from "../middleware/auth.js"
 import { storageClient } from "../google-client.js"
 import { fetchArt } from "../artState.js"
 import { slugify } from "../utils/stringUtils.js"
+import mongoose from "mongoose"
 
 const apiRouter = Router()
 
@@ -109,6 +110,42 @@ apiRouter.put("/artwork", async (req, res) => {
     console.log("Error moving artwork: ")
     console.log(err)
     res.status(500).send(err.message)
+  }
+})
+
+apiRouter.patch("/artwork", async (req, res) => {
+  const { movedArt, neighborArt } = req.body
+  const session = await mongoose.startSession()
+  session.startTransaction()
+  try {
+    // Update the old left neighbor to point to the movedArt's nextArtwork
+    await Artwork.findOneAndUpdate(
+      { nextArtwork: movedArt._id },
+      { nextArtwork: movedArt.nextArtwork },
+      { session },
+    )
+    // Update the new left neighbor to point to movedArt
+    await Artwork.findOneAndUpdate(
+      { nextArtwork: neighborArt?._id || null, subCategory: movedArt.subCategory },
+      { nextArtwork: movedArt._id },
+      { session },
+    )
+    // Update movedArt to point to the new right neighbor
+    await Artwork.findOneAndUpdate(
+      { _id: movedArt._id },
+      { nextArtwork: neighborArt?._id || null },
+      { session },
+    )
+    await session.commitTransaction()
+    fetchArt()
+    res.status(200).end()
+  } catch (err) {
+    await session.abortTransaction()
+    console.log("Error updating artwork: ")
+    console.log(err)
+    res.status(500).send(err.message)
+  } finally {
+    session.endSession()
   }
 })
 

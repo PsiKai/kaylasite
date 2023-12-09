@@ -26,12 +26,24 @@ export default function EditCarousel({ artworks, activeArt, onChange }) {
     const originalState = [...artworks.map(art => ({ ...art }))]
     try {
       const newList = new LinkedList(artworks)
-      newList.moveListItem(itemId, neighborId)
+      const artMoved = newList.moveListItem(itemId, neighborId)
+      if (!artMoved) return
+
       dispatch({
         type: "REORDER_ART",
         payload: newList.entries,
       })
-      await new Promise((resolve, reject) => setTimeout(reject, 1000))
+      const movedArt = originalState.find(art => art._id === itemId)
+      const neighborArt = originalState.find(art => art._id === neighborId)
+      const res = await fetch("/api/artwork", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ movedArt, neighborArt }),
+      })
+      if (!res.ok) throw new Error("Error reordering artwork")
+      // await new Promise((resolve, reject) => setTimeout(reject, 1000))
     } catch (error) {
       setAlert({ type: "danger", message: "There was an error reordering the artwork" })
       dispatch({

@@ -7389,12 +7389,12 @@ var require_react_dom_development = __commonJS((exports) => {
       var SyntheticWheelEvent = createSyntheticEvent(WheelEventInterface);
       var END_KEYCODES = [9, 13, 27, 32];
       var START_KEYCODE = 229;
-      var canUseCompositionEvent = canUseDOM && ("CompositionEvent" in window);
+      var canUseCompositionEvent = canUseDOM && "CompositionEvent" in window;
       var documentMode = null;
-      if (canUseDOM && ("documentMode" in document)) {
+      if (canUseDOM && "documentMode" in document) {
         documentMode = document.documentMode;
       }
-      var canUseTextInputEvent = canUseDOM && ("TextEvent" in window) && !documentMode;
+      var canUseTextInputEvent = canUseDOM && "TextEvent" in window && !documentMode;
       var useFallbackCompositionData = canUseDOM && (!canUseCompositionEvent || documentMode && documentMode > 8 && documentMode <= 11);
       var SPACEBAR_CODE = 32;
       var SPACEBAR_CHAR = String.fromCharCode(SPACEBAR_CODE);
@@ -7437,7 +7437,7 @@ var require_react_dom_development = __commonJS((exports) => {
       }
       function getDataFromCustomEvent(nativeEvent) {
         var detail = nativeEvent.detail;
-        if (typeof detail === "object" && ("data" in detail)) {
+        if (typeof detail === "object" && "data" in detail) {
           return detail.data;
         }
         return null;
@@ -8073,7 +8073,7 @@ var require_react_dom_development = __commonJS((exports) => {
           setOffsets(input, offsets);
         }
       }
-      var skipSelectionChangeEvent = canUseDOM && ("documentMode" in document) && document.documentMode <= 11;
+      var skipSelectionChangeEvent = canUseDOM && "documentMode" in document && document.documentMode <= 11;
       function registerEvents$3() {
         registerTwoPhaseEvent("onSelect", ["focusout", "contextmenu", "dragend", "focusin", "keydown", "keyup", "mousedown", "mouseup", "selectionchange"]);
       }
@@ -8082,7 +8082,7 @@ var require_react_dom_development = __commonJS((exports) => {
       var lastSelection = null;
       var mouseDown = false;
       function getSelection$1(node) {
-        if (("selectionStart" in node) && hasSelectionCapabilities(node)) {
+        if ("selectionStart" in node && hasSelectionCapabilities(node)) {
           return {
             start: node.selectionStart,
             end: node.selectionEnd
@@ -8187,7 +8187,7 @@ var require_react_dom_development = __commonJS((exports) => {
         }
         var prefixMap = vendorPrefixes[eventName];
         for (var styleProp in prefixMap) {
-          if (prefixMap.hasOwnProperty(styleProp) && (styleProp in style)) {
+          if (prefixMap.hasOwnProperty(styleProp) && styleProp in style) {
             return prefixedEventNames[eventName] = prefixMap[styleProp];
           }
         }
@@ -23491,18 +23491,25 @@ class LinkedList {
     this.entries = this.orderList();
   }
   orderList() {
+    let recursionDepth = 0;
     let node = this.findHead();
     const newList = [node];
-    while (node?.nextArtwork) {
+    while (node?.nextArtwork && recursionDepth < this.rawList.length * 2) {
       node = this.rawList.find((listNode) => listNode?._id?.toString() === node.nextArtwork.toString());
       newList.push(node);
+      recursionDepth++;
+    }
+    if (recursionDepth >= this.rawList.length * 2) {
+      console.error("Recursion depth exceeded");
+      console.log("List: ", this.rawList);
+      console.log("New list: ", newList);
     }
     return newList;
   }
   moveListItem(movedNodeId, neighborNodeId) {
     const movedNode = this.rawList.findIndex((art) => art._id.toString() === movedNodeId);
     if (this.rawList[movedNode].nextArtwork?.toString() === neighborNodeId)
-      return;
+      return false;
     const newNeighbor = this.rawList.findIndex((art) => art.nextArtwork?.toString() === neighborNodeId);
     const movedNeighbor = this.rawList.findIndex((art) => art.nextArtwork?.toString() === movedNodeId);
     if (movedNeighbor > -1)
@@ -23511,6 +23518,7 @@ class LinkedList {
       this.rawList[newNeighbor].nextArtwork = movedNodeId;
     this.rawList[movedNode].nextArtwork = neighborNodeId;
     this.entries = this.orderList();
+    return true;
   }
   findHead() {
     const nextIds = new Set;
@@ -24494,12 +24502,24 @@ function EditCarousel({ artworks, activeArt, onChange }) {
     const originalState = [...artworks.map((art) => ({ ...art }))];
     try {
       const newList = new LinkedList(artworks);
-      newList.moveListItem(itemId, neighborId);
+      const artMoved = newList.moveListItem(itemId, neighborId);
+      if (!artMoved)
+        return;
       dispatch({
         type: "REORDER_ART",
         payload: newList.entries
       });
-      await new Promise((resolve, reject) => setTimeout(reject, 1000));
+      const movedArt = originalState.find((art) => art._id === itemId);
+      const neighborArt = originalState.find((art) => art._id === neighborId);
+      const res = await fetch("/api/artwork", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ movedArt, neighborArt })
+      });
+      if (!res.ok)
+        throw new Error("Error reordering artwork");
     } catch (error) {
       setAlert({ type: "danger", message: "There was an error reordering the artwork" });
       dispatch({
