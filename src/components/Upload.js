@@ -45,7 +45,8 @@ export default function Upload() {
         method: "POST",
         body: uploadForm,
       })
-      const { newArt } = await res.json()
+      const { newArt, prevArt } = await res.json()
+      dispatch({ type: "UPDATE_ARTWORK", payload: prevArt })
       dispatch({ type: "ADD_ARTWORK", payload: newArt })
       setAlert({ message: "Successfully uploaded artwork!", type: "success" })
       e.target.reset()

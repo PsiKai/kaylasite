@@ -7389,12 +7389,12 @@ var require_react_dom_development = __commonJS((exports) => {
       var SyntheticWheelEvent = createSyntheticEvent(WheelEventInterface);
       var END_KEYCODES = [9, 13, 27, 32];
       var START_KEYCODE = 229;
-      var canUseCompositionEvent = canUseDOM && ("CompositionEvent" in window);
+      var canUseCompositionEvent = canUseDOM && "CompositionEvent" in window;
       var documentMode = null;
-      if (canUseDOM && ("documentMode" in document)) {
+      if (canUseDOM && "documentMode" in document) {
         documentMode = document.documentMode;
       }
-      var canUseTextInputEvent = canUseDOM && ("TextEvent" in window) && !documentMode;
+      var canUseTextInputEvent = canUseDOM && "TextEvent" in window && !documentMode;
       var useFallbackCompositionData = canUseDOM && (!canUseCompositionEvent || documentMode && documentMode > 8 && documentMode <= 11);
       var SPACEBAR_CODE = 32;
       var SPACEBAR_CHAR = String.fromCharCode(SPACEBAR_CODE);
@@ -7437,7 +7437,7 @@ var require_react_dom_development = __commonJS((exports) => {
       }
       function getDataFromCustomEvent(nativeEvent) {
         var detail = nativeEvent.detail;
-        if (typeof detail === "object" && ("data" in detail)) {
+        if (typeof detail === "object" && "data" in detail) {
           return detail.data;
         }
         return null;
@@ -8073,7 +8073,7 @@ var require_react_dom_development = __commonJS((exports) => {
           setOffsets(input, offsets);
         }
       }
-      var skipSelectionChangeEvent = canUseDOM && ("documentMode" in document) && document.documentMode <= 11;
+      var skipSelectionChangeEvent = canUseDOM && "documentMode" in document && document.documentMode <= 11;
       function registerEvents$3() {
         registerTwoPhaseEvent("onSelect", ["focusout", "contextmenu", "dragend", "focusin", "keydown", "keyup", "mousedown", "mouseup", "selectionchange"]);
       }
@@ -8082,7 +8082,7 @@ var require_react_dom_development = __commonJS((exports) => {
       var lastSelection = null;
       var mouseDown = false;
       function getSelection$1(node) {
-        if (("selectionStart" in node) && hasSelectionCapabilities(node)) {
+        if ("selectionStart" in node && hasSelectionCapabilities(node)) {
           return {
             start: node.selectionStart,
             end: node.selectionEnd
@@ -8187,7 +8187,7 @@ var require_react_dom_development = __commonJS((exports) => {
         }
         var prefixMap = vendorPrefixes[eventName];
         for (var styleProp in prefixMap) {
-          if (prefixMap.hasOwnProperty(styleProp) && (styleProp in style)) {
+          if (prefixMap.hasOwnProperty(styleProp) && styleProp in style) {
             return prefixedEventNames[eventName] = prefixMap[styleProp];
           }
         }
@@ -23472,11 +23472,11 @@ var require_jsx_dev_runtime = __commonJS((exports, module) => {
 });
 
 // src/index.js
-var import_react13 = __toESM(require_react(), 1);
+var import_react14 = __toESM(require_react(), 1);
 var client = __toESM(require_client(), 1);
 
 // src/App.js
-var import_react12 = __toESM(require_react(), 1);
+var import_react13 = __toESM(require_react(), 1);
 
 // src/components/Upload.js
 var import_react7 = __toESM(require_react(), 1);
@@ -23484,23 +23484,88 @@ var import_react7 = __toESM(require_react(), 1);
 // src/context/ArtworkContext.js
 var import_react = __toESM(require_react(), 1);
 
+// utils/LinkedList.js
+class LinkedList {
+  constructor(array) {
+    this.rawList = array;
+    this.entries = this.orderList();
+  }
+  orderList() {
+    let recursionDepth = 0;
+    let node = this.findHead();
+    const newList = [node];
+    while (node?.nextArtwork && recursionDepth < this.rawList.length * 2) {
+      node = this.rawList.find((listNode) => listNode?._id?.toString() === node.nextArtwork.toString());
+      newList.push(node);
+      recursionDepth++;
+    }
+    if (recursionDepth >= this.rawList.length * 2) {
+      console.error("Recursion depth exceeded");
+      console.log("List: ", this.rawList);
+      console.log("New list: ", newList);
+    }
+    return newList;
+  }
+  moveListItem(movedNodeId, neighborNodeId) {
+    const movedNode = this.rawList.findIndex((art) => art._id.toString() === movedNodeId);
+    if (this.rawList[movedNode].nextArtwork?.toString() === neighborNodeId)
+      return false;
+    const newNeighbor = this.rawList.findIndex((art) => art.nextArtwork?.toString() === neighborNodeId);
+    const movedNeighbor = this.rawList.findIndex((art) => art.nextArtwork?.toString() === movedNodeId);
+    if (movedNeighbor > -1)
+      this.rawList[movedNeighbor].nextArtwork = this.rawList[movedNode].nextArtwork;
+    if (newNeighbor > -1)
+      this.rawList[newNeighbor].nextArtwork = movedNodeId;
+    this.rawList[movedNode].nextArtwork = neighborNodeId;
+    this.entries = this.orderList();
+    return true;
+  }
+  findHead() {
+    const nextIds = new Set;
+    for (const entry of this.rawList) {
+      nextIds.add(entry.nextArtwork?.toString());
+    }
+    for (const entry of this.rawList) {
+      if (!nextIds.has(entry._id.toString())) {
+        return entry;
+      }
+    }
+    return null;
+  }
+}
+
 // utils/stateUtils.js
 function addNewArt(state, payload) {
+  if (!payload)
+    return state;
   const { category, subCategory } = payload;
+  let current = state[category]?.[subCategory] || [];
+  if (!current.length)
+    current.push(payload);
+  else {
+    const index = current.findIndex(({ _id }) => _id === payload._id);
+    if (index < 0)
+      current.push(payload);
+    else
+      current[index] = payload;
+  }
+  const subCategoryList = new LinkedList(current);
   return {
     ...state,
     [category]: {
       ...state[category],
-      [subCategory]: [...state[category][subCategory] || [], payload]
+      [subCategory]: subCategoryList.entries
     }
   };
 }
 function removeArt(state, payload) {
+  if (!payload)
+    return state;
   const { category, subCategory, _id } = payload;
   let newSubCategory;
-  if (state[category][subCategory]?.length <= 1) {
+  if (state[category]?.[subCategory]?.length <= 1) {
     newSubCategory = {};
-    delete state[category][subCategory];
+    delete state[category]?.[subCategory];
   } else {
     newSubCategory = {
       [subCategory]: state[category][subCategory].filter((art) => art._id !== _id)
@@ -23511,6 +23576,35 @@ function removeArt(state, payload) {
     [category]: {
       ...state[category],
       ...newSubCategory
+    }
+  };
+}
+function updateExistingArt(state, payload) {
+  if (!payload)
+    return state;
+  const { category, subCategory } = payload;
+  let current = state[category]?.[subCategory] || [];
+  const index = current.findIndex(({ _id }) => _id === payload._id);
+  if (index < 0)
+    return state;
+  current[index] = payload;
+  return {
+    ...state,
+    [category]: {
+      ...state[category],
+      [subCategory]: current
+    }
+  };
+}
+function reorderSubCategory(state, payload) {
+  if (!payload)
+    return state;
+  const { category, subCategory } = payload[0];
+  return {
+    ...state,
+    [category]: {
+      ...state[category],
+      [subCategory]: [...payload]
     }
   };
 }
@@ -23536,6 +23630,12 @@ var ArtworkReducer = function(state, action) {
     case "MOVE_ARTWORK": {
       const { newImg, oldImg } = action.payload;
       return addNewArt(removeArt(state, oldImg), newImg);
+    }
+    case "UPDATE_ARTWORK": {
+      return updateExistingArt(state, action.payload);
+    }
+    case "REORDER_ART": {
+      return reorderSubCategory(state, action.payload);
     }
     default:
       return state;
@@ -23574,11 +23674,58 @@ var AlertsReducer = function(state, action) {
 };
 var AlertContext = import_react2.createContext();
 
+// node_modules/uuid/dist/esm-browser/rng.js
+var getRandomValues;
+var rnds8 = new Uint8Array(16);
+function rng() {
+  if (!getRandomValues) {
+    getRandomValues = typeof crypto !== "undefined" && crypto.getRandomValues && crypto.getRandomValues.bind(crypto);
+    if (!getRandomValues) {
+      throw new Error("crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported");
+    }
+  }
+  return getRandomValues(rnds8);
+}
+
+// node_modules/uuid/dist/esm-browser/stringify.js
+function unsafeStringify(arr, offset = 0) {
+  return byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + "-" + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + "-" + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + "-" + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + "-" + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]];
+}
+var byteToHex = [];
+for (let i = 0;i < 256; ++i) {
+  byteToHex.push((i + 256).toString(16).slice(1));
+}
+
+// node_modules/uuid/dist/esm-browser/native.js
+var randomUUID = typeof crypto !== "undefined" && crypto.randomUUID && crypto.randomUUID.bind(crypto);
+var native_default = {
+  randomUUID
+};
+
+// node_modules/uuid/dist/esm-browser/v4.js
+var v4 = function(options, buf, offset) {
+  if (native_default.randomUUID && !buf && !options) {
+    return native_default.randomUUID();
+  }
+  options = options || {};
+  const rnds = options.random || (options.rng || rng)();
+  rnds[6] = rnds[6] & 15 | 64;
+  rnds[8] = rnds[8] & 63 | 128;
+  if (buf) {
+    offset = offset || 0;
+    for (let i = 0;i < 16; ++i) {
+      buf[offset + i] = rnds[i];
+    }
+    return buf;
+  }
+  return unsafeStringify(rnds);
+};
+var v4_default = v4;
 // src/hooks/useAlerts.js
 function useAlerts(alertDuration = 7000) {
   const { dispatch, alerts } = import_react3.useContext(AlertContext);
   function setAlert({ message, type }) {
-    const id = Math.random();
+    const id = v4_default();
     const timeout = setAlertTimeout(id);
     dispatch({ type: "NEW_ALERT", payload: { id, message, type, timeout } });
   }
@@ -23949,7 +24096,8 @@ function Upload() {
         method: "POST",
         body: uploadForm
       });
-      const { newArt } = await res.json();
+      const { newArt, prevArt } = await res.json();
+      dispatch({ type: "UPDATE_ARTWORK", payload: prevArt });
       dispatch({ type: "ADD_ARTWORK", payload: newArt });
       setAlert({ message: "Successfully uploaded artwork!", type: "success" });
       e.target.reset();
@@ -24042,7 +24190,7 @@ function Upload() {
 }
 
 // src/components/Delete.jsx
-var import_react11 = __toESM(require_react(), 1);
+var import_react12 = __toESM(require_react(), 1);
 
 // src/components/Edit.js
 var import_react8 = __toESM(require_react(), 1);
@@ -24065,14 +24213,17 @@ function Edit({ artWork, onUpdateComplete }) {
     e.preventDefault();
     setUpdating(true);
     try {
-      const body = { oldImg: artWork, newImg: form };
+      const body = { oldImg: artWork, newImg: { ...form, nextArtwork: artWork.nextArtwork } };
       const res = await fetch("/api/artwork/", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
       });
-      const updatedArt = await res.json();
+      const { updatedArt, prevArt, newLocationPrev } = await res.json();
       onUpdateComplete();
+      console.log({ updatedArt, newLocationPrev, prevArt });
+      dispatch({ type: "UPDATE_ARTWORK", payload: newLocationPrev });
+      dispatch({ type: "UPDATE_ARTWORK", payload: prevArt });
       dispatch({ type: "MOVE_ARTWORK", payload: { ...body, newImg: updatedArt } });
     } catch (error) {
       setAlert({ type: "warning", message: "There was an error updating this artwork" });
@@ -24195,13 +24346,150 @@ var ConfirmationModal = import_react9.forwardRef(function ConfirmationModal2({ o
 var ConfirmationModal_default = ConfirmationModal;
 
 // src/components/EditCarousel.js
+var import_react11 = __toESM(require_react(), 1);
+
+// src/hooks/useArtOrdering.js
 var import_react10 = __toESM(require_react(), 1);
+function useArtOrdering(container, onValidDrop) {
+  const dragGrid = import_react10.useRef();
+  const dropNeighbor = import_react10.useRef();
+  const dragEnabled = import_react10.useRef(false);
+  import_react10.useEffect(() => {
+    children().forEach((dragItem) => {
+      dragItem.addEventListener("dragstart", handleDragStart);
+      dragItem.addEventListener("dragend", handleDragEnd);
+    });
+    return () => {
+      children().forEach((dragItem) => {
+        dragItem.removeEventListener("dragstart", handleDragStart);
+        dragItem.removeEventListener("dragstart", handleDragEnd);
+      });
+    };
+  }, [handleDragStart]);
+  function children() {
+    return Array.from(container?.current?.children || []);
+  }
+  function showDropLocation(dropId, dropSide) {
+    const toggleOff = dropSide === "left" ? "right" : "left";
+    children().forEach((child) => {
+      child.classList.toggle(`dragged-${dropSide}-of`, child.dataset.dragid === dropId);
+      child.classList.toggle(`dragged-${toggleOff}-of`, false);
+    });
+  }
+  function getCurrentRow(e) {
+    const { top } = container.current.getBoundingClientRect();
+    const mouseY = e.clientY - top;
+    const { scrollTop, scrollHeight } = container.current;
+    const rowHeight = scrollHeight / dragGrid.current.length;
+    let row = 0;
+    let currentHeight = rowHeight;
+    while (mouseY + scrollTop > currentHeight) {
+      row++;
+      currentHeight += rowHeight;
+    }
+    return row;
+  }
+  function getCurrentColumn(e, row) {
+    let column = 0;
+    while (column < dragGrid.current[row]?.length) {
+      const currItem = dragGrid.current[row][column];
+      const midPoint = currItem.left + currItem.width / 2;
+      if (e.clientX > midPoint)
+        column++;
+      else
+        break;
+    }
+    return column;
+  }
+  function createDragItem(item) {
+    const { left, top, width, height } = item.getBoundingClientRect();
+    return { top, left, height, width, id: item.dataset.dragid };
+  }
+  function nearestNeighbor(row) {
+    if (row === dragGrid.current.length - 1) {
+      return { id: undefined };
+    } else {
+      return dragGrid.current[row + 1][0];
+    }
+  }
+  function handleDragStart(e) {
+    e.stopPropagation();
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text", e.currentTarget.dataset.dragid);
+    dragEnabled.current = true;
+    const rows = new Set;
+    const dragItemGrid = [];
+    const dragItems = children();
+    dragItems.forEach((dragItem) => {
+      const { top } = dragItem.getBoundingClientRect();
+      rows.add(top);
+    });
+    let itemIndex = 0;
+    let rowIndex = 0;
+    for (const row of rows) {
+      while (dragItems[itemIndex]?.getBoundingClientRect()?.top === row) {
+        const newDragItem = createDragItem(dragItems[itemIndex]);
+        dragItemGrid[rowIndex] ||= [];
+        dragItemGrid[rowIndex].push(newDragItem);
+        itemIndex++;
+      }
+      rowIndex++;
+    }
+    dragGrid.current = dragItemGrid;
+  }
+  function handleDragEnd() {
+    container.current.style.outline = "none";
+    dragEnabled.current = false;
+  }
+  function handleDragOver(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer.effectAllowed !== "move" || !dragEnabled.current) {
+      e.dataTransfer.effectAllowed = "none";
+      return;
+    }
+    e.dataTransfer.dropEffect = "move";
+    e.currentTarget.style.outline = "auto";
+    const row = getCurrentRow(e);
+    const column = getCurrentColumn(e, row);
+    const neighbor = dragGrid.current[row][column];
+    const dropId = neighbor?.id || dragGrid.current[row].at(-1)?.id;
+    const dropSide = neighbor ? "left" : "right";
+    showDropLocation(dropId, dropSide);
+    dropNeighbor.current = neighbor || nearestNeighbor(row);
+  }
+  function handleDragLeave(e) {
+    e.currentTarget.style.outline = "unset";
+    showDropLocation(null, "left");
+  }
+  function handleDrop(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!dragEnabled.current)
+      return;
+    const draggedItemId = e.dataTransfer.getData("text");
+    showDropLocation(null, "left");
+    if (draggedItemId === dropNeighbor.current.id)
+      return;
+    onValidDrop(draggedItemId, dropNeighbor.current.id);
+  }
+  return {
+    onDragOver: handleDragOver,
+    onDragLeave: handleDragLeave,
+    onDrop: handleDrop
+  };
+}
+
+// src/components/EditCarousel.js
 var jsx_dev_runtime9 = __toESM(require_jsx_dev_runtime(), 1);
 function EditCarousel({ artworks, activeArt, onChange }) {
-  const editCarouselScroll = import_react10.useRef();
+  const { dispatch } = import_react11.useContext(ArtworkContext);
+  const [reordering, setReordering] = import_react11.useState(false);
+  const editCarouselScroll = import_react11.useRef();
+  const { setAlert } = useAlerts();
   const handleFocus = (e) => {
     const { offsetTop, offsetHeight: imgHeight } = e.target.parentElement;
-    const { offsetHeight, scrollTop, scrollHeight } = editCarouselScroll.current;
+    const { offsetHeight, scrollHeight } = editCarouselScroll.current;
     let scrollPosition = offsetTop - (offsetHeight - imgHeight) / 2;
     scrollPosition = Math.max(0, Math.min(scrollPosition, scrollHeight - offsetHeight));
     editCarouselScroll.current.scroll({
@@ -24209,6 +24497,40 @@ function EditCarousel({ artworks, activeArt, onChange }) {
       behavior: "smooth"
     });
   };
+  const handleArtReorder = async (itemId, neighborId) => {
+    setReordering(true);
+    const originalState = [...artworks.map((art) => ({ ...art }))];
+    try {
+      const newList = new LinkedList(artworks);
+      const artMoved = newList.moveListItem(itemId, neighborId);
+      if (!artMoved)
+        return;
+      dispatch({
+        type: "REORDER_ART",
+        payload: newList.entries
+      });
+      const movedArt = originalState.find((art) => art._id === itemId);
+      const neighborArt = originalState.find((art) => art._id === neighborId);
+      const res = await fetch("/api/artwork", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ movedArt, neighborArt })
+      });
+      if (!res.ok)
+        throw new Error("Error reordering artwork");
+    } catch (error) {
+      setAlert({ type: "danger", message: "There was an error reordering the artwork" });
+      dispatch({
+        type: "REORDER_ART",
+        payload: originalState
+      });
+    } finally {
+      setReordering(false);
+    }
+  };
+  const orderingProps = useArtOrdering(editCarouselScroll, handleArtReorder);
   return jsx_dev_runtime9.jsxDEV("fieldset", {
     children: [
       jsx_dev_runtime9.jsxDEV("legend", {
@@ -24226,10 +24548,12 @@ function EditCarousel({ artworks, activeArt, onChange }) {
             children: artworks[0].subCategory
           }, undefined, false, undefined, this),
           jsx_dev_runtime9.jsxDEV("div", {
-            className: "thumbnail-list edit-carousel",
+            className: `thumbnail-list edit-carousel ${reordering ? "drop-pending" : ""}`,
             ref: editCarouselScroll,
+            ...orderingProps,
             children: artworks.map(({ _id, thumbnail, title }) => jsx_dev_runtime9.jsxDEV("label", {
               className: "edit-carousel-item",
+              "data-dragid": _id,
               children: [
                 jsx_dev_runtime9.jsxDEV("img", {
                   className: `thumbnail-image img ${activeArt?._id === _id ? "img-clicked" : ""}`,
@@ -24257,13 +24581,13 @@ function EditCarousel({ artworks, activeArt, onChange }) {
 // src/components/Delete.jsx
 var jsx_dev_runtime10 = __toESM(require_jsx_dev_runtime(), 1);
 function Delete() {
-  const { artWorks, dispatch } = import_react11.useContext(ArtworkContext);
-  const [category, setCategory] = import_react11.useState("");
-  const [subCategory, setSubCategory] = import_react11.useState("");
-  const [activeArt, setActiveArt] = import_react11.useState(null);
-  const [deleting, setDeleting] = import_react11.useState(false);
+  const { artWorks, dispatch } = import_react12.useContext(ArtworkContext);
+  const [category, setCategory] = import_react12.useState("");
+  const [subCategory, setSubCategory] = import_react12.useState("");
+  const [activeArt, setActiveArt] = import_react12.useState(null);
+  const [deleting, setDeleting] = import_react12.useState(false);
   const { setAlert } = useAlerts();
-  const dialogRef = import_react11.useRef();
+  const dialogRef = import_react12.useRef();
   const updateActiveArt = (_id) => {
     if (_id === activeArt?._id)
       return setActiveArt(null);
@@ -24287,8 +24611,10 @@ function Delete() {
     try {
       const { _id } = activeArt;
       const params = new URLSearchParams({ _id }).toString();
-      await fetch("/api/artwork?" + params, { method: "DELETE" });
-      dispatch({ type: "DELETE_ARTWORK", payload: { ...activeArt } });
+      const res = await fetch("/api/artwork?" + params, { method: "DELETE" });
+      const { prevArt } = await res.json();
+      dispatch({ type: "DELETE_ARTWORK", payload: activeArt });
+      dispatch({ type: "UPDATE_ARTWORK", payload: prevArt });
       setAlert({ message: "Successfully deleted artwork!", type: "success" });
       setActiveArt(null);
       setSubCategory("");
@@ -24517,4 +24843,4 @@ function App({ artWorks }) {
 var container = document.getElementById("artwork-admin");
 var artWorks = JSON.parse(container.getAttribute("data-state"));
 var root = client.default.createRoot(container);
-root.render(import_react13.default.createElement(App, { artWorks }));
+root.render(import_react14.default.createElement(App, { artWorks }));

@@ -1,12 +1,12 @@
 import { useContext } from "react"
 import { AlertContext } from "../context/AlertContext"
+import { v4 as uuidv4 } from "uuid"
 
 export default function useAlerts(alertDuration = 7_000) {
   const { dispatch, alerts } = useContext(AlertContext)
 
   function setAlert({ message, type }) {
-    // const id = crypto.randomUUID()
-    const id = Math.random()
+    const id = uuidv4()
     const timeout = setAlertTimeout(id)
 
     dispatch({ type: "NEW_ALERT", payload: { id, message, type, timeout } })
@@ -30,7 +30,7 @@ export default function useAlerts(alertDuration = 7_000) {
         duration: 100,
         easing: "ease-in",
         fill: "forwards",
-      }
+      },
     )
     const slideAnimation = new Animation(slideFrames, document.timeline)
     const collapseAnimation = new Animation(collapseFrames, document.timeline)

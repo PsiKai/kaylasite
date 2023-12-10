@@ -25,14 +25,18 @@ export default function Edit({ artWork, onUpdateComplete }) {
     e.preventDefault()
     setUpdating(true)
     try {
-      const body = { oldImg: artWork, newImg: form }
+      const body = { oldImg: artWork, newImg: { ...form, nextArtwork: artWork.nextArtwork } }
       const res = await fetch("/api/artwork/", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       })
-      const updatedArt = await res.json()
+      const { updatedArt, prevArt, newLocationPrev } = await res.json()
       onUpdateComplete()
+
+      console.log({ updatedArt, newLocationPrev, prevArt })
+      dispatch({ type: "UPDATE_ARTWORK", payload: newLocationPrev })
+      dispatch({ type: "UPDATE_ARTWORK", payload: prevArt })
       dispatch({ type: "MOVE_ARTWORK", payload: { ...body, newImg: updatedArt } })
     } catch (error) {
       setAlert({ type: "warning", message: "There was an error updating this artwork" })
