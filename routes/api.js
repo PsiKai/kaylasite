@@ -25,7 +25,7 @@ apiRouter.post("/artwork", uploader, async (req, res) => {
     const prevArt = await Artwork.findOneAndUpdate(
       { category, subCategory, nextArtwork: null, _id: { $ne: newArt._id } },
       { $set: { nextArtwork: newArt._id } },
-      { new: true }
+      { new: true },
     )
     await newArt.save()
     console.log("Finished uploading new image to collection:", title)
@@ -54,7 +54,7 @@ apiRouter.delete("/artwork", async (req, res) => {
     const prevArt = await Artwork.findOneAndUpdate(
       { category: art.category, subCategory: art.subCategory, nextArtwork: art._id },
       { $set: { nextArtwork: art.nextArtwork } },
-      { new: true }
+      { new: true },
     )
 
     fetchArt()
@@ -86,7 +86,7 @@ apiRouter.put("/artwork", async (req, res) => {
     const updatedArt = await Artwork.findOneAndUpdate(
       { _id: oldImg._id },
       { thumbnail, title, subCategory, category, nextArtwork },
-      { new: true }
+      { new: true },
     )
     let prevArt, newLocationPrev
     prevArt = await Artwork.findOneAndUpdate(
@@ -97,12 +97,12 @@ apiRouter.put("/artwork", async (req, res) => {
         _id: { $ne: newImg._id },
       },
       { nextArtwork: oldImg.nextArtwork },
-      { new: true }
+      { new: true },
     )
     newLocationPrev = await Artwork.findOneAndUpdate(
       { category, subCategory, nextArtwork, _id: { $ne: newImg._id } },
       { nextArtwork: newImg._id },
-      { new: true }
+      { new: true },
     )
     fetchArt()
     res.status(201).json({ updatedArt, prevArt, newLocationPrev })
@@ -126,7 +126,11 @@ apiRouter.patch("/artwork", async (req, res) => {
     )
     // Update the new left neighbor to point to movedArt
     await Artwork.findOneAndUpdate(
-      { nextArtwork: neighborArt?._id || null, subCategory: movedArt.subCategory },
+      {
+        nextArtwork: neighborArt?._id || null,
+        subCategory: movedArt.subCategory,
+        category: movedArt.category,
+      },
       { nextArtwork: movedArt._id },
       { session },
     )
