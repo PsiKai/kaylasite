@@ -12,3 +12,4 @@ application-default-credentials.json
 db/utils/
 bun.lockb*
 
+scripts/

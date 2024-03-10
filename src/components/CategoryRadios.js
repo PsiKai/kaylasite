@@ -7,7 +7,7 @@ export default function CategoryRadios({ idModifier, onChange, value }) {
         </p>
       </legend>
       <div className="radio-btn-container">
-        {["Photography", "Painting", "Drawing", "Digital"].map(category => (
+        {["Photography", "Illustration"].map(category => (
           <div className="wrapper" key={`${category}-${idModifier}`}>
             <input
               id={`${category}-${idModifier}`}
