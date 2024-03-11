@@ -1,27 +1,5 @@
 <%- include("partials/header") -%>
 
-<section class="colored">
-  <img class="logoEdge" src="images/kaylalogogreen.png" aria-hidden />
-  <img class="logoEdgeRight" src="images/kaylalogogreen.png" aria-hidden />
-  <div class="category container-fluid">
-    <h1> <%= pageCopy.title %> </h1>
-    <div class="bio">
-    	<p><%= pageCopy.description %> </p>
-    </div>
-    <div class="call-action">
-      <a target="_blank" href="https://www.facebook.com/kayla.kossajda">
-      	<i class="media fab fa-facebook-f fa-2x"></i>
-      </a>
-      <a target="_blank" href="https://www.instagram.com/kaylakossart/">
-      	<i class="media fab fa-instagram fa-2x"></i>
-      </a>
-      <a href="mailto:kkossajda@gmail.com">
-        <i class="media fas fa-envelope fa-2x"></i>
-      </a>
-    </div>
-  </div>
-</section>
-
 <section class="thumbnail-section">
   <div class="container-fluid content">
     <% Object.entries(artCategory).forEach(([subCategory, artwork]) => { %>

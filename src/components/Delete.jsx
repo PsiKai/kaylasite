@@ -1,4 +1,4 @@
-import React, { useRef, useContext, useState, useMemo } from "react"
+import React, { useRef, useContext, useState } from "react"
 import { ArtworkContext } from "../context/ArtworkContext.js"
 import useAlerts from "../hooks/useAlerts.js"
 import Edit from "./Edit.js"
