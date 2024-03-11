@@ -1,6 +1,5 @@
 import "dotenv/config"
 import express from "express"
-import ejs from "ejs"
 import session from "express-session"
 import secure from "ssl-express-www"
 import connectDB from "./db/init.js"
@@ -14,7 +13,7 @@ if (process.env.NODE_ENV === "production") {
   app.use(secure)
 }
 
-app.use((req, res, next) => {
+app.use((req, _res, next) => {
   app.locals.baseUrl = `${req.protocol}://${req.get("host")}`
   next()
 })
@@ -32,13 +31,13 @@ app.use(
       sameSite: true,
       maxAge: 60 * 60 * 1000,
     },
-  })
+  }),
 )
 connectDB()
 
 app.use("/", pageRouter)
 app.use("/api", apiRouter)
 
-const server = app.listen(process.env.PORT || 3000, () => {
+const server = app.listen(process.env.PORT || 3000, async () => {
   console.log("server started on port", server.address().port)
 })

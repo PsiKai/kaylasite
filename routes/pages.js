@@ -81,7 +81,8 @@ pageRouter.get("/:category/:subCategory/:_id", async (req, res) => {
     const artWorks = await getArt()
     const foundArt = artWorks[category][subCategory]?.find(art => art._id.toString() === _id)
     if (foundArt) {
-      const [signedUrl] = storageClient.signedUrl(foundArt)
+      const [signedUrl] = await storageClient.signedUrl(foundArt)
+
       const pageCopy = singleArtCopy(foundArt)
 
       res.render("single", {
