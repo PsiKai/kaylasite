@@ -35,5 +35,7 @@
   "author": "",
   "license": "ISC",
   "type": "module",
-  "trustedDependencies": ["sharp"]
+  "trustedDependencies": [
+    "sharp"
+  ]
 }

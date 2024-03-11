@@ -467,13 +467,8 @@ ul.thumbnail-list {
   flex-direction: row-reverse;
 }
 
-.bio-icon {
-  width: 100%;
-  max-width: 250px;
-}
-
 #biography .row {
-  margin-top: 5%;
+  margin: 5% auto 0;
 }
 
 /* /////////// Login Page ////////////// */
@@ -929,7 +924,7 @@ label.radio {
   }
 
   .colored .container-fluid {
-    padding: 2% 15% 2%;
+    padding: 40px 15% 2%;
   }
 
   .carousel {
@@ -995,7 +990,7 @@ label.radio {
   }
 
   .colored .container-fluid {
-    padding: 2% 5% 2%;
+    padding: 40px 5% 2%;
   }
 }
 
@@ -1022,7 +1017,7 @@ label.radio {
   }
 
   .colored .container-fluid {
-    padding: 2% 3% 2%;
+    padding: 40px 3% 2%;
   }
 
   .navbar-nav > li {
@@ -1032,10 +1027,6 @@ label.radio {
 
   a.nav-link {
     display: inline-block;
-  }
-
-  .bio-icon {
-    width: 50%;
   }
 
   .thumbnail-list {
