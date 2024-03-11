@@ -468,7 +468,7 @@ ul.thumbnail-list {
 }
 
 #biography .row {
-  margin-top: 5%;
+  margin: 5% auto 0;
 }
 
 /* /////////// Login Page ////////////// */
