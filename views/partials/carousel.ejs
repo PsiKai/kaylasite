@@ -4,7 +4,7 @@
      	<% randomArt.forEach((artWork, i) => { %>
       <div class="carousel-item container-fluid <%= i === 0 ? 'active' : ''%>">
         	<a href="<%= artWork.category %>#<%= artWork.title %>">
-            <img loading="lazy" class="img-fluid" src="<%= artWork.thumbnail %>" alt="<%= artWork.title %>" class="d-block w-100"/>
+            <img class="img-fluid" src="<%= artWork.thumbnail %>" alt="<%= artWork.title %>" class="d-block w-100"/>
 					</a>
       	</div>
     	<% }) %>
