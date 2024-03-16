@@ -1,5 +1,4 @@
 import { Router } from "express"
-import { default as _ } from "lodash"
 import bcrypt from "bcrypt"
 import { getArt } from "../artState.js"
 import { titleDesc, singleArtCopy } from "../copy/title_description.js"
@@ -7,21 +6,14 @@ import User from "../db/models/user.js"
 import { isAuthenticated } from "../middleware/auth.js"
 import { storageClient } from "../google-client.js"
 import { capitalize } from "../utils/stringUtils.js"
+import { randomArtSample } from "../utils/artUtils.js"
 
 const pageRouter = Router()
 
 pageRouter.get("/", async (_req, res) => {
-  const artWorks = await getArt()
-  const randomArt = Object.entries(artWorks).reduce((random, [_category, subcategories]) => {
-    const subCatValues = Object.values(subcategories)
-    const randomSubcatIndex = Math.floor(Math.random() * subCatValues.length)
-    const randomSubcat = subCatValues[randomSubcatIndex]
-    const randomWorkIndex = Math.floor(Math.random() * randomSubcat.length)
-    random.push(randomSubcat[randomWorkIndex])
-    return random
-  }, [])
+  const randomArt = await randomArtSample(6)
 
-  res.render("index", { randomArt, artWorks, pageCopy: titleDesc[0], path: "/" })
+  res.render("index", { randomArt, pageCopy: titleDesc[0], path: "/" })
 })
 
 pageRouter.get("/login", (_req, res) => {

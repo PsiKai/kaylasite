@@ -9,3 +9,7 @@ export function roundedBytes(bytes) {
 
   return bytes.toFixed(2) + " " + magnitudeScale[magnitude] + "B"
 }
+
+export function randomIndex(arr) {
+  return Math.floor(Math.random() * arr.length)
+}
