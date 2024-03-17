@@ -14,7 +14,7 @@ export async function randomArtSample(totalSize) {
     const subCatArt = Object.values(subCat)
     const randomIndex = floor(random() * subCatArt.length)
     randomSample.push(subCatArt[randomIndex])
-    pointer = ++pointer % (subcategories.length - 1)
+    pointer = ++pointer % subcategories.length
   }
 
   for (let i = 0; i < randomSample.length; i++) {
