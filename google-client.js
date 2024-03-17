@@ -16,6 +16,7 @@ class GoogleClient extends Storage {
   baseStorageUrl = "https://storage.googleapis.com"
   bucketName = process.env.BUCKETNAME
   thumbBucketName = process.env.THUMBS
+  THUMBNAIL_SIZE = 500
 
   mainBucket = this.bucket(this.bucketName)
   thumbBucket = this.bucket(this.thumbBucketName)
