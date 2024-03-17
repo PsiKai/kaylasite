@@ -7,7 +7,7 @@ export const uploader = async (req, res, next) => {
   const bb = busboy({ headers: req.headers })
   const uploadPromises = []
 
-  bb.on("file", (name, file, info) => {
+  bb.on("file", (_name, file, info) => {
     const { mimeType } = info
     const [_type, extension] = mimeType.split("/")
     req.body.extension = extension
@@ -17,7 +17,7 @@ export const uploader = async (req, res, next) => {
     file.pipe(passThrough)
 
     const [fullSizeStream, thumbnailStream] = storageClient.writeStream(req.body)
-    const resizeStream = sharp().resize(null, 300).webp()
+    const resizeStream = sharp().resize(null, storageClient.THUMBNAIL_SIZE).webp()
 
     const uploadPromise = new Promise((resolve, reject) => {
       passThrough
